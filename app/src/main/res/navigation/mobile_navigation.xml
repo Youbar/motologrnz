@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_car">
+
+    <fragment
+        android:id="@+id/nav_car"
+        android:name="com.example.motologr.ui.car.CarFragment"
+        android:label="@string/menu_car"
+        tools:layout="@layout/fragment_motorcycle" />
+
+    <fragment
+        android:id="@+id/nav_motorcycle"
+        android:name="com.example.motologr.ui.motorcycle.MotorcycleFragment"
+        android:label="@string/menu_motorcycle"
+        tools:layout="@layout/fragment_car" />
+
+    <fragment
+        android:id="@+id/nav_plus"
+        android:name="com.example.motologr.ui.plus.PlusFragment"
+        android:label="@string/menu_plus"
+        tools:layout="@layout/fragment_plus" />
+</navigation>
