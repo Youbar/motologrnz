@@ -1,4 +1,4 @@
-package com.example.motologr.ui.car
+package com.example.motologr.ui.vehicle
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.motologr.databinding.FragmentCarBinding
-import org.w3c.dom.Text
+import com.example.motologr.databinding.FragmentVehicleBinding
 
-class CarFragment : Fragment() {
+class VehicleFragment : Fragment() {
 
-    private var _binding: FragmentCarBinding? = null
+    private var _binding: FragmentVehicleBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -25,9 +24,9 @@ class CarFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val carViewModel =
-            ViewModelProvider(this).get(CarViewModel::class.java)
+            ViewModelProvider(this).get(VehicleViewModel::class.java)
 
-        _binding = FragmentCarBinding.inflate(inflater, container, false)
+        _binding = FragmentVehicleBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val carName: TextView = binding.textCar
@@ -52,10 +51,6 @@ class CarFragment : Fragment() {
 
         carViewModel.textWOFDue.observe(viewLifecycleOwner) {
             WOFDue.text = it
-        }
-
-        carViewModel.textRegDone.observe(viewLifecycleOwner) {
-            RegDone.text = it
         }
 
         carViewModel.textRegDue.observe(viewLifecycleOwner) {

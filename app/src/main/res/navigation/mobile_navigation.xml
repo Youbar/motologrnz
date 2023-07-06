@@ -7,15 +7,15 @@
 
     <fragment
         android:id="@+id/nav_car"
-        android:name="com.example.motologr.ui.car.CarFragment"
+        android:name="com.example.motologr.ui.vehicle.VehicleFragment"
         android:label="@string/menu_car"
-        tools:layout="@layout/fragment_motorcycle" />
+        tools:layout="@layout/fragment_vehicle" />
 
     <fragment
         android:id="@+id/nav_motorcycle"
-        android:name="com.example.motologr.ui.motorcycle.MotorcycleFragment"
+        android:name="com.example.motologr.ui.vehicle.VehicleFragment"
         android:label="@string/menu_motorcycle"
-        tools:layout="@layout/fragment_car" />
+        tools:layout="@layout/fragment_vehicle" />
 
     <fragment
         android:id="@+id/nav_plus"
