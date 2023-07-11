@@ -12,14 +12,12 @@
         tools:layout="@layout/fragment_vehicle" />
 
     <fragment
-        android:id="@+id/nav_motorcycle"
-        android:name="com.example.motologr.ui.vehicle.VehicleFragment"
-        android:label="@string/menu_motorcycle"
-        tools:layout="@layout/fragment_vehicle" />
-
-    <fragment
         android:id="@+id/nav_plus"
         android:name="com.example.motologr.ui.plus.PlusFragment"
         android:label="@string/menu_plus"
-        tools:layout="@layout/fragment_plus" />
+        tools:layout="@layout/fragment_plus" >
+        <action
+            android:id="@+id/action_nav_plus_to_nav_car"
+            app:destination="@id/nav_car" />
+    </fragment>
 </navigation>

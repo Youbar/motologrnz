@@ -11,7 +11,8 @@
         <item
             android:id="@+id/nav_motorcycle"
             android:icon="@drawable/ic_menu_motorcycle"
-            android:title="@string/menu_motorcycle" />
+            android:title="@string/menu_motorcycle"
+            android:visible="false" />
         <item
             android:id="@+id/nav_plus"
             android:icon="@drawable/ic_menu_plus"

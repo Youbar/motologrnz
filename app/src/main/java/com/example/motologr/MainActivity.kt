@@ -2,16 +2,18 @@ package com.example.motologr
 
 import android.os.Bundle
 import android.view.Menu
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
 import com.example.motologr.databinding.ActivityMainBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,10 +28,12 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+        val sharedPreferences = getPreferences(MODE_PRIVATE)
+        val sharedPreferencesEditor = sharedPreferences.edit();
+        sharedPreferencesEditor.putString("Olivia", "is cute");
+        sharedPreferencesEditor.commit();
+        val fabText = sharedPreferences.getString("Olivia", "No result")
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -40,6 +44,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_car, R.id.nav_motorcycle, R.id.nav_plus
             ), drawerLayout
         )
+
+/*        binding.appBarMain.fab.setOnClickListener { view ->
+*//*            when (navController.currentDestination?.id == R.id.nav_plus) {
+                binding.appBarMain.fab.hide()
+            }*//*
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }*/
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }

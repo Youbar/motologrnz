@@ -4,11 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.motologr.databinding.FragmentVehicleBinding
+import com.example.motologr.ui.data.DataManager
+import com.example.motologr.ui.data.Vehicle
+import java.text.DateFormat
+import java.text.DateFormat.getDateInstance
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Calendar
 
 class VehicleFragment : Fragment() {
 
@@ -23,7 +29,7 @@ class VehicleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val carViewModel =
+        val vehicleViewModel =
             ViewModelProvider(this).get(VehicleViewModel::class.java)
 
         _binding = FragmentVehicleBinding.inflate(inflater, container, false)
@@ -32,52 +38,58 @@ class VehicleFragment : Fragment() {
         val carName: TextView = binding.textCar
         val WOFDone: TextView = binding.textWOFDone
         val WOFDue: TextView = binding.textWOFDue
-        val RegDone: TextView = binding.textRegDone
         val RegDue: TextView = binding.textRegDue
         val Odometer: TextView = binding.textOdometer
         val Insurer: TextView = binding.textInsurer
         val InsurerDate: TextView = binding.textInsurerDate
         val ApproxCostsTitle: TextView = binding.textApproxCostsTitle
         val ApproxCosts: TextView = binding.textApproxCosts
-        val CarImage: ImageView = binding.imageCar
 
-        carViewModel.textCar.observe(viewLifecycleOwner) {
-            carName.text = it
+        val vehicle : Vehicle? = DataManager.ReturnVehicle(0)
+
+        if (vehicle != null) {
+            val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
+
+/*            val cal : Calendar = Calendar.getInstance()
+            cal.set(vehicle.expiryWOF.year, vehicle.expiryWOF.month - 6, vehicle.expiryWOF.day)
+
+            There's gonna be a lot of handling for date formatting
+
+            val lastWOF: String = format.format(vehicle.expiryWOF)*/
+
+            var expiryWOF: String = format.format(vehicle.expiryWOF)
+            expiryWOF = "Next WOF: $expiryWOF"
+            var regExpiry: String = format.format(vehicle.regExpiry)
+            regExpiry = "Next Reg: $regExpiry"
+
+            vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
+                carName.text = vehicle.modelName + " | " + vehicle.year
+            }
+            vehicleViewModel.textWOFDone.observe(viewLifecycleOwner) {
+                WOFDone.text = it
+            }
+            vehicleViewModel.textWOFDue.observe(viewLifecycleOwner) {
+                WOFDue.text = expiryWOF
+            }
+            vehicleViewModel.textRegDue.observe(viewLifecycleOwner) {
+                RegDue.text = regExpiry
+            }
+            vehicleViewModel.textOdometer.observe(viewLifecycleOwner) {
+                Odometer.text = it
+            }
+            vehicleViewModel.textInsurer.observe(viewLifecycleOwner) {
+                Insurer.text = it
+            }
+            vehicleViewModel.textInsurerDate.observe(viewLifecycleOwner) {
+                InsurerDate.text = it
+            }
+            vehicleViewModel.textApproxCostsTitle.observe(viewLifecycleOwner) {
+                ApproxCostsTitle.text = it
+            }
+            vehicleViewModel.textApproxCosts.observe(viewLifecycleOwner) {
+                ApproxCosts.text = it
+            }
         }
-
-        carViewModel.textWOFDone.observe(viewLifecycleOwner) {
-            WOFDone.text = it
-        }
-
-        carViewModel.textWOFDue.observe(viewLifecycleOwner) {
-            WOFDue.text = it
-        }
-
-        carViewModel.textRegDue.observe(viewLifecycleOwner) {
-            RegDue.text = it
-        }
-
-        carViewModel.textOdometer.observe(viewLifecycleOwner) {
-            Odometer.text = it
-        }
-
-        carViewModel.textInsurer.observe(viewLifecycleOwner) {
-            Insurer.text = it
-        }
-
-        carViewModel.textInsurerDate.observe(viewLifecycleOwner) {
-            InsurerDate.text = it
-        }
-
-        carViewModel.textApproxCostsTitle.observe(viewLifecycleOwner) {
-            ApproxCostsTitle.text = it
-        }
-
-        carViewModel.textApproxCosts.observe(viewLifecycleOwner) {
-            ApproxCosts.text = it
-        }
-
-
 
         return root
     }
