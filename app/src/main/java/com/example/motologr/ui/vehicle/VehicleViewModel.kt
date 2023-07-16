@@ -9,9 +9,6 @@ class VehicleViewModel : ViewModel() {
     private val _textVehicle = MutableLiveData<String>().apply {
         value = ""
     }
-    private val _textWOFDone = MutableLiveData<String>().apply {
-        value = "Last WOF: TODO"
-    }
     private val _textWOFDue = MutableLiveData<String>().apply {
         value = ""
     }
@@ -19,7 +16,7 @@ class VehicleViewModel : ViewModel() {
         value = ""
     }
     private val _textOdometer = MutableLiveData<String>().apply {
-        value = "Last Odometer Reading: TODO"
+        value = ""
     }
     private val _textInsurer = MutableLiveData<String>().apply {
         value = "You are with TODO insurance"
@@ -35,7 +32,6 @@ class VehicleViewModel : ViewModel() {
     }
 
     val textVehicle: LiveData<String> = _textVehicle
-    val textWOFDone: LiveData<String> = _textWOFDone
     val textWOFDue: LiveData<String> = _textWOFDue
     val textRegDue: LiveData<String> = _textRegDue
     val textOdometer: LiveData<String> = _textOdometer

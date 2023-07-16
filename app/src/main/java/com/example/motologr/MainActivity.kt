@@ -2,7 +2,11 @@ package com.example.motologr
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -10,9 +14,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.motologr.databinding.ActivityMainBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.motologr.ui.data.DataManager
+import com.example.motologr.ui.data.Vehicle
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,8 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+        setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val sharedPreferences = getPreferences(MODE_PRIVATE)
@@ -41,7 +45,12 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_car, R.id.nav_motorcycle, R.id.nav_plus
+                R.id.nav_vehicle_1,
+                R.id.nav_vehicle_2,
+                R.id.nav_vehicle_3,
+                R.id.nav_vehicle_4,
+                R.id.nav_vehicle_5,
+                R.id.nav_plus
             ), drawerLayout
         )
 
@@ -55,6 +64,31 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val drawerToggle : ActionBarDrawerToggle = object : ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            binding.appBarMain.toolbar,
+            R.string.drawer_open,
+            R.string.drawer_close
+        ) {
+            override fun onDrawerClosed(drawerView: View) {
+                super.onDrawerClosed(drawerView)
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                super.onDrawerOpened(drawerView)
+
+                for (i in 0 until DataManager.ReturnVehicleArrayLength()) {
+                    var vehicle : Vehicle? = DataManager.ReturnVehicle(i)
+
+                    navView.menu.getItem(i).isVisible = true
+                    navView.menu.getItem(i).title = vehicle?.modelName
+                }
+            }
+        }
+
+        drawerLayout.setDrawerListener(drawerToggle)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

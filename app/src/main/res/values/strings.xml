@@ -9,5 +9,7 @@
 
     <string name="menu_car">Mazda 323</string>
     <string name="menu_motorcycle">KTM Duke 200</string>
+    <string name="drawer_open">Open Drawer</string>
+    <string name="drawer_close">Close Drawer</string>
     <string name="menu_plus">Add new vehicle</string>
 </resources>

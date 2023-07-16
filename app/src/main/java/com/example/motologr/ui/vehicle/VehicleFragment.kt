@@ -36,7 +36,6 @@ class VehicleFragment : Fragment() {
         val root: View = binding.root
 
         val carName: TextView = binding.textCar
-        val WOFDone: TextView = binding.textWOFDone
         val WOFDue: TextView = binding.textWOFDue
         val RegDue: TextView = binding.textRegDue
         val Odometer: TextView = binding.textOdometer
@@ -50,23 +49,18 @@ class VehicleFragment : Fragment() {
         if (vehicle != null) {
             val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-/*            val cal : Calendar = Calendar.getInstance()
-            cal.set(vehicle.expiryWOF.year, vehicle.expiryWOF.month - 6, vehicle.expiryWOF.day)
-
-            There's gonna be a lot of handling for date formatting
-
-            val lastWOF: String = format.format(vehicle.expiryWOF)*/
+            var vehicleText = vehicle.modelName + " | " + vehicle.year.toString()
 
             var expiryWOF: String = format.format(vehicle.expiryWOF)
             expiryWOF = "Next WOF: $expiryWOF"
+
             var regExpiry: String = format.format(vehicle.regExpiry)
             regExpiry = "Next Reg: $regExpiry"
 
+            var odometer: String = "Last Odometer Reading: " + vehicle.odometer.toString() + " km"
+
             vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
-                carName.text = vehicle.modelName + " | " + vehicle.year
-            }
-            vehicleViewModel.textWOFDone.observe(viewLifecycleOwner) {
-                WOFDone.text = it
+                carName.text = vehicleText
             }
             vehicleViewModel.textWOFDue.observe(viewLifecycleOwner) {
                 WOFDue.text = expiryWOF
@@ -75,7 +69,7 @@ class VehicleFragment : Fragment() {
                 RegDue.text = regExpiry
             }
             vehicleViewModel.textOdometer.observe(viewLifecycleOwner) {
-                Odometer.text = it
+                Odometer.text = odometer
             }
             vehicleViewModel.textInsurer.observe(viewLifecycleOwner) {
                 Insurer.text = it

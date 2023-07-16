@@ -33,6 +33,12 @@ class PlusViewModel : ViewModel() {
     private val _editTextCurrReg = MutableLiveData<String>().apply {
         value = "**/**/**"
     }
+    private val _textCurrOdo = MutableLiveData<String>().apply {
+        value = "How many kms has your car done?"
+    }
+    private val _editTextCurrOdo = MutableLiveData<String>().apply {
+        value = "xxxx km"
+    }
 
     val textNewVehicle: LiveData<String> = _textNewVehicle
     val textModel: LiveData<String> = _textModel
@@ -43,4 +49,6 @@ class PlusViewModel : ViewModel() {
     val editTextLastWOF: LiveData<String> = _editTextLastWOF
     val textCurrentReg: LiveData<String> = _textCurrReg
     val editTextCurrentReg: LiveData<String> = _editTextCurrReg
+    val textCurrOdo: LiveData<String> = _textCurrOdo
+    val editTextCurrOdo: LiveData<String> = _editTextCurrOdo
 }

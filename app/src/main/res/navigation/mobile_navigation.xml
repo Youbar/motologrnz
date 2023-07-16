@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_car">
+    app:startDestination="@+id/nav_vehicle_1">
 
     <fragment
-        android:id="@+id/nav_car"
+        android:id="@+id/nav_vehicle_1"
         android:name="com.example.motologr.ui.vehicle.VehicleFragment"
         android:label="@string/menu_car"
         tools:layout="@layout/fragment_vehicle" />
@@ -18,6 +18,6 @@
         tools:layout="@layout/fragment_plus" >
         <action
             android:id="@+id/action_nav_plus_to_nav_car"
-            app:destination="@id/nav_car" />
+            app:destination="@id/nav_vehicle_1" />
     </fragment>
 </navigation>

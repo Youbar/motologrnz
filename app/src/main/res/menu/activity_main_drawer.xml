@@ -5,13 +5,24 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_car"
+            android:id="@+id/nav_vehicle_1"
             android:icon="@drawable/ic_menu_car"
-            android:title="@string/menu_car" />
+            android:visible="false" />
         <item
-            android:id="@+id/nav_motorcycle"
+            android:id="@+id/nav_vehicle_2"
+            android:icon="@drawable/ic_menu_car"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_vehicle_3"
+            android:icon="@drawable/ic_menu_car"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_vehicle_4"
+            android:icon="@drawable/ic_menu_car"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_vehicle_5"
             android:icon="@drawable/ic_menu_motorcycle"
-            android:title="@string/menu_motorcycle"
             android:visible="false" />
         <item
             android:id="@+id/nav_plus"

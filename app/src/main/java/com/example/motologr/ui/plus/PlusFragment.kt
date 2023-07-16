@@ -44,6 +44,8 @@ class PlusFragment : Fragment() {
         val editTextLastWOF: EditText = binding.editTextWofLastInput
         val textCurrentReg: TextView = binding.textRegExpirePrompt
         val editTextCurrentReg: EditText = binding.editTextRegExpireInput
+        val textCurrentOdo: TextView = binding.textOdoPrompt
+        val editTextCurrentOdo: EditText = binding.editTextOdoInput
 
         plusViewModel.textNewVehicle.observe(viewLifecycleOwner) {
             textNewVehicle.text = it
@@ -72,9 +74,17 @@ class PlusFragment : Fragment() {
         plusViewModel.editTextCurrentReg.observe(viewLifecycleOwner) {
             editTextCurrentReg.hint = it
         }
+        plusViewModel.textCurrOdo.observe(viewLifecycleOwner) {
+            textCurrentOdo.text = it
+        }
+        plusViewModel.editTextCurrOdo.observe(viewLifecycleOwner) {
+            editTextCurrentOdo.hint = it
+        }
 
         val button: View = binding.buttonConfirm
         button.setOnClickListener() {
+
+            // Logic to check inputs here
 
             val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
@@ -82,8 +92,9 @@ class PlusFragment : Fragment() {
             val modelYear: Int = Integer.parseInt(binding.editTextYearInput.text.toString())
             val modelWOF: Date = format.parse(binding.editTextWofLastInput.text.toString())
             val modelReg: Date = format.parse(binding.editTextRegExpireInput.text.toString())
+            val odometer: Int = Integer.parseInt(binding.editTextOdoInput.text.toString())
 
-            val vehicle = Vehicle(modelName, modelYear, modelWOF, modelReg)
+            val vehicle = Vehicle(modelName, modelYear, modelWOF, modelReg, odometer)
 
             DataManager.CreateNewVehicle(vehicle)
 
