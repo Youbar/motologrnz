@@ -1,7 +1,6 @@
 package com.example.motologr.ui.data
 
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
 
@@ -32,42 +31,52 @@ object DataManager {
 
     fun SetVehicleInsurance(index: Int, _insurance: Insurance) {
         if (vehicleArray.lastIndex >= index) {
-            vehicleArray[index].SetInsurance(_insurance)
+            vehicleArray[index].setVehicleInsurance(_insurance)
         }
     }
 }
 
 class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
 
+    var fuelLog: FuelLog = FuelLog()
+
+    fun logFuel(fuel: Fuel) {
+        fuelLog.addFuelToFuelLog(fuel)
+    }
+
     lateinit var insurance: Insurance
 
     fun isInsuranceInitialised() = ::insurance.isInitialized
 
-    lateinit var lastWOF: Date
-
-    fun SetInsurance(_insurance: Insurance) {
+    fun setVehicleInsurance(_insurance: Insurance) {
         insurance = _insurance
     }
 }
 
 class FuelLog() {
     private var fuelLog = ArrayList<Fuel>()
+
+    fun addFuelToFuelLog(fuel: Fuel) {
+        fuelLog.add(fuel)
+    }
 }
 
 class Fuel(var fuelType: Int, var price: Double, var litres: Double, var purchaseDate: Date, var odometerReading: Int) {
-
-
-
     // type 0 = 91, 1 = 95, 2 = 98, 3 = diesel
     fun returnFuelType() : String {
-        if (fuelType == 0) {
-            return "Fortnightly"
-        } else if (fuelType == 1) {
-            return "Monthly"
-        } else if (fuelType == 2) {
-            return "Annually"
-        } else {
-            return "Invalid"
+        return when (fuelType) {
+            0 -> {
+                "Fortnightly"
+            }
+            1 -> {
+                "Monthly"
+            }
+            2 -> {
+                "Annually"
+            }
+            else -> {
+                "Invalid"
+            }
         }
     }
 
@@ -98,27 +107,37 @@ class Insurance (var isActive: Boolean, var insurer: String, var coverage: Int,
 
     // coverage 0 = comp, 1 = 3rd+, 2 = 3rd
     fun returnCoverageType() : String {
-        if (coverage == 0) {
-            return "Comprehensive"
-        } else if (coverage == 1) {
-            return "Third Party Fire & Theft"
-        } else if (coverage == 2) {
-            return "Third Party"
-        } else {
-            return "Invalid"
+        return when (coverage) {
+            0 -> {
+                "Comprehensive"
+            }
+            1 -> {
+                "Third Party Fire & Theft"
+            }
+            2 -> {
+                "Third Party"
+            }
+            else -> {
+                "Invalid"
+            }
         }
     }
 
     // billingCycle 0 = fortnightly, 1 = monthly, 2 = annually
     fun returnCycleType() : String {
-        if (billingCycle == 0) {
-            return "Fortnightly"
-        } else if (billingCycle == 1) {
-            return "Monthly"
-        } else if (billingCycle == 2) {
-            return "Annually"
-        } else {
-            return "Invalid"
+        return when (billingCycle) {
+            0 -> {
+                "Fortnightly"
+            }
+            1 -> {
+                "Monthly"
+            }
+            2 -> {
+                "Annually"
+            }
+            else -> {
+                "Invalid"
+            }
         }
     }
 }
