@@ -54,14 +54,6 @@ class MainActivity : AppCompatActivity() {
             ), drawerLayout
         )
 
-/*        binding.appBarMain.fab.setOnClickListener { view ->
-*//*            when (navController.currentDestination?.id == R.id.nav_plus) {
-                binding.appBarMain.fab.hide()
-            }*//*
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }*/
-
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 

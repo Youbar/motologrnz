@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.motologr.databinding.FragmentVehicleBinding
 import com.example.motologr.ui.data.DataManager
 import com.example.motologr.ui.data.Vehicle
+import com.google.android.material.snackbar.Snackbar
 import java.text.DateFormat
 import java.text.DateFormat.getDateInstance
 import java.text.SimpleDateFormat
@@ -86,6 +87,15 @@ class VehicleFragment : Fragment() {
         }
 
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.fab.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
     }
 
     override fun onDestroyView() {
