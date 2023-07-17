@@ -1,6 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_insurance_coverage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="What is your coverage?"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_insurance_insurer" />
+
+    <TextView
+        android:id="@+id/text_insurance_billing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="What is your billing cycle?"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup_insurance_coverage" />
+
+    <TextView
+        android:id="@+id/text_insurance_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Insurance"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_insurance_bool_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Do you have insurance?"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_insurance_title" />
+
+    <TextView
+        android:id="@+id/text_insurance_insurer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Who is your insurer?"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_insurance_bool_title" />
+
+    <Switch
+        android:id="@+id/switch_insurance_bool"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/text_insurance_bool_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_insurance_bool_title"
+        app:layout_constraintTop_toTopOf="@+id/text_insurance_bool_title" />
+
+    <EditText
+        android:id="@+id/editText_insurance_insurer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Insurer name (e.g. AA)"
+        android:inputType="text"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_insurance_insurer" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup_insurance_coverage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_insurance_coverage">
+
+        <RadioButton
+            android:id="@+id/radioButton_insurance_comp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comprehensive" />
+
+        <RadioButton
+            android:id="@+id/radioButton_insurance_thirdplus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Third Party Fire &amp; Theft" />
+
+        <RadioButton
+            android:id="@+id/radioButton_insurance_third"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Third Party" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/radioGroup_insurance_cycle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_insurance_billing">
+
+        <RadioButton
+            android:id="@+id/radioButton_insurance_fortnightly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fortnightly" />
+
+        <RadioButton
+            android:id="@+id/radioButton_insurance_monthly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Monthly" />
+
+        <RadioButton
+            android:id="@+id/radioButton_insurance_annual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Annually" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/editText_insurance_bill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="$payment"
+        android:inputType="numberDecimal"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_insurance_cycle"
+        app:layout_constraintTop_toBottomOf="@+id/text_insurance_billing" />
+
+    <EditText
+        android:id="@+id/editText_insurance_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="last bill (**/**/****)"
+        android:inputType="date"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_insurance_cycle"
+        app:layout_constraintTop_toBottomOf="@+id/editText_insurance_bill" />
+
+    <Button
+        android:id="@+id/button_insurance_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

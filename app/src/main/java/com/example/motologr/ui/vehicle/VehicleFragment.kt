@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.motologr.R
 import com.example.motologr.databinding.FragmentVehicleBinding
 import com.example.motologr.ui.data.DataManager
 import com.example.motologr.ui.data.Vehicle
@@ -60,6 +62,27 @@ class VehicleFragment : Fragment() {
 
             var odometer: String = "Last Odometer Reading: " + vehicle.odometer.toString() + " km"
 
+            var hasInsurance: Boolean = false
+
+            if (vehicle.isInsuranceInitialised()) {
+                hasInsurance = vehicle.insurance.isActive
+            }
+
+            var insurer: String = ""
+            var insurerDate: String = ""
+
+            if (hasInsurance) {
+                insurer = vehicle.insurance.insurer
+                insurer = "You are with $insurer insurance"
+
+                insurerDate = "and your next bill of $${vehicle.insurance.billing} is due "
+                insurerDate += vehicle.insurance.getNextBillingDateString()
+            } else {
+                insurer = "You do not have a registered insurer"
+            }
+
+
+
             vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
                 carName.text = vehicleText
             }
@@ -73,10 +96,10 @@ class VehicleFragment : Fragment() {
                 Odometer.text = odometer
             }
             vehicleViewModel.textInsurer.observe(viewLifecycleOwner) {
-                Insurer.text = it
+                Insurer.text = insurer
             }
             vehicleViewModel.textInsurerDate.observe(viewLifecycleOwner) {
-                InsurerDate.text = it
+                InsurerDate.text = insurerDate
             }
             vehicleViewModel.textApproxCostsTitle.observe(viewLifecycleOwner) {
                 ApproxCostsTitle.text = it
@@ -92,9 +115,10 @@ class VehicleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        val fab: View = binding.fab
+
+        fab.setOnClickListener { view ->
+            findNavController().navigate(R.id.action_nav_vehicle_1_to_nav_add)
         }
     }
 

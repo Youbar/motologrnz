@@ -98,21 +98,11 @@ class PlusFragment : Fragment() {
 
             DataManager.CreateNewVehicle(vehicle)
 
-            findNavController().navigate(R.id.action_nav_plus_to_nav_car)
+            findNavController().navigate(R.id.action_nav_plus_to_nav_vehicle_1)
         }
-
 
         return root
     }
-
-/*    override fun onStart() {
-        super.onStart()
-
-        val drawerLayout = binding.root.context.getViewById(R.id.nav_view)
-        val drawerItem = drawerLayout
-
-        return
-    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()

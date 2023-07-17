@@ -9,7 +9,11 @@
         android:id="@+id/nav_vehicle_1"
         android:name="com.example.motologr.ui.vehicle.VehicleFragment"
         android:label="@string/menu_car"
-        tools:layout="@layout/fragment_vehicle" />
+        tools:layout="@layout/fragment_vehicle" >
+        <action
+            android:id="@+id/action_nav_vehicle_1_to_nav_add"
+            app:destination="@id/nav_add" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_plus"
@@ -17,7 +21,37 @@
         android:label="@string/menu_plus"
         tools:layout="@layout/fragment_plus" >
         <action
-            android:id="@+id/action_nav_plus_to_nav_car"
+            android:id="@+id/action_nav_plus_to_nav_vehicle_1"
+            app:destination="@id/nav_vehicle_1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add"
+        android:name="com.example.motologr.ui.add.AddFragment"
+        tools:layout="@layout/fragment_add" >
+        <action
+            android:id="@+id/action_nav_add_to_nav_insurance"
+            app:destination="@id/nav_insurance" />
+        <action
+            android:id="@+id/action_nav_add_to_nav_fuel"
+            app:destination="@id/nav_fuel" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_insurance"
+        android:name="com.example.motologr.ui.add.insurance.InsuranceFragment"
+        tools:layout="@layout/fragment_insurance" >
+        <action
+            android:id="@+id/action_nav_insurance_to_nav_vehicle_1"
+            app:destination="@id/nav_vehicle_1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_fuel"
+        android:name="com.example.motologr.ui.add.fuel.FuelFragment"
+        tools:layout="@layout/fragment_insurance" >
+        <action
+            android:id="@+id/action_nav_fuel_to_nav_vehicle_1"
             app:destination="@id/nav_vehicle_1" />
     </fragment>
 </navigation>
