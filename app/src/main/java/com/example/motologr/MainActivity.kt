@@ -1,15 +1,16 @@
 package com.example.motologr
 
+import ExpandableListAdapter
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ExpandableListView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -84,6 +85,83 @@ class MainActivity : AppCompatActivity() {
         }
 
         drawerLayout.setDrawerListener(drawerToggle)
+
+        fuckingGarbageFunction()
+    }
+
+    internal object ExpandableListData {
+        val data: HashMap<String, List<String>>
+            get() {
+                val expandableListDetail =
+                    HashMap<String, List<String>>()
+                val myFavCricketPlayers: MutableList<String> =
+                    ArrayList()
+                myFavCricketPlayers.add("MS.Dhoni")
+                myFavCricketPlayers.add("Sehwag")
+                myFavCricketPlayers.add("Shane Watson")
+                myFavCricketPlayers.add("Ricky Ponting")
+                myFavCricketPlayers.add("Shahid Afridi")
+                val myFavFootballPlayers: MutableList<String> = ArrayList()
+                myFavFootballPlayers.add("Cristiano Ronaldo")
+                myFavFootballPlayers.add("Lionel Messi")
+                myFavFootballPlayers.add("Gareth Bale")
+                myFavFootballPlayers.add("Neymar JR")
+                myFavFootballPlayers.add("David de Gea")
+                val myFavTennisPlayers: MutableList<String> = ArrayList()
+                myFavTennisPlayers.add("Roger Federer")
+                myFavTennisPlayers.add("Rafael Nadal")
+                myFavTennisPlayers.add("Andy Murray")
+                myFavTennisPlayers.add("Novak Jokovic")
+                myFavTennisPlayers.add("Sania Mirza")
+                expandableListDetail["CRICKET PLAYERS"] = myFavCricketPlayers
+                expandableListDetail["FOOTBALL PLAYERS"] = myFavFootballPlayers
+                expandableListDetail["TENNIS PLAYERS"] = myFavTennisPlayers
+                return expandableListDetail
+            }
+    }
+
+    private var expandableListView: ExpandableListView? = null
+    private var adapter: ExpandableListAdapter? = null
+    private var titleList: List<String>? = null
+
+    fun fuckingGarbageFunction() {
+
+        val expandableListView: ExpandableListView = findViewById<ExpandableListView>(R.id.navigation_menu)
+
+        if (expandableListView != null) {
+            val listData = ExpandableListData.data
+            titleList = ArrayList(listData.keys)
+            adapter = ExpandableListAdapter(this, titleList as ArrayList<String>, listData)
+            expandableListView!!.setAdapter(adapter)
+            expandableListView!!.setOnGroupExpandListener { groupPosition ->
+                Toast.makeText(
+                    applicationContext,
+                    (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            expandableListView!!.setOnGroupCollapseListener { groupPosition ->
+                Toast.makeText(
+                    applicationContext,
+                    (titleList as ArrayList<String>)[groupPosition] + " List Collapsed.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+                Toast.makeText(
+                    applicationContext,
+                    "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(
+                            titleList as
+                                    ArrayList<String>
+                            )
+                            [groupPosition]]!!.get(
+                        childPosition
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
