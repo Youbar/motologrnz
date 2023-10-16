@@ -13,6 +13,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -75,18 +76,14 @@ class MainActivity : AppCompatActivity() {
             override fun onDrawerOpened(drawerView: View) {
                 super.onDrawerOpened(drawerView)
 
-                for (i in 0 until DataManager.ReturnVehicleArrayLength()) {
-                    var vehicle : Vehicle? = DataManager.ReturnVehicle(i)
-
-                    navView.menu.getItem(i).isVisible = true
-                    navView.menu.getItem(i).title = vehicle?.modelName
-                }
+                fuckingGarbageFunction()
             }
         }
 
         drawerLayout.setDrawerListener(drawerToggle)
 
         fuckingGarbageFunction()
+        navController.navigate(R.id.nav_plus)
     }
 
     internal object ExpandableListData {
@@ -94,28 +91,21 @@ class MainActivity : AppCompatActivity() {
             get() {
                 val expandableListDetail =
                     HashMap<String, List<String>>()
-                val myFavCricketPlayers: MutableList<String> =
-                    ArrayList()
-                myFavCricketPlayers.add("MS.Dhoni")
-                myFavCricketPlayers.add("Sehwag")
-                myFavCricketPlayers.add("Shane Watson")
-                myFavCricketPlayers.add("Ricky Ponting")
-                myFavCricketPlayers.add("Shahid Afridi")
-                val myFavFootballPlayers: MutableList<String> = ArrayList()
-                myFavFootballPlayers.add("Cristiano Ronaldo")
-                myFavFootballPlayers.add("Lionel Messi")
-                myFavFootballPlayers.add("Gareth Bale")
-                myFavFootballPlayers.add("Neymar JR")
-                myFavFootballPlayers.add("David de Gea")
-                val myFavTennisPlayers: MutableList<String> = ArrayList()
-                myFavTennisPlayers.add("Roger Federer")
-                myFavTennisPlayers.add("Rafael Nadal")
-                myFavTennisPlayers.add("Andy Murray")
-                myFavTennisPlayers.add("Novak Jokovic")
-                myFavTennisPlayers.add("Sania Mirza")
-                expandableListDetail["CRICKET PLAYERS"] = myFavCricketPlayers
-                expandableListDetail["FOOTBALL PLAYERS"] = myFavFootballPlayers
-                expandableListDetail["TENNIS PLAYERS"] = myFavTennisPlayers
+
+                for (i in 0 until DataManager.ReturnVehicleArrayLength()) {
+                    var vehicle : Vehicle? = DataManager.ReturnVehicle(i)
+
+                    val vehicleOptions: MutableList<String> =
+                        ArrayList()
+                    vehicleOptions.add("Overview")
+                    vehicleOptions.add("Insurance")
+                    vehicleOptions.add("Maintenance")
+                    vehicleOptions.add("Fuel")
+
+                    val vehicleTitle = vehicle?.modelName as String
+                    expandableListDetail[vehicleTitle] = vehicleOptions
+                }
+
                 return expandableListDetail
             }
     }
@@ -148,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
             expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+                findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_plus)
                 Toast.makeText(
                     applicationContext,
                     "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(
