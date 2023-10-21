@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import com.example.motologr.R
 import com.example.motologr.databinding.FragmentAddBinding
@@ -36,12 +37,36 @@ class FuelFragment : Fragment() {
 
         val root: View = binding.root
 
+        addEventListeners()
+
+        return root
+    }
+
+    private fun addEventListeners() {
+
         binding.buttonFuelAdd.setOnClickListener {
             convertFragmentToFuelObject()
             findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1)
         }
 
-        return root
+        binding.editTextFuelPrice.doAfterTextChanged {
+            fuelPriceOrVolumeModified()
+        }
+
+        binding.editTextFuelLitres.doAfterTextChanged {
+            fuelPriceOrVolumeModified()
+        }
+    }
+
+    private fun fuelPriceOrVolumeModified() {
+        val price: String = binding.editTextFuelPrice.text.toString()
+        val litres: String = binding.editTextFuelLitres.text.toString()
+
+        if (!price.isNullOrEmpty() && !litres.isNullOrEmpty()) {
+            binding.textFuelEstimateField.text = (price.toDouble() / litres.toDouble()).toString()
+        } else {
+            binding.textFuelEstimateField.text = ""
+        }
     }
 
     override fun onDestroyView() {
@@ -56,7 +81,7 @@ class FuelFragment : Fragment() {
         val price: Double = binding.editTextFuelPrice.text.toString().toDouble()
         val litres: Double = binding.editTextFuelLitres.text.toString().toDouble()
         val purchaseDate: Date = format.parse(binding.editTextFuelDate.text.toString())
-        val odometer: Int =binding.editTextFuelOdo.text.toString().toInt()
+        val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
 
         val fuel: Fuel = Fuel(fuelType, price, litres, purchaseDate, odometer)
 

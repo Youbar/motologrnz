@@ -66,13 +66,16 @@ class Fuel(var fuelType: Int, var price: Double, var litres: Double, var purchas
     fun returnFuelType() : String {
         return when (fuelType) {
             0 -> {
-                "Fortnightly"
+                "91 Unleaded"
             }
             1 -> {
-                "Monthly"
+                "95 Unleaded"
             }
             2 -> {
-                "Annually"
+                "98 Unleaded"
+            }
+            3 -> {
+                "Diesel"
             }
             else -> {
                 "Invalid"

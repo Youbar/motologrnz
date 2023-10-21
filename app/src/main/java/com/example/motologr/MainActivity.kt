@@ -114,6 +114,23 @@ class MainActivity : AppCompatActivity() {
     private var adapter: ExpandableListAdapter? = null
     private var titleList: List<String>? = null
 
+    fun navigateToVehicleOption(optionName: String) {
+        val navigationController = findNavController(R.id.nav_host_fragment_content_main)
+
+        if (optionName == "Overview") {
+            navigationController.navigate(R.id.nav_vehicle_1)
+        }
+        else if (optionName == "Insurance") {
+            navigationController.navigate(R.id.nav_insurance)
+        }
+        else if (optionName == "Maintenance") {
+
+        }
+        else if (optionName == "Fuel") {
+            navigationController.navigate(R.id.nav_fuel)
+        }
+    }
+
     fun fuckingGarbageFunction() {
 
         val expandableListView: ExpandableListView = findViewById<ExpandableListView>(R.id.navigation_menu)
@@ -138,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
             expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-                findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_plus)
+                navigateToVehicleOption(listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(childPosition))
                 Toast.makeText(
                     applicationContext,
                     "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(
