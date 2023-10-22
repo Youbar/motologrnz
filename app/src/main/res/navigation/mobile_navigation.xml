@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_nav_add_to_nav_fuel"
             app:destination="@id/nav_fuel" />
+        <action
+            android:id="@+id/action_nav_add_to_nav_wofreg"
+            app:destination="@id/nav_wofreg" />
     </fragment>
 
     <fragment
@@ -52,6 +55,15 @@
         tools:layout="@layout/fragment_insurance" >
         <action
             android:id="@+id/action_nav_fuel_to_nav_vehicle_1"
+            app:destination="@id/nav_vehicle_1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_wofreg"
+        android:name="com.example.motologr.ui.add.wofreg.WofRegFragment"
+        tools:layout="@layout/fragment_insurance" >
+        <action
+            android:id="@+id/action_nav_wofreg_to_nav_vehicle_1"
             app:destination="@id/nav_vehicle_1" />
     </fragment>
 </navigation>

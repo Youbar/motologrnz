@@ -51,6 +51,24 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
     fun setVehicleInsurance(_insurance: Insurance) {
         insurance = _insurance
     }
+
+    private val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+    fun returnWofExpiry(): String {
+        return format.format(expiryWOF)
+    }
+
+    fun updateWofExpiry(newDate: String) {
+        expiryWOF = format.parse(newDate)
+    }
+
+    fun returnRegExpiry(): String {
+        return format.format(regExpiry)
+    }
+
+    fun updateRegExpiry(newDate: String) {
+        regExpiry = format.parse(newDate)
+    }
 }
 
 class FuelLog() {
