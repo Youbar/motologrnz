@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
-        android:id="@+id/radioGroup_fuel_type"
+        android:id="@+id/radioGroup_repair_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -40,19 +40,19 @@
         app:layout_constraintTop_toBottomOf="@+id/text_fuel_type_prompt">
 
         <RadioButton
-            android:id="@+id/radioButton_fuel_91"
+            android:id="@+id/radioButton_repair_minor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="91 Unleaded" />
 
         <RadioButton
-            android:id="@+id/radioButton_fuel_95"
+            android:id="@+id/radioButton_repair_major"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="95 Unleaded" />
 
         <RadioButton
-            android:id="@+id/radioButton_fuel_98"
+            android:id="@+id/radioButton_repair_critical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="98 Unleaded" />
@@ -84,7 +84,7 @@
         android:layout_marginTop="16dp"
         android:text="Price:"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
         app:layout_constraintTop_toBottomOf="@+id/text_fuel_title" />
 
     <TextView
@@ -116,7 +116,7 @@
         android:layout_marginTop="16dp"
         android:text="Est. $/L:"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
         app:layout_constraintTop_toBottomOf="@+id/editText_fuel_litres" />
 
     <TextView
@@ -126,7 +126,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
         app:layout_constraintTop_toBottomOf="@+id/text_fuel_estimate" />
 
     <TextView
@@ -137,7 +137,7 @@
         android:layout_marginTop="16dp"
         android:text="Litres:"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
         app:layout_constraintTop_toBottomOf="@+id/editText_fuel_price" />
 
     <EditText
@@ -148,7 +148,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="numberDecimal"
-        app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
         app:layout_constraintTop_toBottomOf="@+id/text_fuel_price_prompt" />
 
     <EditText
@@ -159,7 +159,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="numberDecimal"
-        app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
         app:layout_constraintTop_toBottomOf="@+id/text_fuel_litres_prompt" />
 
     <EditText
