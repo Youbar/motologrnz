@@ -71,6 +71,60 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
     }
 }
 
+class ServiceLog() {
+    private var serviceLog = ArrayList<Service>()
+
+    fun addServiceToServiceLog(service: Service) {
+        serviceLog.add(service)
+    }
+}
+
+class Service(var serviceType: Int, var price: Double, var serviceDate: Date, var comment: String) {
+    fun returnServiceType() : String {
+        return when (serviceType) {
+            0 -> {
+                "Oil Change"
+            }
+            1 -> {
+                "General"
+            }
+            2 -> {
+                "Full"
+            }
+            else -> {
+                "Invalid"
+            }
+        }
+    }
+}
+
+class RepairLog() {
+    private var repairLog = ArrayList<Repair>()
+
+    fun addRepairToRepairLog(repair: Repair) {
+        repairLog.add(repair)
+    }
+}
+
+class Repair(var repairType: Int, var price: Double, var repairDate: Date, var comment: String) {
+    fun returnRepairType() : String {
+        return when (repairType) {
+            0 -> {
+                "Minor"
+            }
+            1 -> {
+                "Major"
+            }
+            2 -> {
+                "Critical"
+            }
+            else -> {
+                "Invalid"
+            }
+        }
+    }
+}
+
 class FuelLog() {
     private var fuelLog = ArrayList<Fuel>()
 

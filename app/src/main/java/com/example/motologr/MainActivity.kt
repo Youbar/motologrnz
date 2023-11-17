@@ -13,6 +13,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -21,6 +22,7 @@ import com.example.motologr.databinding.ActivityMainBinding
 import com.example.motologr.ui.data.DataManager
 import com.example.motologr.ui.data.Vehicle
 import com.google.android.material.navigation.NavigationView
+import java.text.SimpleDateFormat
 
 
 class MainActivity : AppCompatActivity() {
@@ -82,7 +84,24 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.setDrawerListener(drawerToggle)
 
         fuckingGarbageFunction()
-        navController.navigate(R.id.nav_plus)
+
+        // REMOVE IN LIVE COPY
+        sampleData()
+        // REMOVE IN LIVE COPY
+
+        navController.navigate(R.id.nav_vehicle_1)
+    }
+
+    private fun sampleData() {
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+        val vehicle = Vehicle("Mazda 323",
+            1989,
+            format.parse("16/10/2000"),
+            format.parse("16/10/2000"),
+            1243)
+
+        DataManager.CreateNewVehicle(vehicle)
     }
 
     internal object ExpandableListData {
