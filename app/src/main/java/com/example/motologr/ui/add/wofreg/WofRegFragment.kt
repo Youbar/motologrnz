@@ -26,7 +26,7 @@ class WofRegFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val insuranceViewModel =
+        val wofRegViewModel =
             ViewModelProvider(this).get(WofRegViewModel::class.java)
 
         _binding = FragmentWofRegBinding.inflate(inflater, container, false)
