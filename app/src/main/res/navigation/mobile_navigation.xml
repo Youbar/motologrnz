@@ -38,6 +38,12 @@
         <action
             android:id="@+id/action_nav_add_to_nav_wofreg"
             app:destination="@id/nav_wofreg" />
+        <action
+            android:id="@+id/action_nav_add_to_nav_repair"
+            app:destination="@id/nav_repair" />
+        <action
+            android:id="@+id/action_nav_add_to_nav_service"
+            app:destination="@id/nav_service" />
     </fragment>
 
     <fragment
@@ -64,6 +70,21 @@
         tools:layout="@layout/fragment_insurance" >
         <action
             android:id="@+id/action_nav_wofreg_to_nav_vehicle_1"
+            app:destination="@id/nav_vehicle_1" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_repair"
+        android:name="com.example.motologr.ui.add.repair.RepairFragment"
+        tools:layout="@layout/fragment_service">
+        <action
+            android:id="@+id/action_nav_repair_to_nav_vehicle_1"
+            app:destination="@id/nav_vehicle_1" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_service"
+        android:name="com.example.motologr.ui.add.service.ServiceFragment">
+        <action
+            android:id="@+id/action_nav_service_to_nav_vehicle_1"
             app:destination="@id/nav_vehicle_1" />
     </fragment>
 </navigation>

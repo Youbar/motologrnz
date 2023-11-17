@@ -44,6 +44,16 @@ class AddFragment : Fragment() {
             findNavController().navigate(R.id.action_nav_add_to_nav_insurance)
         }
 
+        val buttonRepair: View = binding.buttonRepair
+        buttonRepair.setOnClickListener() {
+            findNavController().navigate(R.id.action_nav_add_to_nav_repair)
+        }
+
+        val buttonService: View = binding.buttonService
+        buttonService.setOnClickListener() {
+            findNavController().navigate(R.id.action_nav_add_to_nav_service)
+        }
+
         val buttonWof: View = binding.buttonWOF
         buttonWof.setOnClickListener() {
             val bundle: Bundle = Bundle();
