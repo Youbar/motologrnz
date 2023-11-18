@@ -6,12 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import androidx.navigation.fragment.findNavController
 import com.example.motologr.R
 import com.example.motologr.databinding.FragmentRepairBinding
 import com.example.motologr.databinding.FragmentServiceBinding
 import com.example.motologr.databinding.FragmentWofRegBinding
 import com.example.motologr.ui.add.service.ServiceViewModel
+import com.example.motologr.ui.data.DataManager
+import com.example.motologr.ui.data.Repair
+import com.example.motologr.ui.data.Service
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class RepairFragment : Fragment() {
 
@@ -48,7 +54,33 @@ class RepairFragment : Fragment() {
     }
 
     private fun addRepair() {
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
+        val repairType: Int = parseRepairTypeRadioGroup()
+        val repairDate: Date = format.parse(binding.editTextRepairDate.text.toString())
+        val repairProvider: String = binding.editTextRepairProvider.text.toString()
+        val repairPrice: Double = binding.editTextRepairPrice.text.toString().toDouble()
+        val repairComment: String = binding.editTextRepairComment.text.toString()
+
+        val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment)
+
+        DataManager.ReturnVehicle(0)?.logRepair(repair)
+    }
+
+    private fun parseRepairTypeRadioGroup() : Int {
+        val radioButtonId = binding.radioGroupRepairType.checkedRadioButtonId
+        val checkedRadioButton = view?.findViewById<RadioButton>(radioButtonId)
+        val radioButtonText = checkedRadioButton?.text
+
+        if (radioButtonText == "Minor") {
+            return 0
+        } else if (radioButtonText == "Major") {
+            return 1
+        } else if (radioButtonText == "Critical") {
+            return 2
+        }
+
+        return -1
     }
 
     override fun onDestroyView() {

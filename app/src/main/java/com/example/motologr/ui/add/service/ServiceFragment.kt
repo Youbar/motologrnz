@@ -6,11 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import androidx.navigation.fragment.findNavController
 import com.example.motologr.R
 import com.example.motologr.databinding.FragmentServiceBinding
 import com.example.motologr.databinding.FragmentWofRegBinding
 import com.example.motologr.ui.add.wofreg.WofRegViewModel
+import com.example.motologr.ui.data.DataManager
+import com.example.motologr.ui.data.Service
+import com.example.motologr.ui.data.Vehicle
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class ServiceFragment : Fragment() {
 
@@ -47,7 +53,33 @@ class ServiceFragment : Fragment() {
     }
 
     private fun addService() {
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
+        val serviceType: Int = parseServiceTypeRadioGroup()
+        val serviceDate: Date = format.parse(binding.editTextServiceDate.text.toString())
+        val serviceProvider: String = binding.editTextServiceProvider.text.toString()
+        val servicePrice: Double = binding.editTextServicePrice.text.toString().toDouble()
+        val serviceComment: String = binding.editTextServiceComment.text.toString()
+
+        val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment)
+
+        DataManager.ReturnVehicle(0)?.logService(service)
+    }
+
+    private fun parseServiceTypeRadioGroup() : Int {
+        val radioButtonId = binding.radioGroupServiceType.checkedRadioButtonId
+        val checkedRadioButton = view?.findViewById<RadioButton>(radioButtonId)
+        val radioButtonText = checkedRadioButton?.text
+
+        if (radioButtonText == "Oil Change") {
+            return 0
+        } else if (radioButtonText == "General") {
+            return 1
+        } else if (radioButtonText == "Full") {
+            return 2
+        }
+
+        return -1
     }
 
     override fun onDestroyView() {

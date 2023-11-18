@@ -39,9 +39,19 @@ object DataManager {
 class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
 
     var fuelLog: FuelLog = FuelLog()
+    var serviceLog: ServiceLog = ServiceLog()
+    var repairLog: RepairLog = RepairLog()
 
     fun logFuel(fuel: Fuel) {
         fuelLog.addFuelToFuelLog(fuel)
+    }
+
+    fun logService(service: Service) {
+        serviceLog.addServiceToServiceLog(service)
+    }
+
+    fun logRepair(repair: Repair) {
+        repairLog.addRepairToRepairLog(repair)
     }
 
     lateinit var insurance: Insurance
@@ -79,7 +89,7 @@ class ServiceLog() {
     }
 }
 
-class Service(var serviceType: Int, var price: Double, var serviceDate: Date, var comment: String) {
+class Service(var serviceType: Int, var price: Double, var serviceDate: Date, var serviceProvider: String, var comment: String) {
     fun returnServiceType() : String {
         return when (serviceType) {
             0 -> {
@@ -106,7 +116,7 @@ class RepairLog() {
     }
 }
 
-class Repair(var repairType: Int, var price: Double, var repairDate: Date, var comment: String) {
+class Repair(var repairType: Int, var price: Double, var repairDate: Date, var repairProvider: String, var comment: String) {
     fun returnRepairType() : String {
         return when (repairType) {
             0 -> {
