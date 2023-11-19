@@ -106,32 +106,3 @@ class FuelFragment : Fragment() {
         return -1
     }
 }
-
-/*class FuelFragment : Fragment() {
-
-    private var _binding: FragmentFuelBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val addViewModel =
-            ViewModelProvider(this).get(FuelViewModel::class.java)
-
-        _binding = FragmentFuelBinding.inflate(inflater, container, false)
-
-        val root: View = binding.root
-
-        return root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-}*/

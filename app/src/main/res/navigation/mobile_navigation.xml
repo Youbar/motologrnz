@@ -87,4 +87,10 @@
             android:id="@+id/action_nav_service_to_nav_vehicle_1"
             app:destination="@id/nav_vehicle_1" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_maint_logging"
+        android:name="com.example.motologr.ui.logging.maint.MaintLoggingFragment" />
+    <fragment
+        android:id="@+id/nav_fuel_logging"
+        android:name="com.example.motologr.ui.logging.fuel.FuelLoggingFragment" />
 </navigation>

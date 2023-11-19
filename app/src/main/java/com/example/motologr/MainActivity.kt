@@ -142,10 +142,10 @@ class MainActivity : AppCompatActivity() {
             navigationController.navigate(R.id.nav_insurance)
         }
         else if (optionName == "Maintenance") {
-
+            navigationController.navigate(R.id.nav_maint_logging)
         }
         else if (optionName == "Fuel") {
-            navigationController.navigate(R.id.nav_fuel)
+            navigationController.navigate(R.id.nav_fuel_logging)
         }
     }
 
