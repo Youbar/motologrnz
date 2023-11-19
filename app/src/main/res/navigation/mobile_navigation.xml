@@ -36,14 +36,17 @@
             android:id="@+id/action_nav_add_to_nav_fuel"
             app:destination="@id/nav_fuel" />
         <action
-            android:id="@+id/action_nav_add_to_nav_wofreg"
-            app:destination="@id/nav_wofreg" />
-        <action
             android:id="@+id/action_nav_add_to_nav_repair"
             app:destination="@id/nav_repair" />
         <action
             android:id="@+id/action_nav_add_to_nav_service"
             app:destination="@id/nav_service" />
+        <action
+            android:id="@+id/action_nav_add_to_nav_wof"
+            app:destination="@id/nav_wof" />
+        <action
+            android:id="@+id/action_nav_add_to_nav_reg"
+            app:destination="@id/nav_reg" />
     </fragment>
 
     <fragment
@@ -65,14 +68,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_wofreg"
-        android:name="com.example.motologr.ui.add.wofreg.WofRegFragment"
-        tools:layout="@layout/fragment_insurance" >
-        <action
-            android:id="@+id/action_nav_wofreg_to_nav_vehicle_1"
-            app:destination="@id/nav_vehicle_1" />
-    </fragment>
-    <fragment
         android:id="@+id/nav_repair"
         android:name="com.example.motologr.ui.add.repair.RepairFragment"
         tools:layout="@layout/fragment_service">
@@ -93,4 +88,18 @@
     <fragment
         android:id="@+id/nav_fuel_logging"
         android:name="com.example.motologr.ui.logging.fuel.FuelLoggingFragment" />
+    <fragment
+        android:id="@+id/nav_wof"
+        android:name="com.example.motologr.ui.add.wof.WofFragment">
+        <action
+            android:id="@+id/action_nav_wof_to_nav_vehicle_1"
+            app:destination="@id/nav_vehicle_1" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_reg"
+        android:name="com.example.motologr.ui.add.reg.RegFragment">
+        <action
+            android:id="@+id/action_nav_reg_to_nav_vehicle_1"
+            app:destination="@id/nav_vehicle_1" />
+    </fragment>
 </navigation>

@@ -56,17 +56,20 @@ class AddFragment : Fragment() {
 
         val buttonWof: View = binding.buttonWOF
         buttonWof.setOnClickListener() {
-            val bundle: Bundle = Bundle();
-            bundle.putString("intent", "wof");
-            findNavController().navigate(R.id.action_nav_add_to_nav_wofreg, bundle)
+            findNavController().navigate(R.id.action_nav_add_to_nav_wof)
         }
 
         val buttonReg: View = binding.buttonReg
         buttonReg.setOnClickListener() {
+            findNavController().navigate(R.id.action_nav_add_to_nav_reg)
+        }
+
+/*        val buttonReg: View = binding.buttonReg
+        buttonReg.setOnClickListener() {
             val bundle: Bundle = Bundle();
             bundle.putString("intent", "reg");
             findNavController().navigate(R.id.action_nav_add_to_nav_wofreg, bundle)
-        }
+        }*/
 
         return root
     }

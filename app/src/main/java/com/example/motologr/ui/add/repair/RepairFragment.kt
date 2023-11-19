@@ -10,12 +10,8 @@ import android.widget.RadioButton
 import androidx.navigation.fragment.findNavController
 import com.example.motologr.R
 import com.example.motologr.databinding.FragmentRepairBinding
-import com.example.motologr.databinding.FragmentServiceBinding
-import com.example.motologr.databinding.FragmentWofRegBinding
-import com.example.motologr.ui.add.service.ServiceViewModel
 import com.example.motologr.ui.data.DataManager
 import com.example.motologr.ui.data.Repair
-import com.example.motologr.ui.data.Service
 import java.text.SimpleDateFormat
 import java.util.Date
 

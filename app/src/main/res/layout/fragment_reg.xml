@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/button_wof_reg_save"
+        android:id="@+id/button_reg_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/editText_wof_reg_curr_date"
+        android:id="@+id/editText_reg_curr_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -25,10 +25,10 @@
         android:hint="**/**/****"
         android:inputType="date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_wof_reg_curr_date_prompt" />
+        app:layout_constraintTop_toBottomOf="@+id/text_reg_curr_date_prompt" />
 
     <EditText
-        android:id="@+id/editText_wof_reg_next_date"
+        android:id="@+id/editText_reg_next_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -37,38 +37,38 @@
         android:hint="**/**/****"
         android:inputType="date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_wof_reg_next_date_prompt" />
+        app:layout_constraintTop_toBottomOf="@+id/text_reg_next_date_prompt" />
 
     <TextView
-        android:id="@+id/text_wof_reg_curr_date_prompt"
+        android:id="@+id/text_reg_curr_date_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="CURRENT DUE"
+        android:text="Your current reg expires:"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_wof_reg_title" />
+        app:layout_constraintTop_toBottomOf="@+id/text_reg_title" />
 
     <TextView
-        android:id="@+id/text_wof_reg_next_date_prompt"
+        android:id="@+id/text_reg_next_date_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="NEXT DUE"
+        android:text="Your new reg expires:"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_wof_reg_curr_date" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_reg_curr_date" />
 
     <TextView
-        android:id="@+id/text_wof_reg_title"
+        android:id="@+id/text_reg_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Placeholder"
+        android:text="Update Registration"
         android:textAlignment="center"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
