@@ -87,6 +87,10 @@ class ServiceLog() {
     fun addServiceToServiceLog(service: Service) {
         serviceLog.add(service)
     }
+
+    fun returnServiceLog(): ArrayList<Service> {
+        return serviceLog
+    }
 }
 
 class Service(var serviceType: Int, var price: Double, var serviceDate: Date, var serviceProvider: String, var comment: String) {
@@ -114,6 +118,10 @@ class RepairLog() {
     fun addRepairToRepairLog(repair: Repair) {
         repairLog.add(repair)
     }
+
+    fun returnRepairLog(): ArrayList<Repair> {
+        return repairLog
+    }
 }
 
 class Repair(var repairType: Int, var price: Double, var repairDate: Date, var repairProvider: String, var comment: String) {
@@ -140,6 +148,10 @@ class FuelLog() {
 
     fun addFuelToFuelLog(fuel: Fuel) {
         fuelLog.add(fuel)
+    }
+
+    fun returnFuelLog(): ArrayList<Fuel> {
+        return fuelLog
     }
 }
 

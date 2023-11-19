@@ -1,6 +1,5 @@
 package com.example.motologr.ui.logging.maint
 
-import CustomAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.motologr.R
 import com.example.motologr.databinding.FragmentMaintLoggingBinding
-import com.example.motologr.ui.logging.ItemsViewModel
+import com.example.motologr.ui.data.DataManager
+import com.example.motologr.ui.data.Repair
+import com.example.motologr.ui.data.Service
+import java.text.SimpleDateFormat
 
 class MaintLoggingFragment : Fragment() {
 
@@ -38,16 +40,36 @@ class MaintLoggingFragment : Fragment() {
         recyclerview.layoutManager = LinearLayoutManager(root.context)
 
         // ArrayList of class ItemsViewModel
-        val data = ArrayList<ItemsViewModel>()
+        val data = ArrayList<MaintLoggingItemsViewModel>()
+        val repairLog = DataManager.ReturnVehicle(0)?.repairLog?.returnRepairLog()
+        val serviceLog = DataManager.ReturnVehicle(0)?.serviceLog?.returnServiceLog()
 
-        // This loop will create 20 Views containing
-        // the image with the count of view
-        for (i in 1..20) {
-            data.add(ItemsViewModel(R.drawable.ic_menu_arrow_16, "Item " + i))
+        var maintLogSize = (repairLog?.size?:0) + (serviceLog?.size?:0)
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+        if (maintLogSize > 0 && repairLog?.size?:0 > 0) {
+            for (i in 0 until repairLog!!.size) {
+                var repair: Repair = repairLog[i]
+                data.add(
+                    MaintLoggingItemsViewModel(R.drawable.ic_menu_arrow_16, "Repair", format.format(repair.repairDate),
+                    "$" + repair.price.toString())
+                )
+            }
+        }
+
+        if (maintLogSize > 0 && serviceLog?.size?:0 > 0) {
+            for (i in 0 until serviceLog!!.size) {
+                var service: Service = serviceLog[i]
+                data.add(
+                    MaintLoggingItemsViewModel(R.drawable.ic_menu_arrow_16, "Service", format.format(service.serviceDate),
+                    "$" + service.price.toString())
+                )
+            }
         }
 
         // This will pass the ArrayList to our Adapter
-        val adapter = CustomAdapter(data)
+        val adapter = MaintLoggingAdapter(data)
 
         // Setting the Adapter with the recyclerview
         recyclerview.adapter = adapter

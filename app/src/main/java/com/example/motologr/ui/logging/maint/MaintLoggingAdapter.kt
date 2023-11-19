@@ -1,4 +1,4 @@
-
+package com.example.motologr.ui.logging.maint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,16 +6,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.motologr.R
-import com.example.motologr.ui.logging.ItemsViewModel
 
-class CustomAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class MaintLoggingAdapter(private val mList: List<MaintLoggingItemsViewModel>) : RecyclerView.Adapter<MaintLoggingAdapter.ViewHolder>() {
 
     // create new views 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // inflates the card_view_design view  
         // that is used to hold list item 
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_view_design, parent, false)
+            .inflate(R.layout.card_view_maint_logging, parent, false)
 
         return ViewHolder(view)
     }
@@ -29,8 +28,9 @@ class CustomAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adap
         holder.imageView.setImageResource(ItemsViewModel.image)
 
         // sets the text to the textview from our itemHolder class 
-        holder.textView.text = ItemsViewModel.text
-
+        holder.maintType.text = ItemsViewModel.maintType
+        holder.maintDt.text = ItemsViewModel.maintDt
+        holder.maintPrice.text = ItemsViewModel.maintPrice
     }
 
     // return the number of the items in the list 
@@ -40,7 +40,9 @@ class CustomAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adap
 
     // Holds the views for adding it to image and text 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.imageview)
-        val textView: TextView = itemView.findViewById(R.id.textView)
+        val imageView: ImageView = itemView.findViewById(R.id.maint_logging_card_image)
+        val maintType: TextView = itemView.findViewById(R.id.maint_logging_card_type)
+        val maintDt: TextView = itemView.findViewById(R.id.maint_logging_card_date)
+        val maintPrice: TextView = itemView.findViewById(R.id.maint_logging_card_price)
     }
 }
