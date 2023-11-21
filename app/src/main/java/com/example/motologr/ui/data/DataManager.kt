@@ -41,6 +41,8 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
     var fuelLog: FuelLog = FuelLog()
     var serviceLog: ServiceLog = ServiceLog()
     var repairLog: RepairLog = RepairLog()
+    var wofLog: WofLog = WofLog()
+    var regLog: RegLog = RegLog()
 
     fun logFuel(fuel: Fuel) {
         fuelLog.addFuelToFuelLog(fuel)
@@ -52,6 +54,14 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
 
     fun logRepair(repair: Repair) {
         repairLog.addRepairToRepairLog(repair)
+    }
+
+    fun logWof(wof: Wof) {
+        wofLog.addWofToWofLog(wof)
+    }
+
+    fun logReg(reg: Reg) {
+        regLog.addRegToRegLog(reg)
     }
 
     lateinit var insurance: Insurance
@@ -142,6 +152,34 @@ class Repair(var repairType: Int, var price: Double, var repairDate: Date, var r
         }
     }
 }
+
+class WofLog() {
+    private var wofLog = ArrayList<Wof>()
+
+    fun addWofToWofLog(wof: Wof) {
+        wofLog.add(wof)
+    }
+
+    fun returnWofLog(): ArrayList<Wof> {
+        return wofLog
+    }
+}
+
+class Wof(var wofDate: Date, var wofCompletedDate: Date, var price: Double)
+
+class RegLog() {
+    private var regLog = ArrayList<Reg>()
+
+    fun addRegToRegLog(reg: Reg) {
+        regLog.add(reg)
+    }
+
+    fun returnRegLog(): ArrayList<Reg> {
+        return regLog
+    }
+}
+
+class Reg(var newRegExpiryDate: Date, var regExpiryDate: Date, var monthsExtended: Int, var price: Double)
 
 class FuelLog() {
     private var fuelLog = ArrayList<Fuel>()

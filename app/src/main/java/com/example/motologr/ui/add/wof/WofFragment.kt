@@ -11,6 +11,8 @@ import com.example.motologr.R
 import com.example.motologr.databinding.FragmentWofBinding
 import com.example.motologr.ui.data.DataManager
 import com.example.motologr.ui.data.Vehicle
+import com.example.motologr.ui.data.Wof
+import java.text.SimpleDateFormat
 
 class WofFragment : Fragment() {
 
@@ -50,7 +52,15 @@ class WofFragment : Fragment() {
     private fun updateWofReg() {
         val vehicle: Vehicle = DataManager.ReturnVehicle(0) ?: return
 
+        val oldDate = binding.editTextWofCurrDate.text.toString()
         val newDate = binding.editTextWofNextDate.text.toString()
+        val price = binding.editTextWofPrice.text.toString().toDouble()
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+        val wof: Wof = Wof(format.parse(newDate), format.parse(oldDate), price)
+
+        vehicle.logWof(wof)
 
         vehicle.updateWofExpiry(newDate)
     }

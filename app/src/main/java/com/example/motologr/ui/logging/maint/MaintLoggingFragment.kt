@@ -12,6 +12,7 @@ import com.example.motologr.databinding.FragmentMaintLoggingBinding
 import com.example.motologr.ui.data.DataManager
 import com.example.motologr.ui.data.Repair
 import com.example.motologr.ui.data.Service
+import com.example.motologr.ui.data.Wof
 import java.text.SimpleDateFormat
 
 class MaintLoggingFragment : Fragment() {
@@ -43,8 +44,9 @@ class MaintLoggingFragment : Fragment() {
         val data = ArrayList<MaintLoggingItemsViewModel>()
         val repairLog = DataManager.ReturnVehicle(0)?.repairLog?.returnRepairLog()
         val serviceLog = DataManager.ReturnVehicle(0)?.serviceLog?.returnServiceLog()
+        var wofLog = DataManager.ReturnVehicle(0)?.wofLog?.returnWofLog()
 
-        var maintLogSize = (repairLog?.size?:0) + (serviceLog?.size?:0)
+        var maintLogSize = (repairLog?.size?:0) + (serviceLog?.size?:0) + (wofLog?.size?:0)
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
@@ -64,6 +66,16 @@ class MaintLoggingFragment : Fragment() {
                 data.add(
                     MaintLoggingItemsViewModel(R.drawable.ic_menu_arrow_16, "Service", format.format(service.serviceDate),
                     "$" + service.price.toString())
+                )
+            }
+        }
+
+        if (maintLogSize > 0 && wofLog?.size?:0 > 0) {
+            for (i in 0 until wofLog!!.size) {
+                var wof: Wof = wofLog[i]
+                data.add(
+                    MaintLoggingItemsViewModel(R.drawable.ic_menu_arrow_16, "WOF", format.format(wof.wofCompletedDate),
+                        "$" + wof.price.toString())
                 )
             }
         }
