@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.add.service.ServiceFragment">
+    tools:context="com.motologr.ui.add.service.ServiceFragment">
 
     <TextView
         android:id="@+id/text_maint_logging_title"

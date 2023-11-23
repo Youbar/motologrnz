@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_vehicle_1"
-        android:name="com.example.motologr.ui.vehicle.VehicleFragment"
+        android:name="com.motologr.ui.vehicle.VehicleFragment"
         android:label="@string/menu_car"
         tools:layout="@layout/fragment_vehicle" >
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/nav_plus"
-        android:name="com.example.motologr.ui.plus.PlusFragment"
+        android:name="com.motologr.ui.plus.PlusFragment"
         android:label="@string/menu_plus"
         tools:layout="@layout/fragment_plus" >
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/nav_add"
-        android:name="com.example.motologr.ui.add.AddFragment"
+        android:name="com.motologr.ui.add.AddFragment"
         tools:layout="@layout/fragment_add" >
         <action
             android:id="@+id/action_nav_add_to_nav_insurance"
@@ -51,7 +51,7 @@
 
     <fragment
         android:id="@+id/nav_insurance"
-        android:name="com.example.motologr.ui.add.insurance.InsuranceFragment"
+        android:name="com.motologr.ui.add.insurance.InsuranceFragment"
         tools:layout="@layout/fragment_insurance" >
         <action
             android:id="@+id/action_nav_insurance_to_nav_vehicle_1"
@@ -60,7 +60,7 @@
 
     <fragment
         android:id="@+id/nav_fuel"
-        android:name="com.example.motologr.ui.add.fuel.FuelFragment"
+        android:name="com.motologr.ui.add.fuel.FuelFragment"
         tools:layout="@layout/fragment_insurance" >
         <action
             android:id="@+id/action_nav_fuel_to_nav_vehicle_1"
@@ -69,7 +69,7 @@
 
     <fragment
         android:id="@+id/nav_repair"
-        android:name="com.example.motologr.ui.add.repair.RepairFragment"
+        android:name="com.motologr.ui.add.repair.RepairFragment"
         tools:layout="@layout/fragment_service">
         <action
             android:id="@+id/action_nav_repair_to_nav_vehicle_1"
@@ -77,27 +77,27 @@
     </fragment>
     <fragment
         android:id="@+id/nav_service"
-        android:name="com.example.motologr.ui.add.service.ServiceFragment">
+        android:name="com.motologr.ui.add.service.ServiceFragment">
         <action
             android:id="@+id/action_nav_service_to_nav_vehicle_1"
             app:destination="@id/nav_vehicle_1" />
     </fragment>
     <fragment
         android:id="@+id/nav_maint_logging"
-        android:name="com.example.motologr.ui.logging.maint.MaintLoggingFragment" />
+        android:name="com.motologr.ui.logging.maint.MaintLoggingFragment" />
     <fragment
         android:id="@+id/nav_fuel_logging"
-        android:name="com.example.motologr.ui.logging.fuel.FuelLoggingFragment" />
+        android:name="com.motologr.ui.logging.fuel.FuelLoggingFragment" />
     <fragment
         android:id="@+id/nav_wof"
-        android:name="com.example.motologr.ui.add.wof.WofFragment">
+        android:name="com.motologr.ui.add.wof.WofFragment">
         <action
             android:id="@+id/action_nav_wof_to_nav_vehicle_1"
             app:destination="@id/nav_vehicle_1" />
     </fragment>
     <fragment
         android:id="@+id/nav_reg"
-        android:name="com.example.motologr.ui.add.reg.RegFragment">
+        android:name="com.motologr.ui.add.reg.RegFragment">
         <action
             android:id="@+id/action_nav_reg_to_nav_vehicle_1"
             app:destination="@id/nav_vehicle_1" />
