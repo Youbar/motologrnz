@@ -38,7 +38,39 @@ class FuelFragment : Fragment() {
 
         addEventListeners()
 
+        val bundle: Bundle? = arguments
+        val logPos: Int? = arguments?.getInt("position");
+
+        var fuel: Fuel
+
+        if (logPos != null) {
+            fuel = DataManager.ReturnVehicle(0)?.fuelLog?.returnFuel(logPos)!!
+            setInterfaceToReadOnly(fuel)
+        }
+
         return root
+    }
+
+    private fun setInterfaceToReadOnly(fuel: Fuel) {
+
+        binding.radioGroupFuelType.check(binding.radioGroupFuelType.getChildAt(fuel.fuelType).id)
+        binding.radioButtonFuel91.isClickable = false
+        binding.radioButtonFuel95.isClickable = false
+        binding.radioButtonFuel98.isClickable = false
+        binding.radioButtonFuelDiesel.isClickable = false
+
+        binding.editTextFuelPrice.isEnabled = false
+        binding.editTextFuelPrice.setText(fuel.price.toString())
+
+        binding.editTextFuelLitres.isEnabled = false
+        binding.editTextFuelLitres.setText(fuel.litres.toString())
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        binding.editTextFuelDate.isEnabled = false
+        binding.editTextFuelDate.setText(format.format(fuel.purchaseDate))
+
+        binding.editTextFuelOdo.isEnabled = false
+        binding.editTextFuelOdo.setText(fuel.odometerReading.toString())
     }
 
     private fun addEventListeners() {

@@ -60,13 +60,6 @@ class AddFragment : Fragment() {
             findNavController().navigate(R.id.action_nav_add_to_nav_reg)
         }
 
-/*        val buttonReg: View = binding.buttonReg
-        buttonReg.setOnClickListener() {
-            val bundle: Bundle = Bundle();
-            bundle.putString("intent", "reg");
-            findNavController().navigate(R.id.action_nav_add_to_nav_wofreg, bundle)
-        }*/
-
         return root
     }
 
@@ -75,31 +68,3 @@ class AddFragment : Fragment() {
         _binding = null
     }
 }
-
-/*
-class AddFragment : Fragment() {
-
-    private var _binding: FragmentAddBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val addViewModel =
-            ViewModelProvider(this).get(AddViewModel::class.java)
-
-        val root: View = binding.root
-
-        return root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-}*/

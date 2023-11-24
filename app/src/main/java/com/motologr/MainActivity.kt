@@ -3,6 +3,7 @@ package com.motologr
 import ExpandableListAdapter
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
@@ -184,6 +185,7 @@ class MainActivity : AppCompatActivity() {
                     ),
                     Toast.LENGTH_SHORT
                 ).show()
+                binding.drawerLayout.closeDrawer(Gravity.LEFT)
                 false
             }
         }

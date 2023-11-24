@@ -1,11 +1,18 @@
 package com.motologr.ui.logging.fuel
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.motologr.MainActivity
 import com.motologr.R
+import com.motologr.ui.data.DataManager
 
 class FuelLoggingAdapter(private val mList: List<FuelLoggingItemsViewModel>) : RecyclerView.Adapter<FuelLoggingAdapter.ViewHolder>() {
 
@@ -31,6 +38,14 @@ class FuelLoggingAdapter(private val mList: List<FuelLoggingItemsViewModel>) : R
         holder.fuelDt.text = ItemsViewModel.fuelDt
         holder.fuelPrice.text = ItemsViewModel.fuelPrice
         holder.fuelVolume.text = ItemsViewModel.fuelVolume
+
+        holder.itemView.setOnClickListener { v ->
+            DataManager.ReturnVehicle(0)?.fuelLog?.returnFuel(position)
+
+            val bundle: Bundle = Bundle()
+            bundle.putInt("position", position);
+            holder.itemView.findNavController().navigate(R.id.nav_fuel, bundle)
+        }
     }
 
     // return the number of the items in the list 
@@ -44,6 +59,5 @@ class FuelLoggingAdapter(private val mList: List<FuelLoggingItemsViewModel>) : R
         val fuelDt: TextView = itemView.findViewById(R.id.fuel_logging_card_date)
         val fuelPrice: TextView = itemView.findViewById(R.id.fuel_logging_card_price)
         val fuelVolume: TextView = itemView.findViewById(R.id.fuel_logging_card_volume)
-
     }
 }

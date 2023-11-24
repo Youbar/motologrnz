@@ -191,6 +191,10 @@ class FuelLog() {
     fun returnFuelLog(): ArrayList<Fuel> {
         return fuelLog
     }
+
+    fun returnFuel(index: Int) : Fuel {
+        return fuelLog[index]
+    }
 }
 
 class Fuel(var fuelType: Int, var price: Double, var litres: Double, var purchaseDate: Date, var odometerReading: Int) {
