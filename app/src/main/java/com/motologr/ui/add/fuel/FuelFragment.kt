@@ -1,5 +1,6 @@
 package com.motologr.ui.add.fuel
 
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
@@ -52,12 +54,15 @@ class FuelFragment : Fragment() {
     }
 
     private fun setInterfaceToReadOnly(fuel: Fuel) {
-
         binding.radioGroupFuelType.check(binding.radioGroupFuelType.getChildAt(fuel.fuelType).id)
         binding.radioButtonFuel91.isClickable = false
+        binding.radioButtonFuel91.isEnabled = false
         binding.radioButtonFuel95.isClickable = false
+        binding.radioButtonFuel95.isEnabled = false
         binding.radioButtonFuel98.isClickable = false
+        binding.radioButtonFuel98.isEnabled = false
         binding.radioButtonFuelDiesel.isClickable = false
+        binding.radioButtonFuelDiesel.isEnabled = false
 
         binding.editTextFuelPrice.isEnabled = false
         binding.editTextFuelPrice.setText(fuel.price.toString())
@@ -71,6 +76,9 @@ class FuelFragment : Fragment() {
 
         binding.editTextFuelOdo.isEnabled = false
         binding.editTextFuelOdo.setText(fuel.odometerReading.toString())
+
+        binding.buttonFuelAdd.isVisible = false
+        binding.buttonFuelAdd.isEnabled = false
     }
 
     private fun addEventListeners() {

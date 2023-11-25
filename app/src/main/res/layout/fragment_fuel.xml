@@ -33,10 +33,9 @@
         android:id="@+id/radioGroup_fuel_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_fuel_date_prompt"
-        app:layout_constraintStart_toStartOf="@+id/text_fuel_type_prompt"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_fuel_type_prompt">
 
         <RadioButton
