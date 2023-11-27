@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentRepairBinding
 import com.motologr.ui.data.DataManager
+import com.motologr.ui.data.Fuel
 import com.motologr.ui.data.Repair
+import com.motologr.ui.data.Wof
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -37,6 +40,14 @@ class RepairFragment : Fragment() {
 
         initialiseSaveButton()
 
+        val bundle: Bundle? = arguments
+        val logPos: Int? = arguments?.getInt("position");
+
+        if (logPos != null) {
+            var repair: Repair = DataManager.ReturnVehicle(0)?.repairLog?.returnRepair(logPos)!!
+            setInterfaceToReadOnly(repair)
+        }
+
         return root
     }
 
@@ -61,6 +72,32 @@ class RepairFragment : Fragment() {
         val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment)
 
         DataManager.ReturnVehicle(0)?.logRepair(repair)
+    }
+
+    private fun setInterfaceToReadOnly(repair: Repair) {
+        binding.radioGroupRepairType.check(binding.radioGroupRepairType.getChildAt(repair.repairType).id)
+        binding.radioButtonRepairMinor.isClickable = false
+        binding.radioButtonRepairMinor.isEnabled = false
+        binding.radioButtonRepairMajor.isClickable = false
+        binding.radioButtonRepairMajor.isEnabled = false
+        binding.radioButtonRepairCritical.isClickable = false
+        binding.radioButtonRepairCritical.isEnabled = false
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        binding.editTextRepairDate.isEnabled = false
+        binding.editTextRepairDate.setText(format.format(repair.repairDate))
+
+        binding.editTextRepairProvider.isEnabled = false
+        binding.editTextRepairProvider.setText(repair.repairProvider.toString())
+
+        binding.editTextRepairPrice.isEnabled = false
+        binding.editTextRepairPrice.setText(repair.price.toString())
+
+        binding.editTextRepairComment.isEnabled = false
+        binding.editTextRepairComment.setText(repair.comment.toString())
+
+        binding.buttonRepairAdd.isVisible = false
+        binding.buttonRepairAdd.isEnabled = false
     }
 
     private fun parseRepairTypeRadioGroup() : Int {

@@ -40,10 +40,9 @@ class FuelLoggingAdapter(private val mList: List<FuelLoggingItemsViewModel>) : R
         holder.fuelVolume.text = ItemsViewModel.fuelVolume
 
         holder.itemView.setOnClickListener { v ->
-            DataManager.ReturnVehicle(0)?.fuelLog?.returnFuel(position)
-
             val bundle: Bundle = Bundle()
-            bundle.putInt("position", position);
+            bundle.putInt("position", position)
+
             holder.itemView.findNavController().navigate(R.id.nav_fuel, bundle)
         }
     }

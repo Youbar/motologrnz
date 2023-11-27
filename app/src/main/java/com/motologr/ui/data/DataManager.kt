@@ -101,6 +101,10 @@ class ServiceLog() {
     fun returnServiceLog(): ArrayList<Service> {
         return serviceLog
     }
+
+    fun returnService(index: Int) : Service {
+        return serviceLog[index]
+    }
 }
 
 class Service(var serviceType: Int, var price: Double, var serviceDate: Date, var serviceProvider: String, var comment: String) {
@@ -131,6 +135,10 @@ class RepairLog() {
 
     fun returnRepairLog(): ArrayList<Repair> {
         return repairLog
+    }
+
+    fun returnRepair(index: Int) : Repair {
+        return repairLog[index]
     }
 }
 
@@ -163,6 +171,10 @@ class WofLog() {
     fun returnWofLog(): ArrayList<Wof> {
         return wofLog
     }
+
+    fun returnWof(index: Int) : Wof {
+        return wofLog[index]
+    }
 }
 
 class Wof(var wofDate: Date, var wofCompletedDate: Date, var price: Double)
@@ -176,6 +188,10 @@ class RegLog() {
 
     fun returnRegLog(): ArrayList<Reg> {
         return regLog
+    }
+
+    fun returnReg(index: Int) : Reg {
+        return regLog[index]
     }
 }
 

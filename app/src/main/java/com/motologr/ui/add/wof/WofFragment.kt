@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentWofBinding
 import com.motologr.ui.data.DataManager
+import com.motologr.ui.data.Fuel
 import com.motologr.ui.data.Vehicle
 import com.motologr.ui.data.Wof
 import java.text.SimpleDateFormat
@@ -37,7 +39,30 @@ class WofFragment : Fragment() {
         setFragmentText()
         initialiseSaveButton()
 
+        val bundle: Bundle? = arguments
+        val logPos: Int? = arguments?.getInt("position");
+
+        if (logPos != null) {
+            var wof: Wof = DataManager.ReturnVehicle(0)?.wofLog?.returnWof(logPos)!!
+            setInterfaceToReadOnly(wof)
+        }
+
         return root
+    }
+
+    private fun setInterfaceToReadOnly(wof: Wof) {
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        binding.editTextWofCurrDate.isEnabled = false
+        binding.editTextWofCurrDate.setText(format.format(wof.wofCompletedDate))
+
+        binding.editTextWofNextDate.isEnabled = false
+        binding.editTextWofNextDate.setText(format.format(wof.wofDate))
+
+        binding.editTextWofPrice.isEnabled = false
+        binding.editTextWofPrice.setText(wof.price.toString())
+
+        binding.buttonWofSave.isVisible = false
+        binding.buttonWofSave.isEnabled = false
     }
 
     private fun initialiseSaveButton() {

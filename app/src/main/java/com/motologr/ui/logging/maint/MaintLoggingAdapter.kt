@@ -1,11 +1,14 @@
 package com.motologr.ui.logging.maint
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.motologr.R
+import com.motologr.ui.data.DataManager
 
 class MaintLoggingAdapter(private val mList: List<MaintLoggingItemsViewModel>) : RecyclerView.Adapter<MaintLoggingAdapter.ViewHolder>() {
 
@@ -31,6 +34,21 @@ class MaintLoggingAdapter(private val mList: List<MaintLoggingItemsViewModel>) :
         holder.maintType.text = ItemsViewModel.maintType
         holder.maintDt.text = ItemsViewModel.maintDt
         holder.maintPrice.text = ItemsViewModel.maintPrice
+
+        holder.itemView.setOnClickListener { v ->
+            val bundle: Bundle = Bundle()
+            bundle.putInt("position", position)
+
+            // Need a function to collect all logs, sort by date, and then find relative within that collection of logs
+            // and then absolute within that subset of the logs
+            if (holder.maintType.text == "Repair") {
+                holder.itemView.findNavController().navigate(R.id.nav_repair, bundle)
+            } else if (holder.maintType.text == "Service") {
+                holder.itemView.findNavController().navigate(R.id.nav_service, bundle)
+            } else if (holder.maintType.text == "WOF") {
+                holder.itemView.findNavController().navigate(R.id.nav_wof, bundle)
+            }
+        }
     }
 
     // return the number of the items in the list 

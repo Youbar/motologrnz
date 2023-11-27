@@ -43,10 +43,8 @@ class FuelFragment : Fragment() {
         val bundle: Bundle? = arguments
         val logPos: Int? = arguments?.getInt("position");
 
-        var fuel: Fuel
-
         if (logPos != null) {
-            fuel = DataManager.ReturnVehicle(0)?.fuelLog?.returnFuel(logPos)!!
+            var fuel: Fuel = DataManager.ReturnVehicle(0)?.fuelLog?.returnFuel(logPos)!!
             setInterfaceToReadOnly(fuel)
         }
 
