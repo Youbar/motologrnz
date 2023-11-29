@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         DataManager.CreateNewVehicle(vehicle)
 
         var service: Service = Service(0, 123.0, format.parse("16/10/2001"), "Av", "")
-        var repair: Repair = Repair(0, 123.0, format.parse("17/10/2001"), "Av", "")
+        var repair: Repair = Repair(0, 123.0, format.parse("17/10/2002"), "Av", "")
 
         DataManager.ReturnVehicle(0)?.logService(service)
         DataManager.ReturnVehicle(0)?.logService(service)

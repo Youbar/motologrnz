@@ -58,7 +58,7 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
         logs.addAll(serviceLog.returnServiceLog())
         logs.addAll(repairLog.returnRepairLog())
         logs.addAll(wofLog.returnWofLog())
-        logs.sortedBy { loggable -> loggable.sortableDate }
+        logs.sortByDescending { loggable -> loggable.sortableDate.time }
 
         return logs
     }
