@@ -22,6 +22,8 @@ import com.motologr.databinding.ActivityMainBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Vehicle
 import com.google.android.material.navigation.NavigationView
+import com.motologr.ui.data.Repair
+import com.motologr.ui.data.Service
 import java.text.SimpleDateFormat
 
 
@@ -102,6 +104,13 @@ class MainActivity : AppCompatActivity() {
             1243)
 
         DataManager.CreateNewVehicle(vehicle)
+
+        var service: Service = Service(0, 123.0, format.parse("16/10/2001"), "Av", "")
+        var repair: Repair = Repair(0, 123.0, format.parse("17/10/2001"), "Av", "")
+
+        DataManager.ReturnVehicle(0)?.logService(service)
+        DataManager.ReturnVehicle(0)?.logService(service)
+        DataManager.ReturnVehicle(0)?.logRepair(repair)
     }
 
     internal object ExpandableListData {

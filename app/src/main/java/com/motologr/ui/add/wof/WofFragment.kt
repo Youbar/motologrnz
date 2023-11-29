@@ -12,6 +12,7 @@ import com.motologr.R
 import com.motologr.databinding.FragmentWofBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Fuel
+import com.motologr.ui.data.Repair
 import com.motologr.ui.data.Vehicle
 import com.motologr.ui.data.Wof
 import java.text.SimpleDateFormat
@@ -43,7 +44,7 @@ class WofFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
-            var wof: Wof = DataManager.ReturnVehicle(0)?.wofLog?.returnWof(logPos)!!
+            var wof: Wof = DataManager.ReturnVehicle(0)?.returnLoggableByPosition(logPos)!! as Wof
             setInterfaceToReadOnly(wof)
         }
 

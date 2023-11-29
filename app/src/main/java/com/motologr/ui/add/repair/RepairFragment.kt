@@ -44,7 +44,7 @@ class RepairFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
-            var repair: Repair = DataManager.ReturnVehicle(0)?.repairLog?.returnRepair(logPos)!!
+            var repair: Repair = DataManager.ReturnVehicle(0)?.returnLoggableByPosition(logPos)!! as Repair
             setInterfaceToReadOnly(repair)
         }
 
