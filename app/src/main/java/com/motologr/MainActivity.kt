@@ -7,11 +7,13 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -133,6 +135,8 @@ class MainActivity : AppCompatActivity() {
                     expandableListDetail[vehicleTitle] = vehicleOptions
                 }
 
+                expandableListDetail["Add New Vehicle"] = ArrayList()
+
                 return expandableListDetail
             }
     }
@@ -158,6 +162,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun navigateToNewVehicle() {
+        val navigationController = findNavController(R.id.nav_host_fragment_content_main)
+
+        navigationController.navigate(R.id.nav_plus)
+    }
+
     fun fuckingGarbageFunction() {
 
         val expandableListView: ExpandableListView = findViewById<ExpandableListView>(R.id.navigation_menu)
@@ -167,12 +177,17 @@ class MainActivity : AppCompatActivity() {
             titleList = ArrayList(listData.keys)
             adapter = ExpandableListAdapter(this, titleList as ArrayList<String>, listData)
             expandableListView!!.setAdapter(adapter)
+
             expandableListView!!.setOnGroupExpandListener { groupPosition ->
                 Toast.makeText(
                     applicationContext,
                     (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                if (ArrayList(listData.keys)[groupPosition] ==  "Add New Vehicle") {
+                    navigateToNewVehicle()
+                }
             }
             expandableListView!!.setOnGroupCollapseListener { groupPosition ->
                 Toast.makeText(

@@ -21,15 +21,14 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main">
-<!--
-        app:menu="@menu/activity_main_drawer">
--->
+
         <ExpandableListView
             android:id="@+id/navigation_menu"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="176dp"
-            android:background="@android:color/white"></ExpandableListView>
+            android:background="@android:color/white"
+            android:groupIndicator="@android:color/transparent"/>
 
     </com.google.android.material.navigation.NavigationView>
 

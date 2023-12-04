@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
+import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import com.motologr.R
-import java.util.HashMap
+
 
 class ExpandableListAdapter internal constructor(
     private val context: Context,
@@ -38,6 +40,19 @@ class ExpandableListAdapter internal constructor(
         }
         val expandedListTextView = convertView!!.findViewById<TextView>(R.id.listView)
         expandedListTextView.text = expandedListText
+
+        val bannedStrings: MutableList<String> =
+            ArrayList()
+        bannedStrings.add("Overview")
+        bannedStrings.add("Insurance")
+        bannedStrings.add("Maintenance")
+        bannedStrings.add("Fuel")
+
+        if (bannedStrings.contains(expandedListTextView.text)) {
+            val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
+            listTitleImageView.setColorFilter(0)
+        }
+
         return convertView
     }
 
@@ -73,6 +88,16 @@ class ExpandableListAdapter internal constructor(
         val listTitleTextView = convertView!!.findViewById<TextView>(R.id.listView)
         listTitleTextView.setTypeface(null, Typeface.BOLD)
         listTitleTextView.text = listTitle
+
+        val bannedStrings: MutableList<String> =
+            ArrayList()
+        bannedStrings.add("Add New Vehicle")
+
+        if (bannedStrings.contains(listTitleTextView.text)) {
+            val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
+            listTitleImageView.setColorFilter(0)
+        }
+
         return convertView
     }
 
