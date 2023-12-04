@@ -40,7 +40,7 @@ class FuelLoggingFragment : Fragment() {
 
         // ArrayList of class ItemsViewModel
         val data = ArrayList<FuelLoggingItemsViewModel>()
-        val fuelLog = DataManager.ReturnVehicle(0)?.fuelLog?.returnFuelLog()
+        val fuelLog = DataManager.ReturnActiveVehicle()?.fuelLog?.returnFuelLog()
 
         var fuelLogSize = (fuelLog?.size?:0)
 

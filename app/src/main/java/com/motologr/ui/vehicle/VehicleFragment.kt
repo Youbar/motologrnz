@@ -42,7 +42,7 @@ class VehicleFragment : Fragment() {
         val ApproxCostsTitle: TextView = binding.textApproxCostsTitle
         val ApproxCosts: TextView = binding.textApproxCosts
 
-        val vehicle : Vehicle? = DataManager.ReturnVehicle(0)
+        val vehicle : Vehicle? = DataManager.ReturnActiveVehicle()
 
         if (vehicle != null) {
             val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")

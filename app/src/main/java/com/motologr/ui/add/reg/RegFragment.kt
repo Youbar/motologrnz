@@ -81,7 +81,7 @@ class RegFragment : Fragment() {
     }
 
     private fun updateReg() {
-        val vehicle: Vehicle = DataManager.ReturnVehicle(0) ?: return
+        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
 
         val regExpiryDate = binding.editTextRegCurrDate.text.toString()
         val newRegExpiryDate = binding.editTextRegNextDate.text.toString()
@@ -98,7 +98,7 @@ class RegFragment : Fragment() {
     }
 
     private fun setFragmentText() {
-        val vehicle: Vehicle = DataManager.ReturnVehicle(0) ?: return
+        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
 
         binding.editTextRegCurrDate.setText(vehicle.returnRegExpiry())
     }

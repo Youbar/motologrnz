@@ -45,7 +45,7 @@ class MaintLoggingFragment : Fragment() {
         val data = ArrayList<MaintLoggingItemsViewModel>()
         val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
-        var maintLog = DataManager.ReturnVehicle(0)?.returnLogs()
+        var maintLog = DataManager.ReturnActiveVehicle()?.returnLogs()
 
         if (maintLog != null && maintLog.size > 0) {
             for (i in 0 until maintLog!!.size) {

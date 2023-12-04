@@ -113,6 +113,8 @@ class MainActivity : AppCompatActivity() {
         DataManager.ReturnVehicle(0)?.logService(service)
         DataManager.ReturnVehicle(0)?.logService(service)
         DataManager.ReturnVehicle(0)?.logRepair(repair)
+
+        DataManager.SetActiveVehicle(0)
     }
 
     internal object ExpandableListData {

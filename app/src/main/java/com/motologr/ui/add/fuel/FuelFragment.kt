@@ -44,7 +44,7 @@ class FuelFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
-            var fuel: Fuel = DataManager.ReturnVehicle(0)?.fuelLog?.returnFuel(logPos)!!
+            var fuel: Fuel = DataManager.ReturnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
             setInterfaceToReadOnly(fuel)
         }
 
@@ -122,7 +122,7 @@ class FuelFragment : Fragment() {
 
         val fuel: Fuel = Fuel(fuelType, price, litres, purchaseDate, odometer)
 
-        DataManager.ReturnVehicle(0)?.logFuel(fuel)
+        DataManager.ReturnActiveVehicle()?.logFuel(fuel)
     }
 
     private fun parseFuelTypeRadioGroup() : Int {

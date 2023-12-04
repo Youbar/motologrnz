@@ -44,7 +44,7 @@ class WofFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
-            var wof: Wof = DataManager.ReturnVehicle(0)?.returnLoggableByPosition(logPos)!! as Wof
+            var wof: Wof = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
             setInterfaceToReadOnly(wof)
         }
 
@@ -76,7 +76,7 @@ class WofFragment : Fragment() {
     }
 
     private fun updateWofReg() {
-        val vehicle: Vehicle = DataManager.ReturnVehicle(0) ?: return
+        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
 
         val oldDate = binding.editTextWofCurrDate.text.toString()
         val newDate = binding.editTextWofNextDate.text.toString()
@@ -92,7 +92,7 @@ class WofFragment : Fragment() {
     }
 
     private fun setFragmentText() {
-        val vehicle: Vehicle = DataManager.ReturnVehicle(0) ?: return
+        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
 
         binding.editTextWofCurrDate.setText(vehicle.returnWofExpiry())
     }

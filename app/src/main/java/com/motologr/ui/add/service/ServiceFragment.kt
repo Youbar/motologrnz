@@ -43,7 +43,7 @@ class ServiceFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
-            var service: Service = DataManager.ReturnVehicle(0)?.returnLoggableByPosition(logPos)!! as Service
+            var service: Service = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Service
             setInterfaceToReadOnly(service)
         }
 
@@ -70,7 +70,7 @@ class ServiceFragment : Fragment() {
 
         val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment)
 
-        DataManager.ReturnVehicle(0)?.logService(service)
+        DataManager.ReturnActiveVehicle()?.logService(service)
     }
 
     private fun setInterfaceToReadOnly(service: Service) {

@@ -7,7 +7,6 @@ import java.util.Date
 object DataManager {
 
     private var vehicleArray = ArrayList<Vehicle>()
-
     fun CreateNewVehicle(modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {
         val newVehicle = Vehicle(modelName, year, expiryWOF, regExpiry, odometer)
         vehicleArray.add(newVehicle)
@@ -25,6 +24,20 @@ object DataManager {
         return null
     }
 
+    private var activeVehicle : Int = -1
+
+    fun SetActiveVehicle(int: Int) {
+        activeVehicle = int;
+    }
+
+    fun ReturnActiveVehicle(): Vehicle? {
+        if (vehicleArray.lastIndex >= activeVehicle && activeVehicle >= 0) {
+            return vehicleArray[activeVehicle]
+        }
+
+        return null
+    }
+
     fun ReturnVehicleArrayLength() : Int {
         return vehicleArray.size
     }
@@ -35,7 +48,7 @@ object DataManager {
         }
     }
 
-    var idCounter: Int = 0
+    private var idCounter: Int = 0
 
     fun FetchIdForLoggable() : Int {
         idCounter += 1

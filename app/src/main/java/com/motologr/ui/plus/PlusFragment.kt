@@ -98,7 +98,7 @@ class PlusFragment : Fragment() {
 
             DataManager.CreateNewVehicle(vehicle)
 
-            findNavController().navigate(R.id.action_nav_plus_to_nav_vehicle_1)
+            findNavController().navigate(R.id.nav_vehicle_1)
         }
 
         return root
