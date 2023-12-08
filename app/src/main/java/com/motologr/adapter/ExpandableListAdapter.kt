@@ -8,12 +8,13 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import com.motologr.R
+import com.motologr.ui.data.DataManager
 
 
 class ExpandableListAdapter internal constructor(
     private val context: Context,
-    private val submenuList: List<String>,
-    private val menuList: HashMap<String, List<String>>
+    private val submenuList: List<Int>,
+    private val menuList: HashMap<Int, List<String>>
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
@@ -79,7 +80,6 @@ class ExpandableListAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertView = convertView
-        val listTitle = getGroup(listPosition) as String
         if (convertView == null) {
             val layoutInflater =
                 this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -87,7 +87,13 @@ class ExpandableListAdapter internal constructor(
         }
         val listTitleTextView = convertView!!.findViewById<TextView>(R.id.listView)
         listTitleTextView.setTypeface(null, Typeface.BOLD)
-        listTitleTextView.text = listTitle
+
+        val listId = getGroup(listPosition) as Int
+        val vehicleName : String? = DataManager.ReturnVehicleById(listId)?.modelName
+        listTitleTextView.text = vehicleName
+
+        if (vehicleName == null)
+            listTitleTextView.text = "Add New Vehicle"
 
         val bannedStrings: MutableList<String> =
             ArrayList()

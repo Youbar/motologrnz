@@ -28,7 +28,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="176dp"
             android:background="@android:color/white"
-            android:groupIndicator="@android:color/transparent"/>
+            android:groupIndicator="@android:color/transparent"
+            tools:layout_height="350dp"/>
 
     </com.google.android.material.navigation.NavigationView>
 

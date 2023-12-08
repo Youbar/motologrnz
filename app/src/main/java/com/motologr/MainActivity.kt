@@ -118,10 +118,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     internal object ExpandableListData {
-        val data: HashMap<String, List<String>>
+        val data: HashMap<Int, List<String>>
             get() {
                 val expandableListDetail =
-                    HashMap<String, List<String>>()
+                    HashMap<Int, List<String>>()
 
                 for (i in 0 until DataManager.ReturnVehicleArrayLength()) {
                     var vehicle : Vehicle? = DataManager.ReturnVehicle(i)
@@ -133,19 +133,16 @@ class MainActivity : AppCompatActivity() {
                     vehicleOptions.add("Maintenance")
                     vehicleOptions.add("Fuel")
 
-                    val vehicleTitle = vehicle?.modelName as String
-                    expandableListDetail[vehicleTitle] = vehicleOptions
+                    val vehicleId = vehicle?.getId()
+
+                    expandableListDetail[vehicleId!!] = vehicleOptions
                 }
 
-                expandableListDetail["Add New Vehicle"] = ArrayList()
+                expandableListDetail[-1] = ArrayList()
 
                 return expandableListDetail
             }
     }
-
-    private var expandableListView: ExpandableListView? = null
-    private var adapter: ExpandableListAdapter? = null
-    private var titleList: List<String>? = null
 
     fun navigateToVehicleOption(optionName: String) {
         val navigationController = findNavController(R.id.nav_host_fragment_content_main)
@@ -170,47 +167,37 @@ class MainActivity : AppCompatActivity() {
         navigationController.navigate(R.id.nav_plus)
     }
 
+    private var expandableListView: ExpandableListView? = null
+    private var adapter: ExpandableListAdapter? = null
+
     fun fuckingGarbageFunction() {
 
-        val expandableListView: ExpandableListView = findViewById<ExpandableListView>(R.id.navigation_menu)
+        val expandableListView: ExpandableListView = findViewById(R.id.navigation_menu)
 
         if (expandableListView != null) {
             val listData = ExpandableListData.data
-            titleList = ArrayList(listData.keys)
-            adapter = ExpandableListAdapter(this, titleList as ArrayList<String>, listData)
+
+            var titleList = ArrayList(listData.keys)
+
+            titleList.removeIf { i -> i == -1 }
+            titleList.add(-1)
+
+            adapter = ExpandableListAdapter(this, titleList as ArrayList<Int>, listData)
+
             expandableListView!!.setAdapter(adapter)
 
             expandableListView!!.setOnGroupExpandListener { groupPosition ->
-                Toast.makeText(
-                    applicationContext,
-                    (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                if (ArrayList(listData.keys)[groupPosition] ==  "Add New Vehicle") {
+                if (titleList[groupPosition] ==  -1) {
                     navigateToNewVehicle()
                 }
             }
             expandableListView!!.setOnGroupCollapseListener { groupPosition ->
-                Toast.makeText(
-                    applicationContext,
-                    (titleList as ArrayList<String>)[groupPosition] + " List Collapsed.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                // Pass
             }
             expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-                navigateToVehicleOption(listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(childPosition))
-                Toast.makeText(
-                    applicationContext,
-                    "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(
-                            titleList as
-                                    ArrayList<String>
-                            )
-                            [groupPosition]]!!.get(
-                        childPosition
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
+                DataManager.SetActiveVehicle(groupPosition);
+                navigateToVehicleOption(listData[(titleList as ArrayList<Int>)[groupPosition]]!!.get(childPosition))
+                // Pass
                 binding.drawerLayout.closeDrawer(Gravity.LEFT)
                 false
             }

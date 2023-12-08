@@ -14,6 +14,7 @@ object DataManager {
 
     fun CreateNewVehicle(newVehicle: Vehicle) {
         vehicleArray.add(newVehicle)
+        SetActiveVehicle(vehicleArray.lastIndex)
     }
 
     fun ReturnVehicle(index : Int): Vehicle? {
@@ -22,6 +23,12 @@ object DataManager {
         }
 
         return null
+    }
+
+    fun ReturnVehicleById(id : Int): Vehicle? {
+        val vehicle: Vehicle? = vehicleArray.find { v -> v.getId() == id }
+
+        return vehicle
     }
 
     private var activeVehicle : Int = -1
@@ -48,12 +55,20 @@ object DataManager {
         }
     }
 
-    private var idCounter: Int = 0
+    private var idCounterLoggable: Int = 0
 
     fun FetchIdForLoggable() : Int {
-        idCounter += 1
+        idCounterLoggable += 1
 
-        return (idCounter - 1)
+        return (idCounterLoggable - 1)
+    }
+
+    private var idCounterVehicle: Int = 0
+
+    fun FetchIdForVehicle() : Int {
+        idCounterVehicle += 1
+
+        return (idCounterVehicle - 1)
     }
 }
 
@@ -64,6 +79,16 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
     var repairLog: RepairLog = RepairLog()
     var wofLog: WofLog = WofLog()
     var regLog: RegLog = RegLog()
+
+    private var id: Int = -1
+
+    init {
+        this.id = DataManager.FetchIdForVehicle()
+    }
+
+    fun getId() : Int {
+        return id
+    }
 
     fun returnLogs() : ArrayList<Loggable> {
         var logs = ArrayList<Loggable>()
