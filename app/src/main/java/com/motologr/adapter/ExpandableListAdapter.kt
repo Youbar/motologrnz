@@ -48,6 +48,7 @@ class ExpandableListAdapter internal constructor(
         bannedStrings.add("Insurance")
         bannedStrings.add("Maintenance")
         bannedStrings.add("Fuel")
+        bannedStrings.add("Expenses")
 
         if (bannedStrings.contains(expandedListTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
