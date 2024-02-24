@@ -39,6 +39,18 @@ class ExpensesViewModel : ViewModel() {
     private val _textExpensesWOFValue = MutableLiveData<String>().apply {
         value = ""
     }
+    private val _textExpensesTotal = MutableLiveData<String>().apply {
+        value = "Total:"
+    }
+    private val _textExpensesTotalValue = MutableLiveData<String>().apply {
+        value = ""
+    }
+    private val _buttonExpensesOK = MutableLiveData<String>().apply {
+        value = "OK"
+    }
+    private val _buttonExpensesExport = MutableLiveData<String>().apply {
+        value = "Export"
+    }
 
     val textExpensesTitle: LiveData<String> = _textExpensesTitle
     val textExpensesRepairs: LiveData<String> = _textExpensesRepairs
@@ -51,4 +63,8 @@ class ExpensesViewModel : ViewModel() {
     val textExpensesRegValue: LiveData<String> = _textExpensesRegValue
     val textExpensesWOF: LiveData<String> = _textExpensesWOF
     val textExpensesWOFValue: LiveData<String> = _textExpensesWOFValue
+    val textExpensesTotal: LiveData<String> = _textExpensesWOF
+    val textExpensesTotalValue: LiveData<String> = _textExpensesWOFValue
+    val buttonExpensesOK: LiveData<String> = _buttonExpensesOK
+    val buttonExpensesExport: LiveData<String> = _buttonExpensesExport
 }

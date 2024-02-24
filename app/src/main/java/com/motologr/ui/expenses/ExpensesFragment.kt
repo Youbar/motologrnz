@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.motologr.databinding.FragmentExpensesBinding
+import com.motologr.ui.data.DataManager
+import com.motologr.ui.data.Loggable
 
 class ExpensesFragment : Fragment() {
 
@@ -28,6 +31,13 @@ class ExpensesFragment : Fragment() {
         _binding = FragmentExpensesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        val expensesList = calculateExpensesForFinancialYear()
+        setFragmentValues(expensesList, expensesViewModel)
+
+        return root
+    }
+
+    private fun setFragmentValues(expensesList: ArrayList<Double>, expensesViewModel: ExpensesViewModel) {
         val textExpensesTitle: TextView = binding.textExpensesTitle
         val textExpensesRepairs: TextView = binding.textExpensesRepairs
         val textExpensesRepairsValue: TextView = binding.textExpensesRepairsValue
@@ -39,6 +49,12 @@ class ExpensesFragment : Fragment() {
         val textExpensesRegValue: TextView = binding.textExpensesRegValue
         val textExpensesWOF: TextView = binding.textExpensesWof
         val textExpensesWOFValue: TextView = binding.textExpensesWofValue
+        val textExpensesTotal: TextView = binding.textExpensesTotal
+        val textExpensesTotalValue: TextView = binding.textExpensesTotalValue
+        val buttonExpensesOK: Button = binding.buttonExpensesOk
+        val buttonExpensesExport: Button = binding.buttonExpensesExport
+
+        // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 4, Total = 5
 
         expensesViewModel.textExpensesTitle.observe(viewLifecycleOwner) {
             textExpensesTitle.text = it
@@ -47,34 +63,76 @@ class ExpensesFragment : Fragment() {
             textExpensesRepairs.text = it
         }
         expensesViewModel.textExpensesRepairsValue.observe(viewLifecycleOwner) {
-            textExpensesRepairsValue.text = it
+            textExpensesRepairsValue.text = expensesList[0].toString()
         }
         expensesViewModel.textExpensesServices.observe(viewLifecycleOwner) {
             textExpensesServices.text = it
         }
         expensesViewModel.textExpensesServicesValue.observe(viewLifecycleOwner) {
-            textExpensesServicesValue.text = it
+            textExpensesServicesValue.text = expensesList[1].toString()
         }
         expensesViewModel.textExpensesFuel.observe(viewLifecycleOwner) {
             textExpensesFuel.text = it
         }
         expensesViewModel.textExpensesFuelValue.observe(viewLifecycleOwner) {
-            textExpensesFuelValue.text = it
+            textExpensesFuelValue.text = expensesList[4].toString()
         }
         expensesViewModel.textExpensesReg.observe(viewLifecycleOwner) {
             textExpensesReg.text = it
         }
         expensesViewModel.textExpensesRegValue.observe(viewLifecycleOwner) {
-            textExpensesRegValue.text = it
+            textExpensesRegValue.text = expensesList[3].toString()
         }
         expensesViewModel.textExpensesWOF.observe(viewLifecycleOwner) {
             textExpensesWOF.text = it
         }
         expensesViewModel.textExpensesWOFValue.observe(viewLifecycleOwner) {
-            textExpensesWOFValue.text = it
+            textExpensesWOFValue.text = expensesList[2].toString()
+        }
+        expensesViewModel.textExpensesTotal.observe(viewLifecycleOwner) {
+            textExpensesTotal.text = it
+        }
+        expensesViewModel.textExpensesTotalValue.observe(viewLifecycleOwner) {
+            textExpensesTotalValue.text = expensesList[5].toString()
+        }
+        expensesViewModel.buttonExpensesOK.observe(viewLifecycleOwner) {
+            buttonExpensesOK.text = it
+        }
+        expensesViewModel.buttonExpensesExport.observe(viewLifecycleOwner) {
+            buttonExpensesExport.text = it
+        }
+    }
+
+    private fun calculateExpensesForFinancialYear() : ArrayList<Double> {
+        var expensesLogs : ArrayList<Loggable> = DataManager.ReturnActiveVehicle()!!.returnExpensesLogs()
+
+        // Need to add a filter to only take YTD/FY values
+        // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100
+        val repairsLogs = expensesLogs.filter { loggable -> loggable.classId == 0 }
+        val servicesLogs = expensesLogs.filter { loggable -> loggable.classId == 1 }
+        val wofLogs = expensesLogs.filter { loggable -> loggable.classId == 2 }
+        val regLogs = expensesLogs.filter { loggable -> loggable.classId == 3 }
+        val fuelLogs = expensesLogs.filter { loggable -> loggable.classId == 100 }
+
+        var repairCost = calculateTotalExpenseForLoggables(ArrayList(repairsLogs));
+        var serviceCost = calculateTotalExpenseForLoggables(ArrayList(servicesLogs));
+        var wofCost = calculateTotalExpenseForLoggables(ArrayList(wofLogs));
+        var regCost = calculateTotalExpenseForLoggables(ArrayList(regLogs));
+        var fuelCost = calculateTotalExpenseForLoggables(ArrayList(fuelLogs));
+
+        var total = calculateTotalExpenseForLoggables(expensesLogs);
+
+
+        return arrayListOf(repairCost, serviceCost, wofCost, regCost, fuelCost, total)
+    }
+
+    private fun calculateTotalExpenseForLoggables(expensesLogs : ArrayList<Loggable>) : Double {
+        var total : Double = 0.0
+        for (expenseLog in expensesLogs) {
+            total += expenseLog.unitPrice;
         }
 
-        return root
+        return total
     }
 
     override fun onDestroyView() {

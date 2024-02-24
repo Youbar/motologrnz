@@ -90,7 +90,7 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
         return id
     }
 
-    fun returnLogs() : ArrayList<Loggable> {
+    fun returnMaintLogs() : ArrayList<Loggable> {
         var logs = ArrayList<Loggable>()
 
         logs.addAll(serviceLog.returnServiceLog())
@@ -101,14 +101,27 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
         return logs
     }
 
+    fun returnExpensesLogs() : ArrayList<Loggable> {
+        var logs = ArrayList<Loggable>()
+
+        logs.addAll(serviceLog.returnServiceLog())
+        logs.addAll(repairLog.returnRepairLog())
+        logs.addAll(fuelLog.returnFuelLog())
+        logs.addAll(wofLog.returnWofLog())
+        logs.addAll(regLog.returnRegLog())
+        logs.sortByDescending { loggable -> loggable.sortableDate.time }
+
+        return logs
+    }
+
     fun returnLoggable(id: Int) : Loggable? {
-        var loggable: Loggable? = returnLogs().find { loggable -> loggable.Id == id }
+        var loggable: Loggable? = returnMaintLogs().find { loggable -> loggable.Id == id }
 
         return loggable
     }
 
     fun returnLoggableByPosition(position : Int) : Loggable? {
-        var loggable: Loggable? = returnLogs()[position]
+        var loggable: Loggable? = returnMaintLogs()[position]
 
         return loggable
     }
@@ -163,8 +176,8 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
 open class Log
 
 
-// Repair = 0, Service = 1, WOF = 2
-open class Loggable(var sortableDate: Date, val classId: Int) {
+// Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100
+open class Loggable(var sortableDate: Date, val classId: Int, var unitPrice: Double) {
     var Id : Int = -1
 
     init {
@@ -188,7 +201,7 @@ class ServiceLog : Log() {
     }
 }
 
-class Service(var serviceType: Int, var price: Double, var serviceDate: Date, var serviceProvider: String, var comment: String) : Loggable(serviceDate, 1) {
+class Service(var serviceType: Int, var price: Double, var serviceDate: Date, var serviceProvider: String, var comment: String) : Loggable(serviceDate, 1, price) {
     fun returnServiceType() : String {
         return when (serviceType) {
             0 -> {
@@ -223,7 +236,7 @@ class RepairLog : Log() {
     }
 }
 
-class Repair(var repairType: Int, var price: Double, var repairDate: Date, var repairProvider: String, var comment: String) : Loggable(repairDate, 0) {
+class Repair(var repairType: Int, var price: Double, var repairDate: Date, var repairProvider: String, var comment: String) : Loggable(repairDate, 0, price) {
     fun returnRepairType() : String {
         return when (repairType) {
             0 -> {
@@ -258,7 +271,7 @@ class WofLog : Log() {
     }
 }
 
-class Wof(var wofDate: Date, var wofCompletedDate: Date, var price: Double) : Loggable(wofCompletedDate, 2)
+class Wof(var wofDate: Date, var wofCompletedDate: Date, var price: Double) : Loggable(wofCompletedDate, 2, price)
 
 class RegLog : Log() {
     private var regLog = ArrayList<Reg>()
@@ -276,7 +289,7 @@ class RegLog : Log() {
     }
 }
 
-class Reg(var newRegExpiryDate: Date, var regExpiryDate: Date, var monthsExtended: Int, var price: Double) : Loggable(regExpiryDate, 3)
+class Reg(var newRegExpiryDate: Date, var regExpiryDate: Date, var monthsExtended: Int, var price: Double) : Loggable(regExpiryDate, 3, price)
 
 class FuelLog : Log() {
     private var fuelLog = ArrayList<Fuel>()
@@ -294,7 +307,7 @@ class FuelLog : Log() {
     }
 }
 
-class Fuel(var fuelType: Int, var price: Double, var litres: Double, var purchaseDate: Date, var odometerReading: Int) : Loggable(purchaseDate, 100) {
+class Fuel(var fuelType: Int, var price: Double, var litres: Double, var purchaseDate: Date, var odometerReading: Int) : Loggable(purchaseDate, 100, price) {
     // type 0 = 91, 1 = 95, 2 = 98, 3 = diesel
     fun returnFuelType() : String {
         return when (fuelType) {

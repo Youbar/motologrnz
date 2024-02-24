@@ -6,6 +6,26 @@
     android:layout_height="match_parent"
     tools:context="com.motologr.ui.plus.PlusFragment">
 
+    <Button
+        android:id="@+id/button_expenses_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="OK"/>
+
+    <Button
+        android:id="@+id/button_expenses_export"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Export" />
+
     <TextView
         android:id="@+id/text_expenses_repairs"
         android:layout_width="wrap_content"
@@ -68,6 +88,18 @@
         tools:text="WOF:" />
 
     <TextView
+        android:id="@+id/text_expenses_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_expenses_wof"
+        tools:text="Total:" />
+
+    <TextView
         android:id="@+id/text_expenses_repairs_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -126,6 +158,18 @@
         app:layout_constraintStart_toEndOf="@+id/text_expenses_wof"
         app:layout_constraintTop_toBottomOf="@+id/text_expenses_reg_value"
         tools:text="$26" />
+
+    <TextView
+        android:id="@+id/text_expenses_total_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/text_expenses_total"
+        app:layout_constraintTop_toBottomOf="@+id/text_expenses_wof_value"
+        tools:text="$234234" />
 
     <TextView
         android:id="@+id/text_expenses_title"
