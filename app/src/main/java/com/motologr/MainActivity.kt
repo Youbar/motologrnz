@@ -101,18 +101,21 @@ class MainActivity : AppCompatActivity() {
 
         val vehicle = Vehicle("Mazda 323",
             1989,
-            format.parse("16/10/2000"),
-            format.parse("16/10/2000"),
+            format.parse("10/09/2024"),
+            format.parse("08/08/2024"),
             1243)
 
         DataManager.CreateNewVehicle(vehicle)
 
-        var service: Service = Service(0, 123.0, format.parse("16/10/2001"), "Av", "")
-        var repair: Repair = Repair(0, 123.0, format.parse("17/10/2002"), "Av", "")
+        var service: Service = Service(0, 123.0, format.parse("31/03/2023"), "Av", "")
+        var service2: Service = Service(0, 123.0, format.parse("1/04/2023"), "Av", "")
+        var repair: Repair = Repair(0, 123.0, format.parse("1/04/2023"), "Av", "")
+        var repair2: Repair = Repair(0, 123.0, format.parse("1/04/2024"), "Av", "")
 
         DataManager.ReturnVehicle(0)?.logService(service)
-        DataManager.ReturnVehicle(0)?.logService(service)
+        DataManager.ReturnVehicle(0)?.logService(service2)
         DataManager.ReturnVehicle(0)?.logRepair(repair)
+        DataManager.ReturnVehicle(0)?.logRepair(repair2)
 
         DataManager.SetActiveVehicle(0)
     }

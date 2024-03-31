@@ -11,6 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.motologr.databinding.FragmentExpensesBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Loggable
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import kotlin.math.min
 
 class ExpensesFragment : Fragment() {
 
@@ -55,9 +60,10 @@ class ExpensesFragment : Fragment() {
         val buttonExpensesExport: Button = binding.buttonExpensesExport
 
         // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 4, Total = 5
+        val calendar = Calendar.getInstance()
 
         expensesViewModel.textExpensesTitle.observe(viewLifecycleOwner) {
-            textExpensesTitle.text = it
+            textExpensesTitle.text = it + calendar.get(Calendar.YEAR).toString().takeLast(2)
         }
         expensesViewModel.textExpensesRepairs.observe(viewLifecycleOwner) {
             textExpensesRepairs.text = it
@@ -103,10 +109,33 @@ class ExpensesFragment : Fragment() {
         }
     }
 
+    private fun isWithinFinancialYear(loggableDate : Date) : Boolean {
+        val calendar = Calendar.getInstance()
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        var maxDate: Date
+        var minDate: Date
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+        if (month < 3) {
+            maxDate = format.parse("01/04/" + year)
+            minDate = format.parse("31/03/" + (year - 1))
+        } else {
+            maxDate = format.parse("01/04/" + (year + 1))
+            minDate = format.parse("31/03/" + year)
+        }
+
+        return loggableDate.before(maxDate) and loggableDate.after(minDate)
+    }
+
     private fun calculateExpensesForFinancialYear() : ArrayList<Double> {
         var expensesLogs : ArrayList<Loggable> = DataManager.ReturnActiveVehicle()!!.returnExpensesLogs()
 
-        // Need to add a filter to only take YTD/FY values
+        // Need to add a filter to only take YTD values
+        expensesLogs = ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate) })
+
         // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100
         val repairsLogs = expensesLogs.filter { loggable -> loggable.classId == 0 }
         val servicesLogs = expensesLogs.filter { loggable -> loggable.classId == 1 }

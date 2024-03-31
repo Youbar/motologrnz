@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.RadioButton
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -15,7 +16,10 @@ import com.motologr.R
 import com.motologr.databinding.FragmentFuelBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Fuel
+import com.motologr.ui.data.getDate
+import com.motologr.ui.data.toCalendar
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 class FuelFragment : Fragment() {
@@ -51,6 +55,14 @@ class FuelFragment : Fragment() {
         return root
     }
 
+    private fun UpdateDatePicker(date: Date) {
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+        binding.editTextFuelDate.updateDate(year, month, day)
+    }
+
     private fun setInterfaceToReadOnly(fuel: Fuel) {
         binding.radioGroupFuelType.check(binding.radioGroupFuelType.getChildAt(fuel.fuelType).id)
         binding.radioButtonFuel91.isClickable = false
@@ -70,7 +82,7 @@ class FuelFragment : Fragment() {
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
         binding.editTextFuelDate.isEnabled = false
-        binding.editTextFuelDate.setText(format.format(fuel.purchaseDate))
+        UpdateDatePicker(fuel.purchaseDate)
 
         binding.editTextFuelOdo.isEnabled = false
         binding.editTextFuelOdo.setText(fuel.odometerReading.toString())
@@ -99,8 +111,8 @@ class FuelFragment : Fragment() {
         val price: String = binding.editTextFuelPrice.text.toString()
         val litres: String = binding.editTextFuelLitres.text.toString()
 
-        if (!price.isNullOrEmpty() && !litres.isNullOrEmpty()) {
-            binding.textFuelEstimateField.text = (price.toDouble() / litres.toDouble()).toString()
+        if (price.isNotEmpty() && litres.isNotEmpty()) {
+            binding.textFuelEstimateField.text = "$" + DataManager.roundOffDecimal(price.toDouble() / litres.toDouble())
         } else {
             binding.textFuelEstimateField.text = ""
         }
@@ -117,7 +129,7 @@ class FuelFragment : Fragment() {
         val fuelType: Int = parseFuelTypeRadioGroup()
         val price: Double = binding.editTextFuelPrice.text.toString().toDouble()
         val litres: Double = binding.editTextFuelLitres.text.toString().toDouble()
-        val purchaseDate: Date = format.parse(binding.editTextFuelDate.text.toString())
+        val purchaseDate: Date = binding.editTextFuelDate.getDate()
         val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
 
         val fuel: Fuel = Fuel(fuelType, price, litres, purchaseDate, odometer)

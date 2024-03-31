@@ -1,10 +1,31 @@
 package com.motologr.ui.data
 
+import android.widget.DatePicker
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
+fun DatePicker.getDate(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.set(year, month, dayOfMonth)
+    return calendar.time
+}
+
+fun Calendar.toCalendar(date: Date) : Calendar {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    return calendar
+}
+
 object DataManager {
+
+    fun roundOffDecimal(number: Double): String {
+        val df = DecimalFormat("0.00")
+        df.roundingMode = RoundingMode.CEILING
+        return df.format(number)
+    }
 
     private var vehicleArray = ArrayList<Vehicle>()
     fun CreateNewVehicle(modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {

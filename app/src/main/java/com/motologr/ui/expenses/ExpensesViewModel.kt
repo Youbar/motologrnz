@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 class ExpensesViewModel : ViewModel() {
 
     private val _textExpensesTitle = MutableLiveData<String>().apply {
-        value = "Expenses FY 23-24"
+        value = "Expenses for FY"
     }
     private val _textExpensesRepairs = MutableLiveData<String>().apply {
         value = "Repairs:"
@@ -63,8 +63,8 @@ class ExpensesViewModel : ViewModel() {
     val textExpensesRegValue: LiveData<String> = _textExpensesRegValue
     val textExpensesWOF: LiveData<String> = _textExpensesWOF
     val textExpensesWOFValue: LiveData<String> = _textExpensesWOFValue
-    val textExpensesTotal: LiveData<String> = _textExpensesWOF
-    val textExpensesTotalValue: LiveData<String> = _textExpensesWOFValue
+    val textExpensesTotal: LiveData<String> = _textExpensesTotal
+    val textExpensesTotalValue: LiveData<String> = _textExpensesTotalValue
     val buttonExpensesOK: LiveData<String> = _buttonExpensesOK
     val buttonExpensesExport: LiveData<String> = _buttonExpensesExport
 }
