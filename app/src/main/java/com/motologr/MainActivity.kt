@@ -42,12 +42,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        val sharedPreferences = getPreferences(MODE_PRIVATE)
-        val sharedPreferencesEditor = sharedPreferences.edit();
-        sharedPreferencesEditor.putString("Olivia", "is cute");
-        sharedPreferencesEditor.commit();
-        val fabText = sharedPreferences.getString("Olivia", "No result")
-
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)

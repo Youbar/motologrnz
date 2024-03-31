@@ -186,11 +186,12 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
     }
 
     fun returnRegExpiry(): String {
-        return format.format(regExpiry)
+        val regFormat = SimpleDateFormat("dd/MMM/yyyy")
+        return regFormat.format(regExpiry)
     }
 
-    fun updateRegExpiry(newDate: String) {
-        regExpiry = format.parse(newDate)
+    fun updateRegExpiry(newRegExpiryDate: Date) {
+        regExpiry = newRegExpiryDate
     }
 }
 

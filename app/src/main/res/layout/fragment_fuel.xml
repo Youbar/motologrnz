@@ -179,7 +179,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_fuel_odo_prompt" />
 
-
         <DatePicker
             android:id="@+id/editText_fuel_date"
             android:layout_width="248dp"

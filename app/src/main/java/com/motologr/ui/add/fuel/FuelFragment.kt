@@ -1,14 +1,13 @@
 package com.motologr.ui.add.fuel
 
-import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
@@ -95,7 +94,6 @@ class FuelFragment : Fragment() {
 
         binding.buttonFuelAdd.setOnClickListener {
             convertFragmentToFuelObject()
-            findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1)
         }
 
         binding.editTextFuelPrice.doAfterTextChanged {
@@ -124,7 +122,10 @@ class FuelFragment : Fragment() {
     }
 
     private fun convertFragmentToFuelObject() {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+        if (!isValidFuelInputs()) {
+            return
+        }
 
         val fuelType: Int = parseFuelTypeRadioGroup()
         val price: Double = binding.editTextFuelPrice.text.toString().toDouble()
@@ -135,6 +136,7 @@ class FuelFragment : Fragment() {
         val fuel: Fuel = Fuel(fuelType, price, litres, purchaseDate, odometer)
 
         DataManager.ReturnActiveVehicle()?.logFuel(fuel)
+        findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1)
     }
 
     private fun parseFuelTypeRadioGroup() : Int {
@@ -153,5 +155,40 @@ class FuelFragment : Fragment() {
         }
 
         return -1
+    }
+
+    private fun displayValidationError(toastText : String) {
+        Toast.makeText(activity, toastText, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isValidFuelInputs() : Boolean {
+        if (parseFuelTypeRadioGroup() == -1) {
+            displayValidationError("Please select a fuel type")
+            return false
+        }
+
+        if (binding.editTextFuelPrice.text.toString().isEmpty()) {
+            displayValidationError("Please input a fuel price")
+            return false
+        }
+
+        if (binding.editTextFuelLitres.text.toString().isEmpty()) {
+            displayValidationError("Please input a fuel quantity")
+            return false
+        }
+
+        if (binding.editTextFuelLitres.text.toString() == "0") {
+            displayValidationError("You cannot record a value of 0 litres purchased")
+            return false
+        }
+
+        // DatePicker does not need validation
+
+        if (binding.editTextFuelOdo.text.toString().isEmpty()) {
+            displayValidationError("Please input odometer reading")
+            return false
+        }
+
+        return true
     }
 }
