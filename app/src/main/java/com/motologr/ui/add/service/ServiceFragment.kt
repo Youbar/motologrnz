@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
@@ -14,7 +15,10 @@ import com.motologr.databinding.FragmentServiceBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Repair
 import com.motologr.ui.data.Service
+import com.motologr.ui.data.getDate
+import com.motologr.ui.data.toCalendar
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 class ServiceFragment : Fragment() {
@@ -55,15 +59,15 @@ class ServiceFragment : Fragment() {
 
         binding.buttonServiceAdd.setOnClickListener {
             addService()
-            findNavController().navigate(R.id.action_nav_service_to_nav_vehicle_1)
         }
     }
 
     private fun addService() {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        if (!isValidServiceInputs())
+            return
 
         val serviceType: Int = parseServiceTypeRadioGroup()
-        val serviceDate: Date = format.parse(binding.editTextServiceDate.text.toString())
+        val serviceDate: Date = binding.editTextServiceDate.getDate()
         val serviceProvider: String = binding.editTextServiceProvider.text.toString()
         val servicePrice: Double = binding.editTextServicePrice.text.toString().toDouble()
         val serviceComment: String = binding.editTextServiceComment.text.toString()
@@ -71,6 +75,15 @@ class ServiceFragment : Fragment() {
         val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment)
 
         DataManager.ReturnActiveVehicle()?.logService(service)
+        findNavController().navigate(R.id.action_nav_service_to_nav_vehicle_1)
+    }
+
+    private fun UpdateDatePicker(date: Date) {
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+        binding.editTextServiceDate.updateDate(year, month, day)
     }
 
     private fun setInterfaceToReadOnly(service: Service) {
@@ -82,9 +95,8 @@ class ServiceFragment : Fragment() {
         binding.radioButtonServiceFull.isClickable = false
         binding.radioButtonServiceFull.isEnabled = false
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
         binding.editTextServiceDate.isEnabled = false
-        binding.editTextServiceDate.setText(format.format(service.serviceDate))
+        UpdateDatePicker(service.serviceDate)
 
         binding.editTextServiceProvider.isEnabled = false
         binding.editTextServiceProvider.setText(service.serviceProvider.toString())
@@ -113,6 +125,33 @@ class ServiceFragment : Fragment() {
         }
 
         return -1
+    }
+
+    private fun displayValidationError(toastText : String) {
+        Toast.makeText(activity, toastText, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isValidServiceInputs() : Boolean {
+        if (parseServiceTypeRadioGroup() == -1) {
+            displayValidationError("Please select a service type")
+            return false
+        }
+
+        // DatePicker does not need validation
+
+        if (binding.editTextServicePrice.text.toString().isEmpty()) {
+            displayValidationError("Please input a service price")
+            return false
+        }
+
+        if (binding.editTextServiceProvider.text.toString().isEmpty()) {
+            displayValidationError("Please input a service provider")
+            return false
+        }
+
+        // Comment input optional
+
+        return true
     }
 
     override fun onDestroyView() {

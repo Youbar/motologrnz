@@ -79,7 +79,6 @@ class FuelFragment : Fragment() {
         binding.editTextFuelLitres.isEnabled = false
         binding.editTextFuelLitres.setText(fuel.litres.toString())
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
         binding.editTextFuelDate.isEnabled = false
         UpdateDatePicker(fuel.purchaseDate)
 

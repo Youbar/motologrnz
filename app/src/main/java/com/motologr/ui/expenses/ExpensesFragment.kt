@@ -60,10 +60,8 @@ class ExpensesFragment : Fragment() {
         val buttonExpensesExport: Button = binding.buttonExpensesExport
 
         // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 4, Total = 5
-        val calendar = Calendar.getInstance()
-
         expensesViewModel.textExpensesTitle.observe(viewLifecycleOwner) {
-            textExpensesTitle.text = it + calendar.get(Calendar.YEAR).toString().takeLast(2)
+            textExpensesTitle.text = it + returnFinancialYear()
         }
         expensesViewModel.textExpensesRepairs.observe(viewLifecycleOwner) {
             textExpensesRepairs.text = it
@@ -153,6 +151,20 @@ class ExpensesFragment : Fragment() {
 
 
         return arrayListOf(repairCost, serviceCost, wofCost, regCost, fuelCost, total)
+    }
+
+    private fun returnFinancialYear() : String {
+
+        val calendar = Calendar.getInstance()
+        val month = calendar.get(Calendar.MONTH)
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+        if (month < 3) {
+            return calendar.get(Calendar.YEAR).toString().takeLast(2)
+        } else {
+            return (calendar.get(Calendar.YEAR) + 1).toString().takeLast(2)
+        }
     }
 
     private fun calculateTotalExpenseForLoggables(expensesLogs : ArrayList<Loggable>) : Double {

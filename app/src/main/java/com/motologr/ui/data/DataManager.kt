@@ -70,12 +70,6 @@ object DataManager {
         return vehicleArray.size
     }
 
-    fun SetVehicleInsurance(index: Int, _insurance: Insurance) {
-        if (vehicleArray.lastIndex >= index) {
-            vehicleArray[index].setVehicleInsurance(_insurance)
-        }
-    }
-
     private var idCounterLoggable: Int = 0
 
     fun FetchIdForLoggable() : Int {
@@ -175,19 +169,22 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
         insurance = _insurance
     }
 
-    private val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+    fun setVehicleInsuranceInactive() {
+        insurance.isActive = false
+    }
+
+    private val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
     fun returnWofExpiry(): String {
         return format.format(expiryWOF)
     }
 
-    fun updateWofExpiry(newDate: String) {
-        expiryWOF = format.parse(newDate)
+    fun updateWofExpiry(newDate: Date) {
+        expiryWOF = newDate
     }
 
     fun returnRegExpiry(): String {
-        val regFormat = SimpleDateFormat("dd/MMM/yyyy")
-        return regFormat.format(regExpiry)
+        return format.format(regExpiry)
     }
 
     fun updateRegExpiry(newRegExpiryDate: Date) {

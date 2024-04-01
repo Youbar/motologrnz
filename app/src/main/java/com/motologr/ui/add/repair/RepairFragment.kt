@@ -7,15 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentRepairBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Fuel
 import com.motologr.ui.data.Repair
-import com.motologr.ui.data.Wof
-import java.text.SimpleDateFormat
+import com.motologr.ui.data.getDate
+import com.motologr.ui.data.toCalendar
+import java.util.Calendar
 import java.util.Date
 
 class RepairFragment : Fragment() {
@@ -56,15 +57,15 @@ class RepairFragment : Fragment() {
 
         binding.buttonRepairAdd.setOnClickListener {
             addRepair()
-            findNavController().navigate(R.id.action_nav_repair_to_nav_vehicle_1)
         }
     }
 
     private fun addRepair() {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        if (!isValidRepairInputs())
+            return
 
         val repairType: Int = parseRepairTypeRadioGroup()
-        val repairDate: Date = format.parse(binding.editTextRepairDate.text.toString())
+        val repairDate: Date = binding.editTextRepairDate.getDate()
         val repairProvider: String = binding.editTextRepairProvider.text.toString()
         val repairPrice: Double = binding.editTextRepairPrice.text.toString().toDouble()
         val repairComment: String = binding.editTextRepairComment.text.toString()
@@ -72,6 +73,15 @@ class RepairFragment : Fragment() {
         val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment)
 
         DataManager.ReturnActiveVehicle()?.logRepair(repair)
+        findNavController().navigate(R.id.action_nav_repair_to_nav_vehicle_1)
+    }
+
+    private fun UpdateDatePicker(date: Date) {
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+        binding.editTextRepairDate.updateDate(year, month, day)
     }
 
     private fun setInterfaceToReadOnly(repair: Repair) {
@@ -83,9 +93,8 @@ class RepairFragment : Fragment() {
         binding.radioButtonRepairCritical.isClickable = false
         binding.radioButtonRepairCritical.isEnabled = false
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
         binding.editTextRepairDate.isEnabled = false
-        binding.editTextRepairDate.setText(format.format(repair.repairDate))
+        UpdateDatePicker(repair.repairDate)
 
         binding.editTextRepairProvider.isEnabled = false
         binding.editTextRepairProvider.setText(repair.repairProvider.toString())
@@ -114,6 +123,33 @@ class RepairFragment : Fragment() {
         }
 
         return -1
+    }
+
+    private fun displayValidationError(toastText : String) {
+        Toast.makeText(activity, toastText, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isValidRepairInputs() : Boolean {
+        if (parseRepairTypeRadioGroup() == -1) {
+            displayValidationError("Please select a repair type")
+            return false
+        }
+
+        // DatePicker does not need validation
+
+        if (binding.editTextRepairPrice.text.toString().isEmpty()) {
+            displayValidationError("Please input a repair price")
+            return false
+        }
+
+        if (binding.editTextRepairProvider.text.toString().isEmpty()) {
+            displayValidationError("Please input a repair provider")
+            return false
+        }
+
+        // Comment input optional
+
+        return true
     }
 
     override fun onDestroyView() {

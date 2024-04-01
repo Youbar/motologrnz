@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentInsuranceBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Insurance
-import java.text.SimpleDateFormat
+import com.motologr.ui.data.getDate
+import com.motologr.ui.data.toCalendar
+import java.util.Calendar
 import java.util.Date
 
 class InsuranceFragment : Fragment() {
@@ -40,7 +43,39 @@ class InsuranceFragment : Fragment() {
 
         initialiseSaveButton()
 
+        val isInsuranceInitalized: Boolean = DataManager.ReturnActiveVehicle()?.isInsuranceInitialised() == true
+
+        if (isInsuranceInitalized) {
+            val insurance = DataManager.ReturnActiveVehicle()?.insurance
+            if (insurance != null)
+                showCurrentData(insurance)
+        }
+
         return root
+    }
+
+    private fun UpdateDatePicker(date: Date) {
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+        binding.editTextInsuranceDate.updateDate(year, month, day)
+    }
+
+    private fun showCurrentData(insurance: Insurance) {
+        val isActive: Boolean = insurance.isActive
+        val insurerName: String = insurance.insurer
+        val insuranceType: Int = insurance.coverage
+        val insuranceCycle: Int = insurance.billingCycle
+        val insuranceValue: Double = insurance.billing
+        val insuranceDate: Date = insurance.lastBill
+
+        binding.switchInsuranceBool.isChecked = isActive
+        binding.editTextInsuranceInsurer.setText(insurerName)
+        binding.radioGroupInsuranceCoverage.check(binding.radioGroupInsuranceCoverage.getChildAt(insuranceType).id)
+        binding.radioGroupInsuranceCycle.check(binding.radioGroupInsuranceCycle.getChildAt(insuranceCycle).id)
+        binding.editTextInsuranceBill.setText(insuranceValue.toString())
+        UpdateDatePicker(insuranceDate)
     }
 
     override fun onDestroyView() {
@@ -49,28 +84,33 @@ class InsuranceFragment : Fragment() {
     }
 
     private fun initialiseSaveButton() {
-        // TODO: GET WHICH VEHICLE WE ARE EDITING
-
         binding.buttonInsuranceSave.setOnClickListener {
             convertFragmentToInsuranceObject()
-            findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1)
         }
     }
 
     private fun convertFragmentToInsuranceObject() {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
-
         val isActive: Boolean = binding.switchInsuranceBool.isChecked
+
+        if (!isActive) {
+            DataManager.ReturnActiveVehicle()?.setVehicleInsuranceInactive()
+            findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1)
+        }
+
+        if (!isValidInsuranceInputs())
+            return
+
         val insurerName: String = binding.editTextInsuranceInsurer.text.toString()
         val insuranceType: Int = parseCoverageRadioGroup()
         val insuranceCycle: Int = parseBillingRadioGroup()
         val insuranceValue: Double = binding.editTextInsuranceBill.text.toString().toDouble()
-        val insuranceDate: Date = format.parse(binding.editTextInsuranceDate.text.toString())
-
+        val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
         val insurance: Insurance = Insurance(isActive, insurerName, insuranceType, insuranceCycle, insuranceValue, insuranceDate)
 
-        DataManager.SetVehicleInsurance(0, insurance)
+        DataManager.ReturnActiveVehicle()?.setVehicleInsurance(insurance)
+
+        findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1)
     }
 
     private fun parseCoverageRadioGroup() : Int {
@@ -105,6 +145,36 @@ class InsuranceFragment : Fragment() {
         return -1
     }
 
+    private fun displayValidationError(toastText : String) {
+        Toast.makeText(activity, toastText, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isValidInsuranceInputs() : Boolean {
+        if (binding.editTextInsuranceInsurer.text.toString().isEmpty()) {
+            displayValidationError("Please input your insurer")
+            return false
+        }
+
+        if (parseCoverageRadioGroup() == -1) {
+            displayValidationError("Please select a coverage type")
+            return false
+        }
+
+        if (parseBillingRadioGroup() == -1) {
+            displayValidationError("Please select a billing cycle")
+            return false
+        }
+
+        if (binding.editTextInsuranceBill.text.toString().isEmpty()) {
+            displayValidationError("Please input your insurance payment")
+            return false
+        }
+
+        // DatePicker does not need validation
+
+        return true
+    }
+
     private fun initialiseSwitch() {
         checkSwitchState()
 
@@ -123,6 +193,7 @@ class InsuranceFragment : Fragment() {
         binding.textInsuranceBilling.isVisible = switchIsActive
         binding.radioGroupInsuranceCycle.isVisible = switchIsActive
         binding.editTextInsuranceBill.isVisible = switchIsActive
+        binding.textInsuranceDate.isVisible = switchIsActive
         binding.editTextInsuranceDate.isVisible = switchIsActive
     }
 }

@@ -6,16 +6,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentWofBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Fuel
-import com.motologr.ui.data.Repair
 import com.motologr.ui.data.Vehicle
 import com.motologr.ui.data.Wof
+import com.motologr.ui.data.getDate
+import com.motologr.ui.data.toCalendar
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 
 class WofFragment : Fragment() {
 
@@ -51,13 +54,21 @@ class WofFragment : Fragment() {
         return root
     }
 
+    private fun UpdateDatePicker(date: Date) {
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+        binding.editTextWofNextDate.updateDate(year, month, day)
+    }
+
     private fun setInterfaceToReadOnly(wof: Wof) {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
         binding.editTextWofCurrDate.isEnabled = false
         binding.editTextWofCurrDate.setText(format.format(wof.wofCompletedDate))
 
         binding.editTextWofNextDate.isEnabled = false
-        binding.editTextWofNextDate.setText(format.format(wof.wofDate))
+        UpdateDatePicker(wof.wofDate)
 
         binding.editTextWofPrice.isEnabled = false
         binding.editTextWofPrice.setText(wof.price.toString())
@@ -70,25 +81,45 @@ class WofFragment : Fragment() {
         // TODO: GET WHICH VEHICLE WE ARE EDITING
 
         binding.buttonWofSave.setOnClickListener {
-            updateWofReg()
-            findNavController().navigate(R.id.action_nav_wof_to_nav_vehicle_1)
+            updateWof()
         }
     }
 
-    private fun updateWofReg() {
+    private fun updateWof() {
+
+        if (!isValidWofInputs())
+            return
+
         val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
 
         val oldDate = binding.editTextWofCurrDate.text.toString()
-        val newDate = binding.editTextWofNextDate.text.toString()
+        val newDate = binding.editTextWofNextDate.getDate()
         val price = binding.editTextWofPrice.text.toString().toDouble()
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-        val wof: Wof = Wof(format.parse(newDate), format.parse(oldDate), price)
+        val wof: Wof = Wof(newDate, format.parse(oldDate), price)
 
         vehicle.logWof(wof)
 
         vehicle.updateWofExpiry(newDate)
+        findNavController().navigate(R.id.action_nav_wof_to_nav_vehicle_1)
+    }
+
+    private fun displayValidationError(toastText : String) {
+        Toast.makeText(activity, toastText, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isValidWofInputs() : Boolean {
+
+        // DatePicker does not need validation
+
+        if (binding.editTextWofPrice.text.toString().isEmpty()) {
+            displayValidationError("Please input price of WOF")
+            return false
+        }
+
+        return true
     }
 
     private fun setFragmentText() {
