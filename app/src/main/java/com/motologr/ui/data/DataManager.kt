@@ -113,6 +113,15 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
         return id
     }
 
+    fun getLatestOdometerReading() : Int {
+        var odometerReadings = fuelLog.returnFuelLog()
+        if (odometerReadings.isEmpty())
+            return odometer
+
+        odometerReadings.sortByDescending { log -> log.odometerReading }
+        return odometerReadings[0].odometerReading
+    }
+
     fun returnMaintLogs() : ArrayList<Loggable> {
         var logs = ArrayList<Loggable>()
 

@@ -56,7 +56,7 @@ class MaintLoggingFragment : Fragment() {
                         var repair: Repair = loggable as Repair
                         data.add(
                             MaintLoggingItemsViewModel(
-                                R.drawable.ic_menu_arrow_16, "Repair", format.format(repair.repairDate),
+                                R.drawable.ic_log_car_repair_16, "Repair", format.format(repair.repairDate),
                                 "$" + repair.price.toString()
                             )
                         )
@@ -65,7 +65,7 @@ class MaintLoggingFragment : Fragment() {
                         var service: Service = loggable as Service
                         data.add(
                             MaintLoggingItemsViewModel(
-                                R.drawable.ic_menu_arrow_16,
+                                R.drawable.ic_log_car_service_16,
                                 "Service",
                                 format.format(service.serviceDate),
                                 "$" + service.price.toString()
@@ -76,7 +76,7 @@ class MaintLoggingFragment : Fragment() {
                         var wof: Wof = loggable as Wof
                         data.add(
                             MaintLoggingItemsViewModel(
-                                R.drawable.ic_menu_arrow_16, "WOF", format.format(wof.wofCompletedDate),
+                                R.drawable.ic_log_car_wof_16, "WOF", format.format(wof.wofCompletedDate),
                                 "$" + wof.price.toString()
                             )
                         )

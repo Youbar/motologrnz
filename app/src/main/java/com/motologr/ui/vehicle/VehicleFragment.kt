@@ -57,7 +57,7 @@ class VehicleFragment : Fragment() {
             var regExpiry: String = format.format(vehicle.regExpiry)
             regExpiry = "Next Reg: $regExpiry"
 
-            var odometer: String = "Last Odometer Reading: " + vehicle.odometer.toString() + " km"
+            var odometer: String = "Last Odometer Reading: " + vehicle.getLatestOdometerReading().toString() + " km"
 
             var hasInsurance: Boolean = false
 

@@ -51,7 +51,7 @@ class FuelLoggingFragment : Fragment() {
                 var fuel: Fuel = fuelLog[i]
                 data.add(
                     FuelLoggingItemsViewModel(
-                        R.drawable.ic_menu_arrow_16, format.format(fuel.purchaseDate), "$" + fuel.price.toString(),
+                        R.drawable.ic_log_fuel_16, format.format(fuel.purchaseDate), "$" + fuel.price.toString(),
                         fuel.litres.toString() + " L")
                 )
             }
