@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -13,6 +15,7 @@ import com.motologr.R
 import com.motologr.databinding.FragmentPlusBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Vehicle
+import com.motologr.ui.data.getDate
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -35,21 +38,17 @@ class PlusFragment : Fragment() {
         _binding = FragmentPlusBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textNewVehicle: TextView = binding.textPlus
         val textModel: TextView = binding.textModelPrompt
         val editTextModel: EditText = binding.editTextModelInput
         val textYear: TextView = binding.textYearPrompt
         val editTextYear: EditText = binding.editTextYearInput
         val textLastWOF: TextView = binding.textWofLastPrompt
-        val editTextLastWOF: EditText = binding.editTextWofLastInput
+        val editTextLastWOF: DatePicker = binding.editTextWofLastInput
         val textCurrentReg: TextView = binding.textRegExpirePrompt
-        val editTextCurrentReg: EditText = binding.editTextRegExpireInput
+        val editTextCurrentReg: DatePicker = binding.editTextRegExpireInput
         val textCurrentOdo: TextView = binding.textOdoPrompt
         val editTextCurrentOdo: EditText = binding.editTextOdoInput
 
-        plusViewModel.textNewVehicle.observe(viewLifecycleOwner) {
-            textNewVehicle.text = it
-        }
         plusViewModel.textModel.observe(viewLifecycleOwner) {
             textModel.text = it
         }
@@ -65,15 +64,15 @@ class PlusFragment : Fragment() {
         plusViewModel.textLastWOF.observe(viewLifecycleOwner) {
             textLastWOF.text = it
         }
-        plusViewModel.editTextLastWOF.observe(viewLifecycleOwner) {
+/*        plusViewModel.editTextLastWOF.observe(viewLifecycleOwner) {
             editTextLastWOF.hint = it
-        }
+        }*/
         plusViewModel.textCurrentReg.observe(viewLifecycleOwner) {
             textCurrentReg.text = it
         }
-        plusViewModel.editTextCurrentReg.observe(viewLifecycleOwner) {
+/*        plusViewModel.editTextCurrentReg.observe(viewLifecycleOwner) {
             editTextCurrentReg.hint = it
-        }
+        }*/
         plusViewModel.textCurrOdo.observe(viewLifecycleOwner) {
             textCurrentOdo.text = it
         }
@@ -82,26 +81,55 @@ class PlusFragment : Fragment() {
         }
 
         val button: View = binding.buttonConfirm
-        button.setOnClickListener() {
-
-            // Logic to check inputs here
-
-            val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
-
-            val modelName: String = binding.editTextModelInput.text.toString()
-            val modelYear: Int = Integer.parseInt(binding.editTextYearInput.text.toString())
-            val modelWOF: Date = format.parse(binding.editTextWofLastInput.text.toString())
-            val modelReg: Date = format.parse(binding.editTextRegExpireInput.text.toString())
-            val odometer: Int = Integer.parseInt(binding.editTextOdoInput.text.toString())
-
-            val vehicle = Vehicle(modelName, modelYear, modelWOF, modelReg, odometer)
-
-            DataManager.CreateNewVehicle(vehicle)
-
-            findNavController().navigate(R.id.nav_vehicle_1)
+        button.setOnClickListener {
+            convertPlusFragmentToObject()
         }
 
         return root
+    }
+
+    private fun convertPlusFragmentToObject() {
+        if (!isValidPlusInputs())
+            return
+
+        val modelName: String = binding.editTextModelInput.text.toString()
+        val modelYear: Int = Integer.parseInt(binding.editTextYearInput.text.toString())
+        val modelWOF: Date = binding.editTextWofLastInput.getDate()
+        val modelReg: Date = binding.editTextRegExpireInput.getDate()
+        val odometer: Int = Integer.parseInt(binding.editTextOdoInput.text.toString())
+
+        val vehicle = Vehicle(modelName, modelYear, modelWOF, modelReg, odometer)
+
+        DataManager.CreateNewVehicle(vehicle)
+
+        findNavController().navigate(R.id.nav_vehicle_1)
+    }
+
+    private fun displayValidationError(toastText : String) {
+        Toast.makeText(activity, toastText, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isValidPlusInputs() : Boolean {
+        if (binding.editTextModelInput.text.toString().isEmpty()) {
+            displayValidationError("Please input the vehicle model name")
+            return false
+        }
+
+        if (binding.editTextYearInput.text.toString().isEmpty()) {
+            displayValidationError("Please input the vehicle model year")
+            return false
+        }
+
+        // DatePicker does not need validation
+
+        // DatePicker does not need validation
+
+        if (binding.editTextOdoInput.text.toString().isEmpty()) {
+            displayValidationError("Please input the vehicle odometer reading")
+            return false
+        }
+
+        return true
     }
 
     override fun onDestroyView() {

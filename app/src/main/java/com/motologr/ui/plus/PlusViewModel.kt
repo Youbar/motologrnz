@@ -40,7 +40,6 @@ class PlusViewModel : ViewModel() {
         value = "xxxx km"
     }
 
-    val textNewVehicle: LiveData<String> = _textNewVehicle
     val textModel: LiveData<String> = _textModel
     val editTextModel: LiveData<String> = _editTextModel
     val textYear: LiveData<String> = _textYear

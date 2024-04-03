@@ -15,7 +15,12 @@ import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Reg
 import com.motologr.ui.data.Vehicle
 import com.motologr.ui.data.getDate
+import com.motologr.ui.data.toCalendar
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 
 class RegFragment : Fragment() {
 
@@ -52,6 +57,10 @@ class RegFragment : Fragment() {
                 isChangingRadioGroup = true
                 binding.radioGroupRegTypeCol2.clearCheck()
                 isChangingRadioGroup = false
+
+                val monthsExtended = getMonthsExtended()
+                setRegistrationEstimate(monthsExtended)
+                setDateEstimate(monthsExtended)
             }
         }
 
@@ -60,6 +69,10 @@ class RegFragment : Fragment() {
                 isChangingRadioGroup = true
                 binding.radioGroupRegTypeCol1.clearCheck()
                 isChangingRadioGroup = false
+
+                val monthsExtended = getMonthsExtended()
+                setRegistrationEstimate(monthsExtended)
+                setDateEstimate(monthsExtended)
             }
         }
     }
@@ -70,7 +83,50 @@ class RegFragment : Fragment() {
         }
     }
 
+    private fun updateDatePicker(date: Date) {
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+        binding.editTextRegNextDate.updateDate(year, month, day)
+    }
 
+    private fun setDateEstimate(months : Int) {
+        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
+        val date: Date = format.parse(vehicle.returnRegExpiry())
+
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        calendar.add(Calendar.MONTH, months)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        binding.editTextRegNextDate.updateDate(year, month, day)
+    }
+
+    private fun setRegistrationEstimate(months : Int) {
+        val df = DecimalFormat("0.00")
+        df.roundingMode = RoundingMode.HALF_UP
+        val registrationEstimate = calculateRegistration(months)
+        binding.editTextRegPrice.setText(df.format(registrationEstimate))
+    }
+
+    private fun calculateRegistration(months : Int) : Double {
+        val licenceFee = 43.50 / 12
+        val accFee = 41.27 / 12
+        val adminFee = 7.53
+        val gstMultiplier = 1.15
+        val registrationEstimate = ((licenceFee + accFee) * months + adminFee) * gstMultiplier
+
+        return when (months) {
+            3 -> 33.05
+            6 -> 57.41
+            12 -> 106.15
+            else -> registrationEstimate
+        }
+    }
 
     private fun getMonthsExtended() : Int {
 

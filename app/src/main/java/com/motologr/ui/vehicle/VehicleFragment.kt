@@ -12,6 +12,8 @@ import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Vehicle
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 class VehicleFragment : Fragment() {
@@ -70,7 +72,10 @@ class VehicleFragment : Fragment() {
                 insurer = vehicle.insurance.insurer
                 insurer = "You are with $insurer insurance"
 
-                insurerDate = "and your next bill of $${vehicle.insurance.billing} is due "
+                val df = DecimalFormat("0.00")
+                df.roundingMode = RoundingMode.CEILING
+
+                insurerDate = "and your next bill of $${df.format(vehicle.insurance.billing)} is due "
                 insurerDate += vehicle.insurance.getNextBillingDateString()
             } else {
                 insurer = "You do not have a registered insurer"
