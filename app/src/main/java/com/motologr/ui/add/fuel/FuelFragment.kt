@@ -1,8 +1,6 @@
 package com.motologr.ui.add.fuel
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +8,8 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelBinding
@@ -17,9 +17,9 @@ import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.Fuel
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+
 
 class FuelFragment : Fragment() {
 
@@ -47,8 +47,11 @@ class FuelFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
+            DataManager.updateTitle(activity, "View Fuel Record")
             var fuel: Fuel = DataManager.ReturnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
             setInterfaceToReadOnly(fuel)
+        } else {
+            DataManager.updateTitle(activity, "Record Fuel Purchase")
         }
 
         return root

@@ -5,27 +5,28 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
+import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Vehicle
-import com.google.android.material.navigation.NavigationView
 import com.motologr.ui.data.Repair
 import com.motologr.ui.data.Service
+import com.motologr.ui.data.Vehicle
 import java.text.SimpleDateFormat
 
 
@@ -40,7 +41,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        setSupportActionBar(binding.appBarMain.toolbar)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -80,12 +85,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         drawerLayout.setDrawerListener(drawerToggle)
-
-        fuckingGarbageFunction()
+        drawerToggle.setToolbarNavigationClickListener {
+            onBackPressed()
+        }
 
         // REMOVE IN LIVE COPY
         sampleData()
         // REMOVE IN LIVE COPY
+
+        fuckingGarbageFunction()
+
+
+        navController.addOnDestinationChangedListener { controller: NavController?, destination: NavDestination, arguments: Bundle? ->
+
+            // Hide/show top search bar
+            if (destination.id == R.id.nav_vehicle_1 || destination.id == R.id.nav_plus) {
+                drawerToggle.setDrawerIndicatorEnabled(true) // <<< Add this line of code to enable the burger icon
+            }
+
+            // Fragments that you want to show the back button
+/*            if (destination.id == R.id.nav_add) {*/
+            else {
+                // Disable the functionality of opening the side drawer, when the burger icon is clicked
+                drawerToggle.setDrawerIndicatorEnabled(false)
+            }
+        }
+
 
         navController.navigate(R.id.nav_vehicle_1)
     }
@@ -168,40 +193,49 @@ class MainActivity : AppCompatActivity() {
         navigationController.navigate(R.id.nav_plus)
     }
 
-    private var expandableListView: ExpandableListView? = null
+    var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
+    private var expandedGroups: ArrayList<Int> = ArrayList()
 
     fun fuckingGarbageFunction() {
 
         val expandableListView: ExpandableListView = findViewById(R.id.navigation_menu)
 
-        if (expandableListView != null) {
-            val listData = ExpandableListData.data
+        val listData = ExpandableListData.data
 
-            var titleList = ArrayList(listData.keys)
+        var titleList = ArrayList(listData.keys)
 
-            titleList.removeIf { i -> i == -1 }
-            titleList.add(-1)
+        titleList.removeIf { i -> i == -1 }
+        titleList.add(-1)
 
-            adapter = ExpandableListAdapter(this, titleList as ArrayList<Int>, listData)
+        adapter = ExpandableListAdapter(this, titleList as ArrayList<Int>, listData)
 
-            expandableListView!!.setAdapter(adapter)
+        expandableListView.setAdapter(adapter)
 
-            expandableListView!!.setOnGroupExpandListener { groupPosition ->
-                if (titleList[groupPosition] ==  -1) {
-                    navigateToNewVehicle()
-                }
-            }
-            expandableListView!!.setOnGroupCollapseListener { groupPosition ->
-                // Pass
-            }
-            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-                DataManager.SetActiveVehicle(groupPosition);
-                navigateToVehicleOption(listData[(titleList as ArrayList<Int>)[groupPosition]]!!.get(childPosition))
-                // Pass
+        for (value in expandedGroups) {
+            expandableListView.expandGroup(value)
+        }
+
+        expandableListView.setOnGroupExpandListener { groupPosition ->
+            if (titleList[groupPosition] ==  -1) {
+                navigateToNewVehicle()
                 binding.drawerLayout.closeDrawer(Gravity.LEFT)
-                false
+            } else if (!expandedGroups.contains(groupPosition)) {
+                expandedGroups.add(groupPosition)
             }
+        }
+
+        expandableListView.setOnGroupCollapseListener { groupPosition ->
+            if (expandedGroups.contains(groupPosition))
+                expandedGroups.remove(groupPosition)
+        }
+
+        expandableListView.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+            DataManager.SetActiveVehicle(groupPosition);
+            navigateToVehicleOption(listData[(titleList as ArrayList<Int>)[groupPosition]]!!.get(childPosition))
+            // Pass
+            binding.drawerLayout.closeDrawer(Gravity.LEFT)
+            false
         }
     }
 

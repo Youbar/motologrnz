@@ -1,6 +1,9 @@
 package com.motologr.ui.data
 
 import android.widget.DatePicker
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentActivity
+import com.motologr.R
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -20,6 +23,11 @@ fun Calendar.toCalendar(date: Date) : Calendar {
 }
 
 object DataManager {
+
+    fun updateTitle(activity: FragmentActivity?, newTitle: String) {
+        val toolbar = activity?.findViewById(R.id.toolbar) as Toolbar
+        toolbar.title = newTitle
+    }
 
     fun roundOffDecimal(number: Double): String {
         val df = DecimalFormat("0.00")

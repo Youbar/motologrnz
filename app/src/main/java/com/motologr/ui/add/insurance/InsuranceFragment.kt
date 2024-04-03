@@ -120,7 +120,7 @@ class InsuranceFragment : Fragment() {
 
         if (radioButtonText == "Comprehensive") {
             return 0
-        } else if (radioButtonText == "Third Party Fire &amp; Theft") {
+        } else if (radioButtonText == "Third Party Fire & Theft") {
             return 1
         } else if (radioButtonText == "Third Party") {
             return 2
