@@ -36,8 +36,8 @@ object DataManager {
     }
 
     private var vehicleArray = ArrayList<Vehicle>()
-    fun CreateNewVehicle(modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {
-        val newVehicle = Vehicle(modelName, year, expiryWOF, regExpiry, odometer)
+    fun CreateNewVehicle(brandName: String, modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {
+        val newVehicle = Vehicle(brandName, modelName, year, expiryWOF, regExpiry, odometer)
         vehicleArray.add(newVehicle)
     }
 
@@ -52,6 +52,10 @@ object DataManager {
         }
 
         return null
+    }
+
+    fun isVehicles(): Boolean {
+        return vehicleArray.isNotEmpty()
     }
 
     fun ReturnVehicleById(id : Int): Vehicle? {
@@ -95,7 +99,7 @@ object DataManager {
     }
 }
 
-class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
+class Vehicle (var brandName: String, var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
 
     var fuelLog: FuelLog = FuelLog()
     var serviceLog: ServiceLog = ServiceLog()
@@ -119,7 +123,7 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
             return odometer
 
         odometerReadings.sortByDescending { log -> log.odometerReading }
-        return odometerReadings[0].odometerReading
+        return odometerReadings.first().odometerReading
     }
 
     fun returnMaintLogs() : ArrayList<Loggable> {
@@ -184,10 +188,6 @@ class Vehicle (var modelName: String, var year: Int, var expiryWOF: Date, var re
 
     fun setVehicleInsurance(_insurance: Insurance) {
         insurance = _insurance
-    }
-
-    fun setVehicleInsuranceInactive() {
-        insurance.isActive = false
     }
 
     private val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
@@ -367,7 +367,23 @@ class Fuel(var fuelType: Int, var price: Double, var litres: Double, var purchas
 
 }
 
-class Insurance (var isActive: Boolean, var insurer: String, var coverage: Int,
+class InsuranceLog : Log() {
+    private var insuranceLog = ArrayList<Insurance>()
+
+    fun addInsuranceToInsuranceLog(insurance: Insurance) {
+        insuranceLog.add(insurance)
+    }
+
+    fun returnInsuranceLog(): ArrayList<Insurance> {
+        return insuranceLog
+    }
+
+    fun returnInsurance(index: Int) : Insurance {
+        return insuranceLog[index]
+    }
+}
+
+class Insurance (var insurer: String, var insurancePolicyStartDate: Date, var coverage: Int,
                  var billingCycle: Int, var billing: Double, var lastBill: Date) {
     fun getNextBillingDate() : Date {
         val calendar : Calendar = Calendar.getInstance()
@@ -388,6 +404,10 @@ class Insurance (var isActive: Boolean, var insurer: String, var coverage: Int,
         val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
         return format.format(getNextBillingDate())
+    }
+
+    fun returnIsActive() : Boolean {
+        return true
     }
 
     // coverage 0 = comp, 1 = 3rd+, 2 = 3rd

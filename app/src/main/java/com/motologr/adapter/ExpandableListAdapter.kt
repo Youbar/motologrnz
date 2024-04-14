@@ -1,5 +1,7 @@
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
+import android.provider.ContactsContract.Data
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,10 +92,12 @@ class ExpandableListAdapter internal constructor(
         listTitleTextView.setTypeface(null, Typeface.BOLD)
 
         val listId = getGroup(listPosition) as Int
+        val vehicleBrand: String? = DataManager.ReturnVehicleById(listId)?.brandName;
         val vehicleName : String? = DataManager.ReturnVehicleById(listId)?.modelName
-        listTitleTextView.text = vehicleName
 
-        if (vehicleName == null)
+        if (vehicleBrand != null && vehicleName != null)
+            listTitleTextView.text = vehicleBrand + " " + vehicleName
+        else
             listTitleTextView.text = "Add New Vehicle"
 
         val bannedStrings: MutableList<String> =
@@ -102,7 +106,10 @@ class ExpandableListAdapter internal constructor(
 
         if (bannedStrings.contains(listTitleTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
-            listTitleImageView.setColorFilter(0)
+            listTitleImageView.setColorFilter(Color.WHITE)
+        } else {
+            val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
+            listTitleImageView.setColorFilter(Color.BLACK)
         }
 
         return convertView

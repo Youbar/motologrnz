@@ -10,9 +10,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -111,14 +113,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-        navController.navigate(R.id.nav_vehicle_1)
+        if (DataManager.isVehicles())
+            navController.navigate(R.id.nav_vehicle_1)
     }
 
     private fun sampleData() {
         val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
-        val vehicle = Vehicle("Mazda 323",
+        val vehicle = Vehicle("Mazda", "323",
             1989,
             format.parse("10/09/2024"),
             format.parse("08/08/2024"),

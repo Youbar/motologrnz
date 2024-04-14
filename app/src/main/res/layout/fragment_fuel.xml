@@ -21,7 +21,7 @@
             android:text="Add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup_fuel_type" />
+            app:layout_constraintTop_toBottomOf="@+id/text_fuel_estimate_field" />
 
         <RadioGroup
             android:id="@+id/radioGroup_fuel_type"
@@ -30,7 +30,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_fuel_type_prompt">
+            app:layout_constraintTop_toBottomOf="@+id/view">
 
             <RadioButton
                 android:id="@+id/radioButton_fuel_91"
@@ -60,17 +60,6 @@
         </RadioGroup>
 
         <TextView
-            android:id="@+id/text_fuel_type_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Type:"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
-
-        <TextView
             android:id="@+id/text_fuel_price_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,7 +67,7 @@
             android:text="Price:"
             android:textSize="24sp"
             app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
-            app:layout_constraintTop_toTopOf="@+id/text_fuel_type_prompt" />
+            tools:layout_editor_absoluteY="332dp" />
 
         <TextView
             android:id="@+id/text_fuel_date_prompt"
@@ -106,11 +95,11 @@
             android:id="@+id/text_fuel_estimate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
             android:text="Est. $/L:"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@+id/editText_fuel_price"
-            app:layout_constraintTop_toTopOf="@+id/text_fuel_price_prompt" />
+            app:layout_constraintStart_toStartOf="@+id/radioGroup_fuel_type"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup_fuel_type" />
 
         <TextView
             android:id="@+id/text_fuel_estimate_field"

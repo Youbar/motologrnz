@@ -38,6 +38,8 @@ class PlusFragment : Fragment() {
         _binding = FragmentPlusBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        val textBrand: TextView = binding.textBrandPrompt
+        val editTextBrand: EditText = binding.editTextBrandInput
         val textModel: TextView = binding.textModelPrompt
         val editTextModel: EditText = binding.editTextModelInput
         val textYear: TextView = binding.textYearPrompt
@@ -49,6 +51,12 @@ class PlusFragment : Fragment() {
         val textCurrentOdo: TextView = binding.textOdoPrompt
         val editTextCurrentOdo: EditText = binding.editTextOdoInput
 
+        plusViewModel.textBrand.observe(viewLifecycleOwner) {
+            textBrand.text = it
+        }
+        plusViewModel.editTextBrand.observe(viewLifecycleOwner) {
+            editTextBrand.hint = it
+        }
         plusViewModel.textModel.observe(viewLifecycleOwner) {
             textModel.text = it
         }
@@ -64,15 +72,9 @@ class PlusFragment : Fragment() {
         plusViewModel.textLastWOF.observe(viewLifecycleOwner) {
             textLastWOF.text = it
         }
-/*        plusViewModel.editTextLastWOF.observe(viewLifecycleOwner) {
-            editTextLastWOF.hint = it
-        }*/
         plusViewModel.textCurrentReg.observe(viewLifecycleOwner) {
             textCurrentReg.text = it
         }
-/*        plusViewModel.editTextCurrentReg.observe(viewLifecycleOwner) {
-            editTextCurrentReg.hint = it
-        }*/
         plusViewModel.textCurrOdo.observe(viewLifecycleOwner) {
             textCurrentOdo.text = it
         }
@@ -92,13 +94,14 @@ class PlusFragment : Fragment() {
         if (!isValidPlusInputs())
             return
 
+        val brandName: String = binding.editTextBrandInput.text.toString()
         val modelName: String = binding.editTextModelInput.text.toString()
         val modelYear: Int = Integer.parseInt(binding.editTextYearInput.text.toString())
         val modelWOF: Date = binding.editTextWofLastInput.getDate()
         val modelReg: Date = binding.editTextRegExpireInput.getDate()
         val odometer: Int = Integer.parseInt(binding.editTextOdoInput.text.toString())
 
-        val vehicle = Vehicle(modelName, modelYear, modelWOF, modelReg, odometer)
+        val vehicle = Vehicle(brandName, modelName, modelYear, modelWOF, modelReg, odometer)
 
         DataManager.CreateNewVehicle(vehicle)
 

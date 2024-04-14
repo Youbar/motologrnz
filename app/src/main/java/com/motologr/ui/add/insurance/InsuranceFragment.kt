@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentInsuranceBinding
@@ -39,13 +38,11 @@ class InsuranceFragment : Fragment() {
 
         val root: View = binding.root
 
-        initialiseSwitch()
-
         initialiseSaveButton()
 
-        val isInsuranceInitalized: Boolean = DataManager.ReturnActiveVehicle()?.isInsuranceInitialised() == true
+        val isInsuranceInitialized: Boolean = DataManager.ReturnActiveVehicle()?.isInsuranceInitialised() == true
 
-        if (isInsuranceInitalized) {
+        if (isInsuranceInitialized) {
             val insurance = DataManager.ReturnActiveVehicle()?.insurance
             if (insurance != null)
                 showCurrentData(insurance)
@@ -54,7 +51,7 @@ class InsuranceFragment : Fragment() {
         return root
     }
 
-    private fun UpdateDatePicker(date: Date) {
+    private fun updateDatePicker(date: Date) {
         val calendar: Calendar = Calendar.getInstance().toCalendar(date)
         val day =  calendar.get(Calendar.DAY_OF_MONTH)
         val month =  calendar.get(Calendar.MONTH)
@@ -63,19 +60,17 @@ class InsuranceFragment : Fragment() {
     }
 
     private fun showCurrentData(insurance: Insurance) {
-        val isActive: Boolean = insurance.isActive
         val insurerName: String = insurance.insurer
         val insuranceType: Int = insurance.coverage
         val insuranceCycle: Int = insurance.billingCycle
         val insuranceValue: Double = insurance.billing
         val insuranceDate: Date = insurance.lastBill
 
-        binding.switchInsuranceBool.isChecked = isActive
         binding.editTextInsuranceInsurer.setText(insurerName)
         binding.radioGroupInsuranceCoverage.check(binding.radioGroupInsuranceCoverage.getChildAt(insuranceType).id)
         binding.radioGroupInsuranceCycle.check(binding.radioGroupInsuranceCycle.getChildAt(insuranceCycle).id)
         binding.editTextInsuranceBill.setText(insuranceValue.toString())
-        UpdateDatePicker(insuranceDate)
+        updateDatePicker(insuranceDate)
     }
 
     override fun onDestroyView() {
@@ -90,23 +85,17 @@ class InsuranceFragment : Fragment() {
     }
 
     private fun convertFragmentToInsuranceObject() {
-        val isActive: Boolean = binding.switchInsuranceBool.isChecked
-
-        if (!isActive) {
-            DataManager.ReturnActiveVehicle()?.setVehicleInsuranceInactive()
-            findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1)
-        }
-
         if (!isValidInsuranceInputs())
             return
 
         val insurerName: String = binding.editTextInsuranceInsurer.text.toString()
+        val insurancePolicyStartDate: Date = binding.editTextInsurancePolicyStartDate.getDate()
         val insuranceType: Int = parseCoverageRadioGroup()
         val insuranceCycle: Int = parseBillingRadioGroup()
         val insuranceValue: Double = binding.editTextInsuranceBill.text.toString().toDouble()
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
-        val insurance: Insurance = Insurance(isActive, insurerName, insuranceType, insuranceCycle, insuranceValue, insuranceDate)
+        val insurance = Insurance(insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate)
 
         DataManager.ReturnActiveVehicle()?.setVehicleInsurance(insurance)
 
@@ -116,33 +105,39 @@ class InsuranceFragment : Fragment() {
     private fun parseCoverageRadioGroup() : Int {
         val radioButtonId = binding.radioGroupInsuranceCoverage.checkedRadioButtonId
         val checkedRadioButton = view?.findViewById<RadioButton>(radioButtonId)
-        val radioButtonText = checkedRadioButton?.text
 
-        if (radioButtonText == "Comprehensive") {
-            return 0
-        } else if (radioButtonText == "Third Party Fire & Theft") {
-            return 1
-        } else if (radioButtonText == "Third Party") {
-            return 2
+        return when (checkedRadioButton?.text) {
+            "Comprehensive" -> {
+                0
+            }
+            "Third Party Fire & Theft" -> {
+                1
+            }
+            "Third Party" -> {
+                2
+            }
+            else -> -1
         }
 
-        return -1
     }
 
     private fun parseBillingRadioGroup() : Int {
         val radioButtonId = binding.radioGroupInsuranceCycle.checkedRadioButtonId
         val checkedRadioButton = view?.findViewById<RadioButton>(radioButtonId)
-        val radioButtonText = checkedRadioButton?.text
 
-        if (radioButtonText == "Fortnightly") {
-            return 0
-        } else if (radioButtonText == "Monthly") {
-            return 1
-        } else if (radioButtonText == "Annually") {
-            return 2
+        return when (checkedRadioButton?.text) {
+            "Fortnightly" -> {
+                0
+            }
+            "Monthly" -> {
+                1
+            }
+            "Annually" -> {
+                2
+            }
+            else -> -1
         }
 
-        return -1
     }
 
     private fun displayValidationError(toastText : String) {
@@ -154,6 +149,8 @@ class InsuranceFragment : Fragment() {
             displayValidationError("Please input your insurer")
             return false
         }
+
+        // DatePicker might need validation
 
         if (parseCoverageRadioGroup() == -1) {
             displayValidationError("Please select a coverage type")
@@ -173,27 +170,5 @@ class InsuranceFragment : Fragment() {
         // DatePicker does not need validation
 
         return true
-    }
-
-    private fun initialiseSwitch() {
-        checkSwitchState()
-
-        binding.switchInsuranceBool.setOnCheckedChangeListener { compoundButton, b ->
-            checkSwitchState()
-        }
-    }
-
-    private fun checkSwitchState() {
-        val switchIsActive = binding.switchInsuranceBool.isChecked
-
-        binding.textInsuranceInsurer.isVisible = switchIsActive
-        binding.editTextInsuranceInsurer.isVisible = switchIsActive
-        binding.textInsuranceCoverage.isVisible = switchIsActive
-        binding.radioGroupInsuranceCoverage.isVisible = switchIsActive
-        binding.textInsuranceBilling.isVisible = switchIsActive
-        binding.radioGroupInsuranceCycle.isVisible = switchIsActive
-        binding.editTextInsuranceBill.isVisible = switchIsActive
-        binding.textInsuranceDate.isVisible = switchIsActive
-        binding.editTextInsuranceDate.isVisible = switchIsActive
     }
 }

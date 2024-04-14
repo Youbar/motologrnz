@@ -49,7 +49,7 @@ class VehicleFragment : Fragment() {
         if (vehicle != null) {
             val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-            var vehicleText = vehicle.modelName + " | " + vehicle.year.toString()
+            var vehicleText = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
 
             var expiryWOF: String = format.format(vehicle.expiryWOF)
             expiryWOF = "Next WOF: $expiryWOF"
@@ -62,11 +62,11 @@ class VehicleFragment : Fragment() {
             var hasInsurance: Boolean = false
 
             if (vehicle.isInsuranceInitialised()) {
-                hasInsurance = vehicle.insurance.isActive
+                hasInsurance = vehicle.insurance.returnIsActive()
             }
 
-            var insurer: String = ""
-            var insurerDate: String = ""
+            var insurer: String
+            var insurerDate: String
 
             if (hasInsurance) {
                 insurer = vehicle.insurance.insurer
@@ -79,6 +79,7 @@ class VehicleFragment : Fragment() {
                 insurerDate += vehicle.insurance.getNextBillingDateString()
             } else {
                 insurer = "You do not have a registered insurer"
+                insurerDate = ""
             }
 
 
@@ -117,7 +118,7 @@ class VehicleFragment : Fragment() {
 
         val fab: View = binding.fab
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener { _ ->
             findNavController().navigate(R.id.action_nav_vehicle_1_to_nav_add)
         }
     }

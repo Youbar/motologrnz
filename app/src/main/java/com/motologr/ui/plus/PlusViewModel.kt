@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModel
 
 class PlusViewModel : ViewModel() {
 
-    private val _textNewVehicle = MutableLiveData<String>().apply {
-        value = "New Car Details"
+    private val _textBrand = MutableLiveData<String>().apply {
+        value = "Brand/Manufacturer"
+    }
+    private val _editTextBrand = MutableLiveData<String>().apply {
+        value = "Brand name"
     }
     private val _textModel = MutableLiveData<String>().apply {
         value = "Model"
@@ -24,14 +27,8 @@ class PlusViewModel : ViewModel() {
     private val _textLastWOF = MutableLiveData<String>().apply {
         value = "When is your next WOF due?"
     }
-    private val _editTextLastWOF = MutableLiveData<String>().apply {
-        value = "**/**/**"
-    }
     private val _textCurrReg = MutableLiveData<String>().apply {
         value = "When does your current registration expire?"
-    }
-    private val _editTextCurrReg = MutableLiveData<String>().apply {
-        value = "**/**/**"
     }
     private val _textCurrOdo = MutableLiveData<String>().apply {
         value = "How many kms has your car done?"
@@ -40,14 +37,14 @@ class PlusViewModel : ViewModel() {
         value = "xxxx km"
     }
 
+    val textBrand: LiveData<String> = _textBrand
+    val editTextBrand: LiveData<String> = _editTextBrand
     val textModel: LiveData<String> = _textModel
     val editTextModel: LiveData<String> = _editTextModel
     val textYear: LiveData<String> = _textYear
     val editTextYear: LiveData<String> = _editTextYear
     val textLastWOF: LiveData<String> = _textLastWOF
-    val editTextLastWOF: LiveData<String> = _editTextLastWOF
     val textCurrentReg: LiveData<String> = _textCurrReg
-    val editTextCurrentReg: LiveData<String> = _editTextCurrReg
     val textCurrOdo: LiveData<String> = _textCurrOdo
     val editTextCurrOdo: LiveData<String> = _editTextCurrOdo
 }
