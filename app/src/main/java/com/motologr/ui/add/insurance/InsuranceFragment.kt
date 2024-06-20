@@ -97,7 +97,7 @@ class InsuranceFragment : Fragment() {
 
         val insurance = Insurance(insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate)
 
-        DataManager.ReturnActiveVehicle()?.setVehicleInsurance(insurance)
+        DataManager.ReturnActiveVehicle()?.logInsurance(insurance)
 
         findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1)
     }

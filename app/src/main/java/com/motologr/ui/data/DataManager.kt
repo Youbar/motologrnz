@@ -7,6 +7,8 @@ import com.motologr.R
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.Calendar
 import java.util.Date
 
@@ -101,6 +103,7 @@ object DataManager {
 
 class Vehicle (var brandName: String, var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
 
+    var insuranceLog: InsuranceLog = InsuranceLog()
     var fuelLog: FuelLog = FuelLog()
     var serviceLog: ServiceLog = ServiceLog()
     var repairLog: RepairLog = RepairLog()
@@ -162,6 +165,10 @@ class Vehicle (var brandName: String, var modelName: String, var year: Int, var 
         return loggable
     }
 
+    fun logInsurance(insurance: Insurance) {
+        insuranceLog.addInsuranceToInsuranceLog(insurance)
+    }
+
     fun logFuel(fuel: Fuel) {
         fuelLog.addFuelToFuelLog(fuel)
     }
@@ -212,7 +219,7 @@ class Vehicle (var brandName: String, var modelName: String, var year: Int, var 
 open class Log
 
 
-// Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100
+// Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100, Insurance = 200, InsuranceBill = 201
 open class Loggable(var sortableDate: Date, val classId: Int, var unitPrice: Double) {
     var Id : Int = -1
 
@@ -384,8 +391,70 @@ class InsuranceLog : Log() {
 }
 
 class Insurance (var insurer: String, var insurancePolicyStartDate: Date, var coverage: Int,
-                 var billingCycle: Int, var billing: Double, var lastBill: Date) {
+                 var billingCycle: Int, var billing: Double, var lastBill: Date) : Loggable(insurancePolicyStartDate, 200, billing) {
+
+    var insuranceBillingLog : InsuranceBillingLog = InsuranceBillingLog()
+
+    init {
+        generateInsuranceBills()
+    }
+
+    private fun generateInsuranceBills() {
+        val calendar : Calendar = Calendar.getInstance()
+
+        val policyStartDate = insurancePolicyStartDate
+
+        // Work our way backwards from last billing date
+        var lastBillingDate = lastBill
+
+        calendar.set(lastBillingDate.year + 1900, lastBillingDate.month, lastBillingDate.date)
+
+        while (lastBillingDate > policyStartDate) {
+            if (billingCycle == 0) {
+                calendar.add(Calendar.DATE, -14)
+            } else if (billingCycle == 1) {
+                calendar.add(Calendar.MONTH, -1)
+            } else if (billingCycle == 2) {
+                calendar.add(Calendar.YEAR, -1)
+            }
+
+            lastBillingDate = calendar.time
+        }
+
+        // Then forwards
+        calendar.set(policyStartDate.year + 1900 + 1, policyStartDate.month, policyStartDate.date)
+        val policyEndDate = calendar.time
+
+        calendar.set(lastBillingDate.year + 1900, lastBillingDate.month, lastBillingDate.date)
+
+        while (lastBillingDate < policyEndDate) {
+            if (billingCycle == 0) {
+                calendar.add(Calendar.DATE, 14)
+            } else if (billingCycle == 1) {
+                calendar.add(Calendar.MONTH, 1)
+            } else if (billingCycle == 2) {
+                calendar.add(Calendar.YEAR, 1)
+            }
+
+            lastBillingDate = calendar.time
+
+            var insuranceBilling = InsuranceBilling(lastBillingDate, billing)
+            insuranceBillingLog.addInsuranceBillingToInsuranceBillingLog(insuranceBilling)
+        }
+    }
+
+    fun returnInsuranceBillingLogs() : InsuranceBillingLog {
+        return insuranceBillingLog
+    }
+
     fun getNextBillingDate() : Date {
+
+        for (insuranceBilling in insuranceBillingLog.returnInsuranceLog()) {
+            if (insuranceBilling.billingDate > Calendar.getInstance().time) {
+                return insuranceBilling.billingDate
+            }
+        }
+
         val calendar : Calendar = Calendar.getInstance()
         calendar.set(lastBill.year + 1900, lastBill.month, lastBill.date)
 
@@ -446,3 +515,21 @@ class Insurance (var insurer: String, var insurancePolicyStartDate: Date, var co
         }
     }
 }
+
+class InsuranceBillingLog : Log() {
+    private var insuranceBillingLog = ArrayList<InsuranceBilling>()
+
+    fun addInsuranceBillingToInsuranceBillingLog(insuranceBilling: InsuranceBilling) {
+        insuranceBillingLog.add(insuranceBilling)
+    }
+
+    fun returnInsuranceLog(): ArrayList<InsuranceBilling> {
+        return insuranceBillingLog
+    }
+
+    fun returnInsurance(index: Int) : InsuranceBilling {
+        return insuranceBillingLog[index]
+    }
+}
+
+class InsuranceBilling(var billingDate: Date, var price: Double) : Loggable(billingDate, 201, price)

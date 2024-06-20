@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
             navigationController.navigate(R.id.nav_vehicle_1)
         }
         else if (optionName == "Insurance") {
-            navigationController.navigate(R.id.nav_insurance)
+            navigationController.navigate(R.id.nav_insurance_logging)
         }
         else if (optionName == "Maintenance") {
             navigationController.navigate(R.id.nav_maint_logging)
