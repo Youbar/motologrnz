@@ -10,12 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.motologr.databinding.FragmentExpensesBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Loggable
-import java.text.DateFormat
+import com.motologr.ui.data.logging.Loggable
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import kotlin.math.min
 
 class ExpensesFragment : Fragment() {
 

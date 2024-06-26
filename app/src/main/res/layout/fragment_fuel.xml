@@ -67,7 +67,7 @@
             android:text="Price:"
             android:textSize="24sp"
             app:layout_constraintStart_toEndOf="@+id/radioGroup_fuel_type"
-            tools:layout_editor_absoluteY="332dp" />
+            app:layout_constraintTop_toTopOf="@+id/radioGroup_fuel_type" />
 
         <TextView
             android:id="@+id/text_fuel_date_prompt"

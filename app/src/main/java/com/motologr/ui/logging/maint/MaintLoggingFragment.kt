@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.motologr.R
 import com.motologr.databinding.FragmentMaintLoggingBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Loggable
-import com.motologr.ui.data.Repair
-import com.motologr.ui.data.Service
-import com.motologr.ui.data.Wof
+import com.motologr.ui.data.logging.Loggable
+import com.motologr.ui.data.objects.maint.Repair
+import com.motologr.ui.data.objects.maint.Service
+import com.motologr.ui.data.objects.maint.Wof
 import java.text.SimpleDateFormat
 
 class MaintLoggingFragment : Fragment() {

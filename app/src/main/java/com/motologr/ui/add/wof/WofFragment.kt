@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentWofBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Vehicle
-import com.motologr.ui.data.Wof
+import com.motologr.ui.data.objects.vehicle.Vehicle
+import com.motologr.ui.data.objects.maint.Wof
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
 import java.text.SimpleDateFormat

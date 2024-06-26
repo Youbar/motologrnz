@@ -5,16 +5,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
-import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -23,12 +20,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.room.Room
 import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
+import com.motologr.ui.data.AppDatabase
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Repair
-import com.motologr.ui.data.Service
-import com.motologr.ui.data.Vehicle
+import com.motologr.ui.data.objects.maint.Repair
+import com.motologr.ui.data.objects.maint.Service
+import com.motologr.ui.data.objects.vehicle.Vehicle
 import java.text.SimpleDateFormat
 
 
@@ -39,6 +38,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "motologr"
+        ).build()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 

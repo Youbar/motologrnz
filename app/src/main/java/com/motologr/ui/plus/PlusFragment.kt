@@ -14,9 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentPlusBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Vehicle
+import com.motologr.ui.data.objects.vehicle.Vehicle
 import com.motologr.ui.data.getDate
-import java.text.SimpleDateFormat
 import java.util.Date
 
 class PlusFragment : Fragment() {

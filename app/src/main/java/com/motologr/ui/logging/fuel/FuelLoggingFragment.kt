@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelLoggingBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Fuel
+import com.motologr.ui.data.objects.fuel.Fuel
 import java.text.SimpleDateFormat
 
 class FuelLoggingFragment : Fragment() {

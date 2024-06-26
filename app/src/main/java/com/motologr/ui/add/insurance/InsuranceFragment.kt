@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentInsuranceBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Insurance
+import com.motologr.ui.data.objects.insurance.Insurance
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
 import java.util.Calendar

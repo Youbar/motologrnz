@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Vehicle
+import com.motologr.ui.data.objects.vehicle.Vehicle
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat

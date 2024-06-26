@@ -13,11 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentServiceBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Repair
-import com.motologr.ui.data.Service
+import com.motologr.ui.data.objects.maint.Service
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 

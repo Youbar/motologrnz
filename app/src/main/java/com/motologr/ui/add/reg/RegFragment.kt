@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentRegBinding
 import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.Reg
-import com.motologr.ui.data.Vehicle
+import com.motologr.ui.data.objects.reg.Reg
+import com.motologr.ui.data.objects.vehicle.Vehicle
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
 import java.math.RoundingMode
