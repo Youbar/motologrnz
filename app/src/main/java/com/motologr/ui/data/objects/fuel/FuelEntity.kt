@@ -28,7 +28,7 @@ data class FuelEntity(
 }
 
 @Dao
-interface FuelLoggableDao {
+interface FuelDao {
     @Query("SELECT * FROM Fuel")
     fun getAll(): List<FuelEntity>
 

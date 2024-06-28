@@ -7,7 +7,11 @@ import androidx.room.TypeConverters
 import com.motologr.ui.data.objects.LoggableDao
 import com.motologr.ui.data.objects.LoggableEntity
 import com.motologr.ui.data.objects.fuel.FuelEntity
-import com.motologr.ui.data.objects.fuel.FuelLoggableDao
+import com.motologr.ui.data.objects.fuel.FuelDao
+import com.motologr.ui.data.objects.maint.RepairDao
+import com.motologr.ui.data.objects.maint.RepairEntity
+import com.motologr.ui.data.objects.maint.ServiceDao
+import com.motologr.ui.data.objects.maint.ServiceEntity
 import com.motologr.ui.data.objects.vehicle.VehicleDao
 import com.motologr.ui.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
@@ -41,10 +45,16 @@ public class Converters {
     }
 }
 
-@Database(entities = [FuelEntity::class, LoggableEntity::class, VehicleEntity::class], version = 1)
+@Database(entities = [FuelEntity::class,
+    LoggableEntity::class,
+    VehicleEntity::class,
+    RepairEntity::class,
+    ServiceEntity::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun fuelLoggableDao(): FuelLoggableDao
+    abstract fun fuelDao(): FuelDao
     abstract fun loggableDao(): LoggableDao
     abstract fun vehicleDao(): VehicleDao
+    abstract fun repairDao(): RepairDao
+    abstract fun serviceDao(): ServiceDao
 }

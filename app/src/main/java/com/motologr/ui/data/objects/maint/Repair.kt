@@ -26,4 +26,9 @@ class Repair(var repairType: Int,
             }
         }
     }
+
+    fun convertToRepairEntity() : RepairEntity {
+        val repairEntity = RepairEntity(id, repairType, price, repairDate, repairProvider, comment, vehicleId)
+        return repairEntity
+    }
 }

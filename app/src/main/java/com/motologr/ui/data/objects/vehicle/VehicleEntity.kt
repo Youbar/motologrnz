@@ -27,7 +27,7 @@ data class VehicleEntity(
 
 @Dao
 interface VehicleDao {
-    @Query("SELECT * FROM Loggable WHERE id = (SELECT MAX(id) FROM Vehicle)")
+    @Query("SELECT * FROM Vehicle WHERE id = (SELECT MAX(id) FROM Vehicle)")
     fun getMaxId(): Int
 
     @Query("SELECT * FROM Vehicle")

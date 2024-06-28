@@ -80,7 +80,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
 
         Thread {
             MainActivity.getDatabase()
-                ?.fuelLoggableDao()
+                ?.fuelDao()
                 ?.insert(fuel.convertToFuelEntity())
             MainActivity.getDatabase()
                 ?.loggableDao()
@@ -94,10 +94,28 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
 
     fun logService(service: Service) {
         serviceLog.addServiceToServiceLog(service)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.serviceDao()
+                ?.insert(service.convertToServiceEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(service.convertToLoggableEntity())
+        }.start()
     }
 
     fun logRepair(repair: Repair) {
         repairLog.addRepairToRepairLog(repair)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.repairDao()
+                ?.insert(repair.convertToRepairEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(repair.convertToLoggableEntity())
+        }.start()
     }
 
     fun logWof(wof: Wof) {

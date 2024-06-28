@@ -3,7 +3,6 @@ package com.motologr
 import ExpandableListAdapter
 import android.content.Context
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.view.Gravity
 import android.view.Menu
 import android.view.MotionEvent
@@ -27,12 +26,10 @@ import com.motologr.databinding.ActivityMainBinding
 import com.motologr.ui.data.AppDatabase
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.logging.fuel.FuelLog
-import com.motologr.ui.data.objects.maint.Repair
-import com.motologr.ui.data.objects.maint.Service
+import com.motologr.ui.data.logging.maint.RepairLog
+import com.motologr.ui.data.logging.maint.ServiceLog
 import com.motologr.ui.data.objects.vehicle.Vehicle
 import com.motologr.ui.data.sampleData.SampleData
-import java.text.SimpleDateFormat
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -98,10 +95,6 @@ class MainActivity : AppCompatActivity() {
             R.string.drawer_open,
             R.string.drawer_close
         ) {
-            override fun onDrawerClosed(drawerView: View) {
-                super.onDrawerClosed(drawerView)
-            }
-
             override fun onDrawerOpened(drawerView: View) {
                 super.onDrawerOpened(drawerView)
 
@@ -109,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        drawerLayout.setDrawerListener(drawerToggle)
+        drawerLayout.addDrawerListener(drawerToggle)
         drawerToggle.setToolbarNavigationClickListener {
             onBackPressed()
         }
@@ -124,7 +117,9 @@ class MainActivity : AppCompatActivity() {
                     SampleData()
                 else {
                     for(vehicle in vehicles) {
-                        vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelLoggableDao()?.getAllByVehicleId(vehicle.id))
+                        vehicle.repairLog = RepairLog.castRepairLoggableEntities(db?.repairDao()?.getAllByVehicleId(vehicle.id))
+                        vehicle.serviceLog = ServiceLog.castServiceLoggableEntities(db?.serviceDao()?.getAllByVehicleId(vehicle.id))
+                        vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelDao()?.getAllByVehicleId(vehicle.id))
                         DataManager.pullVehicleFromDb(vehicle)
                     }
                 }
@@ -134,8 +129,10 @@ class MainActivity : AppCompatActivity() {
                 val vehicles : List<Vehicle> = Vehicle.castVehicleEntities(db?.vehicleDao()?.getAll())
 
                 for(vehicle in vehicles) {
-                    vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelLoggableDao()?.getAllByVehicleId(vehicle.id))
-                    DataManager.CreateNewVehicle(vehicle)
+                    vehicle.repairLog = RepairLog.castRepairLoggableEntities(db?.repairDao()?.getAllByVehicleId(vehicle.id))
+                    vehicle.serviceLog = ServiceLog.castServiceLoggableEntities(db?.serviceDao()?.getAllByVehicleId(vehicle.id))
+                    vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelDao()?.getAllByVehicleId(vehicle.id))
+                    DataManager.pullVehicleFromDb(vehicle)
                 }
             }
         }
@@ -149,14 +146,14 @@ class MainActivity : AppCompatActivity() {
 
             // Hide/show top search bar
             if (destination.id == R.id.nav_vehicle_1 || destination.id == R.id.nav_plus) {
-                drawerToggle.setDrawerIndicatorEnabled(true) // <<< Add this line of code to enable the burger icon
+                drawerToggle.isDrawerIndicatorEnabled = true // <<< Add this line of code to enable the burger icon
             }
 
             // Fragments that you want to show the back button
 /*            if (destination.id == R.id.nav_add) {*/
             else {
                 // Disable the functionality of opening the side drawer, when the burger icon is clicked
-                drawerToggle.setDrawerIndicatorEnabled(false)
+                drawerToggle.isDrawerIndicatorEnabled = false
             }
         }
 
@@ -174,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                     HashMap<Int, List<String>>()
 
                 for (i in 0 until DataManager.ReturnVehicleArrayLength()) {
-                    var vehicle : Vehicle? = DataManager.ReturnVehicle(i)
+                    val vehicle : Vehicle? = DataManager.ReturnVehicle(i)
 
                     val vehicleOptions: MutableList<String> =
                         ArrayList()
@@ -221,7 +218,6 @@ class MainActivity : AppCompatActivity() {
         navigationController.navigate(R.id.nav_plus)
     }
 
-    var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
     private var expandedGroups: ArrayList<Int> = ArrayList()
 
@@ -231,7 +227,7 @@ class MainActivity : AppCompatActivity() {
 
         val listData = ExpandableListData.data
 
-        var titleList = ArrayList(listData.keys)
+        val titleList = ArrayList(listData.keys)
 
         titleList.removeIf { i -> i == -1 }
         titleList.add(-1)
@@ -259,8 +255,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         expandableListView.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-            DataManager.SetActiveVehicle(groupPosition);
-            navigateToVehicleOption(listData[(titleList as ArrayList<Int>)[groupPosition]]!!.get(childPosition))
+            DataManager.SetActiveVehicle(groupPosition)
+            navigateToVehicleOption(listData[(titleList)[groupPosition]]!!.get(childPosition))
             // Pass
             binding.drawerLayout.closeDrawer(Gravity.LEFT)
             false

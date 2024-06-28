@@ -26,4 +26,9 @@ class Service(var serviceType: Int,
             }
         }
     }
+
+    fun convertToServiceEntity() : ServiceEntity {
+        val serviceEntity = ServiceEntity(id, serviceType, price, serviceDate, serviceProvider, comment, vehicleId)
+        return serviceEntity
+    }
 }
