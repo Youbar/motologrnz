@@ -65,13 +65,14 @@ class ServiceFragment : Fragment() {
         if (!isValidServiceInputs())
             return
 
+        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val serviceType: Int = parseServiceTypeRadioGroup()
         val serviceDate: Date = binding.editTextServiceDate.getDate()
         val serviceProvider: String = binding.editTextServiceProvider.text.toString()
         val servicePrice: BigDecimal = binding.editTextServicePrice.text.toString().toBigDecimal()
         val serviceComment: String = binding.editTextServiceComment.text.toString()
 
-        val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment)
+        val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment, vehicleId)
 
         DataManager.ReturnActiveVehicle()?.logService(service)
         findNavController().navigate(R.id.action_nav_service_to_nav_vehicle_1)

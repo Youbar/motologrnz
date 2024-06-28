@@ -8,7 +8,8 @@ import java.util.Date
 // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100, Insurance = 200, InsuranceBill = 201
 open class Loggable(var sortableDate: Date,
                     var classId: Int,
-                    var unitPrice: BigDecimal) {
+                    var unitPrice: BigDecimal,
+                    open var vehicleId: Int) {
     var id : Int = -1
 
     init {
@@ -16,7 +17,7 @@ open class Loggable(var sortableDate: Date,
     }
 
     fun convertToLoggableEntity() : LoggableEntity {
-        val loggableEntity = LoggableEntity(id, sortableDate, classId, unitPrice)
+        val loggableEntity = LoggableEntity(id, sortableDate, classId, unitPrice, vehicleId)
         return loggableEntity
     }
 }

@@ -16,10 +16,11 @@ data class LoggableEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "sortableDate") val sortableDate: Date,
     @ColumnInfo(name = "classId") val classId: Int,
-    @ColumnInfo(name = "unitPrice") val unitPrice: BigDecimal)
+    @ColumnInfo(name = "unitPrice") val unitPrice: BigDecimal,
+    @ColumnInfo(name = "vehicleId") val vehicleId: Int)
 {
     fun convertToLoggableObject() : Loggable {
-        val loggable : Loggable = Loggable(sortableDate, classId, unitPrice)
+        val loggable : Loggable = Loggable(sortableDate, classId, unitPrice, vehicleId)
         loggable.id = id
         return loggable
     }

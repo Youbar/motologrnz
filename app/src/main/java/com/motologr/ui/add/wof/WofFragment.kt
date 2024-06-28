@@ -92,13 +92,14 @@ class WofFragment : Fragment() {
 
         val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
 
+        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val oldDate = binding.editTextWofCurrDate.text.toString()
         val newDate = binding.editTextWofNextDate.getDate()
         val price = binding.editTextWofPrice.text.toString().toBigDecimal()
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-        val wof: Wof = Wof(newDate, format.parse(oldDate), price)
+        val wof: Wof = Wof(newDate, format.parse(oldDate), price, vehicleId)
 
         vehicle.logWof(wof)
 

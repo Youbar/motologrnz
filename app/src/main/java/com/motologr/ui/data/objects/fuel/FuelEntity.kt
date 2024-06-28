@@ -17,10 +17,11 @@ data class FuelEntity(
     @ColumnInfo(name = "price") val price: BigDecimal,
     @ColumnInfo(name = "litres") val litres: BigDecimal,
     @ColumnInfo(name = "purchaseDate") val purchaseDate: Date,
-    @ColumnInfo(name = "odometerReading") val odometerReading: Int)
+    @ColumnInfo(name = "odometerReading") val odometerReading: Int,
+    @ColumnInfo(name = "vehicleId") val vehicleId: Int)
 {
     fun convertToFuelObject() : Fuel {
-        val fuel : Fuel = Fuel(fuelType, price, litres, purchaseDate, odometerReading)
+        val fuel : Fuel = Fuel(fuelType, price, litres, purchaseDate, odometerReading, vehicleId)
         fuel.id = id
         return fuel
     }
@@ -30,6 +31,9 @@ data class FuelEntity(
 interface FuelLoggableDao {
     @Query("SELECT * FROM Fuel")
     fun getAll(): List<FuelEntity>
+
+    @Query("SELECT * FROM Fuel WHERE vehicleId == :vehicleId")
+    fun getAllByVehicleId(vehicleId : Int): List<FuelEntity>
 
     @Insert
     fun insert(vararg fuel: FuelEntity)

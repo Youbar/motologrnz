@@ -65,13 +65,14 @@ class RepairFragment : Fragment() {
         if (!isValidRepairInputs())
             return
 
+        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val repairType: Int = parseRepairTypeRadioGroup()
         val repairDate: Date = binding.editTextRepairDate.getDate()
         val repairProvider: String = binding.editTextRepairProvider.text.toString()
         val repairPrice: BigDecimal = binding.editTextRepairPrice.text.toString().toBigDecimal()
         val repairComment: String = binding.editTextRepairComment.text.toString()
 
-        val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment)
+        val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment, vehicleId)
 
         DataManager.ReturnActiveVehicle()?.logRepair(repair)
         findNavController().navigate(R.id.action_nav_repair_to_nav_vehicle_1)

@@ -3,7 +3,6 @@ package com.motologr.ui.data
 import android.widget.DatePicker
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
-import androidx.room.Room
 import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.ui.data.objects.vehicle.Vehicle
@@ -39,13 +38,28 @@ object DataManager {
 
     private var vehicleArray = ArrayList<Vehicle>()
     fun CreateNewVehicle(brandName: String, modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {
-        val newVehicle = Vehicle(brandName, modelName, year, expiryWOF, regExpiry, odometer)
+        val newVehicle = Vehicle(FetchIdForVehicle(), brandName, modelName, year, expiryWOF, regExpiry, odometer)
         vehicleArray.add(newVehicle)
+
+        PostVehicleToDb(newVehicle)
     }
 
     fun CreateNewVehicle(newVehicle: Vehicle) {
         vehicleArray.add(newVehicle)
-        SetActiveVehicle(vehicleArray.lastIndex)
+
+        PostVehicleToDb(newVehicle)
+    }
+
+    fun pullVehicleFromDb(newVehicle: Vehicle) {
+        vehicleArray.add(newVehicle)
+    }
+
+    fun PostVehicleToDb(newVehicle: Vehicle) {
+        Thread {
+            MainActivity.getDatabase()
+                ?.vehicleDao()
+                ?.insert(newVehicle.convertToVehicleEntity())
+        }.start()
     }
 
     fun ReturnVehicle(index : Int): Vehicle? {
@@ -61,7 +75,7 @@ object DataManager {
     }
 
     fun ReturnVehicleById(id : Int): Vehicle? {
-        val vehicle: Vehicle? = vehicleArray.find { v -> v.getId() == id }
+        val vehicle: Vehicle? = vehicleArray.find { v -> v.id == id }
 
         return vehicle
     }
@@ -70,6 +84,10 @@ object DataManager {
 
     fun SetActiveVehicle(int: Int) {
         activeVehicle = int;
+    }
+
+    fun setLatestVehicleActive() {
+        SetActiveVehicle(vehicleArray.lastIndex)
     }
 
     fun ReturnActiveVehicle(): Vehicle? {
@@ -104,6 +122,17 @@ object DataManager {
     }
 
     private var idCounterVehicle: Int = 0
+
+    fun setIdCounterVehicle() {
+        Thread {
+            val maxId = MainActivity.getDatabase()
+                ?.vehicleDao()
+                ?.getMaxId()
+
+            if (maxId != null)
+                idCounterVehicle = maxId + 1
+        }.start()
+    }
 
     fun FetchIdForVehicle() : Int {
         idCounterVehicle += 1

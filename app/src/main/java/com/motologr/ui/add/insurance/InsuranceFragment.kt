@@ -89,6 +89,7 @@ class InsuranceFragment : Fragment() {
         if (!isValidInsuranceInputs())
             return
 
+        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val insurerName: String = binding.editTextInsuranceInsurer.text.toString()
         val insurancePolicyStartDate: Date = binding.editTextInsurancePolicyStartDate.getDate()
         val insuranceType: Int = parseCoverageRadioGroup()
@@ -96,7 +97,7 @@ class InsuranceFragment : Fragment() {
         val insuranceValue: BigDecimal = binding.editTextInsuranceBill.text.toString().toBigDecimal()
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
-        val insurance = Insurance(insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate)
+        val insurance = Insurance(insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)
 
         DataManager.ReturnActiveVehicle()?.logInsurance(insurance)
 

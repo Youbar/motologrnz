@@ -1,7 +1,6 @@
 package com.motologr.ui.data.objects.vehicle
 
 import com.motologr.MainActivity
-import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.logging.Loggable
 import com.motologr.ui.data.objects.reg.Reg
 import com.motologr.ui.data.logging.reg.RegLog
@@ -18,7 +17,7 @@ import com.motologr.ui.data.objects.insurance.Insurance
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class Vehicle (var brandName: String, var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
+class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
 
     var insuranceLog: InsuranceLog = InsuranceLog()
     var fuelLog: FuelLog = FuelLog()
@@ -26,16 +25,6 @@ class Vehicle (var brandName: String, var modelName: String, var year: Int, var 
     var repairLog: RepairLog = RepairLog()
     var wofLog: WofLog = WofLog()
     var regLog: RegLog = RegLog()
-
-    private var id: Int = -1
-
-    init {
-        this.id = DataManager.FetchIdForVehicle()
-    }
-
-    fun getId() : Int {
-        return id
-    }
 
     fun getLatestOdometerReading() : Int {
         var odometerReadings = fuelLog.returnFuelLog()
@@ -99,6 +88,10 @@ class Vehicle (var brandName: String, var modelName: String, var year: Int, var 
         }.start()
     }
 
+    fun returnFuelLog() : ArrayList<Fuel> {
+        return fuelLog.returnFuelLog()
+    }
+
     fun logService(service: Service) {
         serviceLog.addServiceToServiceLog(service)
     }
@@ -139,5 +132,25 @@ class Vehicle (var brandName: String, var modelName: String, var year: Int, var 
 
     fun updateRegExpiry(newRegExpiryDate: Date) {
         regExpiry = newRegExpiryDate
+    }
+
+    fun convertToVehicleEntity() : VehicleEntity {
+        val vehicleEntity = VehicleEntity(id, brandName, modelName, year, expiryWOF, regExpiry, odometer)
+        return vehicleEntity
+    }
+
+    companion object {
+        fun castVehicleEntities(vehicleEntities : List<VehicleEntity>?) : List<Vehicle> {
+            val vehicleList = ArrayList<Vehicle>(0)
+
+            if (vehicleEntities == null)
+                return vehicleList.toList()
+
+            for (vehicleEntity in vehicleEntities){
+                vehicleList.add(vehicleEntity.convertToVehicleObject())
+            }
+
+            return vehicleList
+        }
     }
 }

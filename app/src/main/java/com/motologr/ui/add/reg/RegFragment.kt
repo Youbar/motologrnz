@@ -159,6 +159,7 @@ class RegFragment : Fragment() {
 
         val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
 
+        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val regExpiryDate = binding.editTextRegCurrDate.text.toString()
         val newRegExpiryDate = binding.editTextRegNextDate.getDate()
         val monthsExtended = getMonthsExtended()
@@ -166,7 +167,7 @@ class RegFragment : Fragment() {
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-        val reg: Reg = Reg(newRegExpiryDate, format.parse(regExpiryDate), monthsExtended, price)
+        val reg: Reg = Reg(newRegExpiryDate, format.parse(regExpiryDate), monthsExtended, price, vehicleId)
 
         vehicle.logReg(reg)
 

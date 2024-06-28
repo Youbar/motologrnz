@@ -1,5 +1,6 @@
 package com.motologr.ui.data.objects.insurance
 
+import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.logging.Log
 import com.motologr.ui.data.logging.Loggable
 import java.math.BigDecimal
@@ -7,9 +8,14 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-class Insurance (var insurer: String, var insurancePolicyStartDate: Date, var coverage: Int,
-                 var billingCycle: Int, var billing: BigDecimal, var lastBill: Date
-) : Loggable(insurancePolicyStartDate, 200, billing) {
+class Insurance (var insurer: String,
+                 var insurancePolicyStartDate: Date,
+                 var coverage: Int,
+                 var billingCycle: Int,
+                 var billing: BigDecimal,
+                 var lastBill: Date,
+                 override var vehicleId: Int
+) : Loggable(insurancePolicyStartDate, 200, billing, vehicleId) {
 
     var insuranceBillingLog : InsuranceBillingLog = InsuranceBillingLog()
 
@@ -44,6 +50,7 @@ class Insurance (var insurer: String, var insurancePolicyStartDate: Date, var co
         val policyEndDate = calendar.time
 
         calendar.set(lastBillingDate.year + 1900, lastBillingDate.month, lastBillingDate.date)
+        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
 
         while (lastBillingDate < policyEndDate) {
             if (billingCycle == 0) {
@@ -56,7 +63,7 @@ class Insurance (var insurer: String, var insurancePolicyStartDate: Date, var co
 
             lastBillingDate = calendar.time
 
-            var insuranceBilling = InsuranceBilling(lastBillingDate, billing)
+            val insuranceBilling = InsuranceBilling(lastBillingDate, billing, vehicleId)
             insuranceBillingLog.addInsuranceBillingToInsuranceBillingLog(insuranceBilling)
         }
     }
@@ -150,4 +157,4 @@ class InsuranceBillingLog : Log() {
     }
 }
 
-class InsuranceBilling(var billingDate: Date, var price: BigDecimal) : Loggable(billingDate, 201, price)
+class InsuranceBilling(var billingDate: Date, var price: BigDecimal, override var vehicleId: Int) : Loggable(billingDate, 201, price, vehicleId)

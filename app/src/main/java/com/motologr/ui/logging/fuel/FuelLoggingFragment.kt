@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelLoggingBinding
 import com.motologr.ui.data.DataManager
@@ -32,6 +33,14 @@ class FuelLoggingFragment : Fragment() {
         _binding = FragmentFuelLoggingBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val root: View = binding.root
+
         // getting the recyclerview by its id
         val recyclerview = binding.recyclerViewFuelLogging
 
@@ -40,7 +49,7 @@ class FuelLoggingFragment : Fragment() {
 
         // ArrayList of class ItemsViewModel
         val data = ArrayList<FuelLoggingItemsViewModel>()
-        val fuelLog = DataManager.ReturnActiveVehicle()?.fuelLog?.returnFuelLog()
+        val fuelLog = DataManager.ReturnActiveVehicle()?.returnFuelLog()
 
         var fuelLogSize = (fuelLog?.size?:0)
 
@@ -62,8 +71,6 @@ class FuelLoggingFragment : Fragment() {
 
         // Setting the Adapter with the recyclerview
         recyclerview.adapter = adapter
-
-        return root
     }
 
     override fun onDestroyView() {

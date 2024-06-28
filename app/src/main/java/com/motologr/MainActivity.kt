@@ -3,6 +3,7 @@ package com.motologr
 import ExpandableListAdapter
 import android.content.Context
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.view.Gravity
 import android.view.Menu
 import android.view.MotionEvent
@@ -25,6 +26,7 @@ import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
 import com.motologr.ui.data.AppDatabase
 import com.motologr.ui.data.DataManager
+import com.motologr.ui.data.logging.fuel.FuelLog
 import com.motologr.ui.data.objects.maint.Repair
 import com.motologr.ui.data.objects.maint.Service
 import com.motologr.ui.data.objects.vehicle.Vehicle
@@ -44,15 +46,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initDb() {
+        Thread {
+            db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "motologr"
+            ).build()
+        }.start()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "motologr"
-        ).build()
+        initDb()
 
         DataManager.setIdCounterLoggable()
+        DataManager.setIdCounterVehicle()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -105,8 +114,33 @@ class MainActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        if (BuildConfig.DEBUG)
-            SampleData()
+        val thread: Thread
+
+        if (BuildConfig.DEBUG) {
+            thread = Thread {
+                val vehicles : List<Vehicle> = Vehicle.castVehicleEntities(db?.vehicleDao()?.getAll())
+
+                if (vehicles.isEmpty())
+                    SampleData()
+                else {
+                    for(vehicle in vehicles) {
+                        vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelLoggableDao()?.getAllByVehicleId(vehicle.id))
+                        DataManager.pullVehicleFromDb(vehicle)
+                    }
+                }
+            }
+        } else {
+            thread = Thread {
+                val vehicles : List<Vehicle> = Vehicle.castVehicleEntities(db?.vehicleDao()?.getAll())
+
+                for(vehicle in vehicles) {
+                    vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelLoggableDao()?.getAllByVehicleId(vehicle.id))
+                    DataManager.CreateNewVehicle(vehicle)
+                }
+            }
+        }
+
+        thread.start()
 
         fuckingGarbageFunction()
 
@@ -125,6 +159,9 @@ class MainActivity : AppCompatActivity() {
                 drawerToggle.setDrawerIndicatorEnabled(false)
             }
         }
+
+        thread.join()
+        DataManager.setLatestVehicleActive()
 
         if (DataManager.isVehicles())
             navController.navigate(R.id.nav_vehicle_1)
@@ -147,9 +184,9 @@ class MainActivity : AppCompatActivity() {
                     vehicleOptions.add("Fuel")
                     vehicleOptions.add("Expenses")
 
-                    val vehicleId = vehicle?.getId()
+                    val vehicleId = vehicle?.id!!
 
-                    expandableListDetail[vehicleId!!] = vehicleOptions
+                    expandableListDetail[vehicleId] = vehicleOptions
                 }
 
                 expandableListDetail[-1] = ArrayList()

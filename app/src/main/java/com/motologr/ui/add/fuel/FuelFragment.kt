@@ -131,13 +131,14 @@ class FuelFragment : Fragment() {
             return
         }
 
+        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val fuelType: Int = parseFuelTypeRadioGroup()
         val price: BigDecimal = binding.editTextFuelPrice.text.toString().toBigDecimal()
         val litres: BigDecimal = binding.editTextFuelLitres.text.toString().toBigDecimal()
         val purchaseDate: Date = binding.editTextFuelDate.getDate()
         val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
 
-        val fuel: Fuel = Fuel(fuelType, price, litres, purchaseDate, odometer)
+        val fuel: Fuel = Fuel(fuelType, price, litres, purchaseDate, odometer, vehicleId)
 
         DataManager.ReturnActiveVehicle()?.logFuel(fuel)
         findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1)

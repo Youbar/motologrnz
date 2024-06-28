@@ -4,7 +4,12 @@ import com.motologr.ui.data.logging.Loggable
 import java.math.BigDecimal
 import java.util.Date
 
-class Repair(var repairType: Int, var price: BigDecimal, var repairDate: Date, var repairProvider: String, var comment: String) : Loggable(repairDate, 0, price) {
+class Repair(var repairType: Int,
+             var price: BigDecimal,
+             var repairDate: Date,
+             var repairProvider: String,
+             var comment: String,
+             override var vehicleId: Int) : Loggable(repairDate, 0, price, vehicleId) {
     fun returnRepairType() : String {
         return when (repairType) {
             0 -> {
