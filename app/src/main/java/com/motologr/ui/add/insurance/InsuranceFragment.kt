@@ -15,6 +15,7 @@ import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.objects.insurance.Insurance
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
+import java.math.BigDecimal
 import java.util.Calendar
 import java.util.Date
 
@@ -63,7 +64,7 @@ class InsuranceFragment : Fragment() {
         val insurerName: String = insurance.insurer
         val insuranceType: Int = insurance.coverage
         val insuranceCycle: Int = insurance.billingCycle
-        val insuranceValue: Double = insurance.billing
+        val insuranceValue: BigDecimal = insurance.billing
         val insuranceDate: Date = insurance.lastBill
 
         binding.editTextInsuranceInsurer.setText(insurerName)
@@ -92,7 +93,7 @@ class InsuranceFragment : Fragment() {
         val insurancePolicyStartDate: Date = binding.editTextInsurancePolicyStartDate.getDate()
         val insuranceType: Int = parseCoverageRadioGroup()
         val insuranceCycle: Int = parseBillingRadioGroup()
-        val insuranceValue: Double = binding.editTextInsuranceBill.text.toString().toDouble()
+        val insuranceValue: BigDecimal = binding.editTextInsuranceBill.text.toString().toBigDecimal()
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
         val insurance = Insurance(insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate)

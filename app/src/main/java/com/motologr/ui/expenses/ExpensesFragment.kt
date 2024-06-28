@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.motologr.databinding.FragmentExpensesBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.logging.Loggable
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -40,7 +41,7 @@ class ExpensesFragment : Fragment() {
         return root
     }
 
-    private fun setFragmentValues(expensesList: ArrayList<Double>, expensesViewModel: ExpensesViewModel) {
+    private fun setFragmentValues(expensesList: ArrayList<BigDecimal>, expensesViewModel: ExpensesViewModel) {
         val textExpensesTitle: TextView = binding.textExpensesTitle
         val textExpensesRepairs: TextView = binding.textExpensesRepairs
         val textExpensesRepairsValue: TextView = binding.textExpensesRepairsValue
@@ -126,7 +127,7 @@ class ExpensesFragment : Fragment() {
         return loggableDate.before(maxDate) and loggableDate.after(minDate)
     }
 
-    private fun calculateExpensesForFinancialYear() : ArrayList<Double> {
+    private fun calculateExpensesForFinancialYear() : ArrayList<BigDecimal> {
         var expensesLogs : ArrayList<Loggable> = DataManager.ReturnActiveVehicle()!!.returnExpensesLogs()
 
         // Need to add a filter to only take YTD values
@@ -165,8 +166,8 @@ class ExpensesFragment : Fragment() {
         }
     }
 
-    private fun calculateTotalExpenseForLoggables(expensesLogs : ArrayList<Loggable>) : Double {
-        var total : Double = 0.0
+    private fun calculateTotalExpenseForLoggables(expensesLogs : ArrayList<Loggable>) : BigDecimal {
+        var total : BigDecimal = 0.0.toBigDecimal()
         for (expenseLog in expensesLogs) {
             total += expenseLog.unitPrice;
         }

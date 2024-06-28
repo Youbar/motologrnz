@@ -3,6 +3,8 @@ package com.motologr.ui.data
 import android.widget.DatePicker
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
+import androidx.room.Room
+import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.ui.data.objects.vehicle.Vehicle
 import java.math.RoundingMode
@@ -84,6 +86,17 @@ object DataManager {
 
     private var idCounterLoggable: Int = 0
 
+    fun setIdCounterLoggable() {
+        Thread {
+            val maxId = MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.getMaxId()
+
+            if (maxId != null)
+                idCounterLoggable = maxId + 1
+        }.start()
+    }
+
     fun FetchIdForLoggable() : Int {
         idCounterLoggable += 1
 
@@ -98,5 +111,3 @@ object DataManager {
         return (idCounterVehicle - 1)
     }
 }
-
-

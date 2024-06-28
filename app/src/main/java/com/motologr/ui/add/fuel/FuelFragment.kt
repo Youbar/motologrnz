@@ -11,12 +11,14 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelBinding
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.objects.fuel.Fuel
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
+import java.math.BigDecimal
 import java.util.Calendar
 import java.util.Date
 
@@ -130,8 +132,8 @@ class FuelFragment : Fragment() {
         }
 
         val fuelType: Int = parseFuelTypeRadioGroup()
-        val price: Double = binding.editTextFuelPrice.text.toString().toDouble()
-        val litres: Double = binding.editTextFuelLitres.text.toString().toDouble()
+        val price: BigDecimal = binding.editTextFuelPrice.text.toString().toBigDecimal()
+        val litres: BigDecimal = binding.editTextFuelLitres.text.toString().toBigDecimal()
         val purchaseDate: Date = binding.editTextFuelDate.getDate()
         val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
 

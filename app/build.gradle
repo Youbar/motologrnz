@@ -25,6 +25,8 @@ android {
     }
 
     buildTypes {
+        debug {
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -38,6 +40,7 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
 }
@@ -61,4 +64,7 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     ksp("androidx.room:room-compiler:$room_version")
     testImplementation("androidx.room:room-testing:$room_version")
+
+    def billing_version = "7.0.0"
+    implementation("com.android.billingclient:billing:$billing_version")
 }

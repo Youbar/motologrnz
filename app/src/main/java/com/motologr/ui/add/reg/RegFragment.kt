@@ -162,7 +162,7 @@ class RegFragment : Fragment() {
         val regExpiryDate = binding.editTextRegCurrDate.text.toString()
         val newRegExpiryDate = binding.editTextRegNextDate.getDate()
         val monthsExtended = getMonthsExtended()
-        val price = binding.editTextRegPrice.text.toString().toDouble()
+        val price = binding.editTextRegPrice.text.toString().toBigDecimal()
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 

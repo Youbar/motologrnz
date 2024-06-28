@@ -16,6 +16,7 @@ import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.objects.maint.Repair
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
+import java.math.BigDecimal
 import java.util.Calendar
 import java.util.Date
 
@@ -67,7 +68,7 @@ class RepairFragment : Fragment() {
         val repairType: Int = parseRepairTypeRadioGroup()
         val repairDate: Date = binding.editTextRepairDate.getDate()
         val repairProvider: String = binding.editTextRepairProvider.text.toString()
-        val repairPrice: Double = binding.editTextRepairPrice.text.toString().toDouble()
+        val repairPrice: BigDecimal = binding.editTextRepairPrice.text.toString().toBigDecimal()
         val repairComment: String = binding.editTextRepairComment.text.toString()
 
         val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment)

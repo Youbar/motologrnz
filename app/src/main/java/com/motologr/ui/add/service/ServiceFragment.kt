@@ -16,6 +16,7 @@ import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.objects.maint.Service
 import com.motologr.ui.data.getDate
 import com.motologr.ui.data.toCalendar
+import java.math.BigDecimal
 import java.util.Calendar
 import java.util.Date
 
@@ -67,7 +68,7 @@ class ServiceFragment : Fragment() {
         val serviceType: Int = parseServiceTypeRadioGroup()
         val serviceDate: Date = binding.editTextServiceDate.getDate()
         val serviceProvider: String = binding.editTextServiceProvider.text.toString()
-        val servicePrice: Double = binding.editTextServicePrice.text.toString().toDouble()
+        val servicePrice: BigDecimal = binding.editTextServicePrice.text.toString().toBigDecimal()
         val serviceComment: String = binding.editTextServiceComment.text.toString()
 
         val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment)

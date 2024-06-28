@@ -2,12 +2,13 @@ package com.motologr.ui.data.objects.insurance
 
 import com.motologr.ui.data.logging.Log
 import com.motologr.ui.data.logging.Loggable
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
 class Insurance (var insurer: String, var insurancePolicyStartDate: Date, var coverage: Int,
-                 var billingCycle: Int, var billing: Double, var lastBill: Date
+                 var billingCycle: Int, var billing: BigDecimal, var lastBill: Date
 ) : Loggable(insurancePolicyStartDate, 200, billing) {
 
     var insuranceBillingLog : InsuranceBillingLog = InsuranceBillingLog()
@@ -149,4 +150,4 @@ class InsuranceBillingLog : Log() {
     }
 }
 
-class InsuranceBilling(var billingDate: Date, var price: Double) : Loggable(billingDate, 201, price)
+class InsuranceBilling(var billingDate: Date, var price: BigDecimal) : Loggable(billingDate, 201, price)

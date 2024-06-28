@@ -28,6 +28,7 @@ import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.objects.maint.Repair
 import com.motologr.ui.data.objects.maint.Service
 import com.motologr.ui.data.objects.vehicle.Vehicle
+import com.motologr.ui.data.sampleData.SampleData
 import java.text.SimpleDateFormat
 
 
@@ -36,13 +37,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+    companion object {
+        var db: AppDatabase? = null
+        fun getDatabase(): AppDatabase? {
+            return db
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val db = Room.databaseBuilder(
+        db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "motologr"
         ).build()
+
+        DataManager.setIdCounterLoggable()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -95,9 +105,8 @@ class MainActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        // REMOVE IN LIVE COPY
-        sampleData()
-        // REMOVE IN LIVE COPY
+        if (BuildConfig.DEBUG)
+            SampleData()
 
         fuckingGarbageFunction()
 
@@ -119,30 +128,6 @@ class MainActivity : AppCompatActivity() {
 
         if (DataManager.isVehicles())
             navController.navigate(R.id.nav_vehicle_1)
-    }
-
-    private fun sampleData() {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
-
-        val vehicle = Vehicle("Mazda", "323",
-            1989,
-            format.parse("10/09/2024"),
-            format.parse("08/08/2024"),
-            1243)
-
-        DataManager.CreateNewVehicle(vehicle)
-
-        var service: Service = Service(0, 123.0, format.parse("31/03/2023"), "Av", "")
-        var service2: Service = Service(0, 123.0, format.parse("1/04/2023"), "Av", "")
-        var repair: Repair = Repair(0, 123.0, format.parse("1/04/2023"), "Av", "")
-        var repair2: Repair = Repair(0, 123.0, format.parse("1/04/2024"), "Av", "")
-
-        DataManager.ReturnVehicle(0)?.logService(service)
-        DataManager.ReturnVehicle(0)?.logService(service2)
-        DataManager.ReturnVehicle(0)?.logRepair(repair)
-        DataManager.ReturnVehicle(0)?.logRepair(repair2)
-
-        DataManager.SetActiveVehicle(0)
     }
 
     internal object ExpandableListData {

@@ -94,7 +94,7 @@ class WofFragment : Fragment() {
 
         val oldDate = binding.editTextWofCurrDate.text.toString()
         val newDate = binding.editTextWofNextDate.getDate()
-        val price = binding.editTextWofPrice.text.toString().toDouble()
+        val price = binding.editTextWofPrice.text.toString().toBigDecimal()
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 

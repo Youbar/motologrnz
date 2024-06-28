@@ -1,5 +1,6 @@
 package com.motologr.ui.data.objects.vehicle
 
+import com.motologr.MainActivity
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.logging.Loggable
 import com.motologr.ui.data.objects.reg.Reg
@@ -70,7 +71,7 @@ class Vehicle (var brandName: String, var modelName: String, var year: Int, var 
     }
 
     fun returnLoggable(id: Int) : Loggable? {
-        var loggable: Loggable? = returnMaintLogs().find { loggable -> loggable.Id == id }
+        var loggable: Loggable? = returnMaintLogs().find { loggable -> loggable.id == id }
 
         return loggable
     }
@@ -87,6 +88,15 @@ class Vehicle (var brandName: String, var modelName: String, var year: Int, var 
 
     fun logFuel(fuel: Fuel) {
         fuelLog.addFuelToFuelLog(fuel)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.fuelLoggableDao()
+                ?.insert(fuel.convertToFuelEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(fuel.convertToLoggableEntity())
+        }.start()
     }
 
     fun logService(service: Service) {
