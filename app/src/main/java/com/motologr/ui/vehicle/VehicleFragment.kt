@@ -51,10 +51,10 @@ class VehicleFragment : Fragment() {
 
             var vehicleText = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
 
-            var expiryWOF: String = format.format(vehicle.expiryWOF)
+            var expiryWOF: String = vehicle.returnWofExpiry()
             expiryWOF = "Next WOF: $expiryWOF"
 
-            var regExpiry: String = format.format(vehicle.regExpiry)
+            var regExpiry: String = vehicle.returnRegExpiry()
             regExpiry = "Next Reg: $regExpiry"
 
             var odometer: String = "Last Odometer Reading: " + vehicle.getLatestOdometerReading().toString() + " km"

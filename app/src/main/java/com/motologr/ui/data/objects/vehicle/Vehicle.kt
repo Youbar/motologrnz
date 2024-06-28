@@ -17,7 +17,7 @@ import com.motologr.ui.data.objects.insurance.Insurance
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int, var expiryWOF: Date, var regExpiry: Date, var odometer: Int) {
+class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int, private val expiryWOF: Date, private val regExpiry: Date, var odometer: Int) {
 
     var insuranceLog: InsuranceLog = InsuranceLog()
     var fuelLog: FuelLog = FuelLog()
@@ -120,10 +120,28 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
 
     fun logWof(wof: Wof) {
         wofLog.addWofToWofLog(wof)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.wofDao()
+                ?.insert(wof.convertToWofEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(wof.convertToLoggableEntity())
+        }.start()
     }
 
     fun logReg(reg: Reg) {
         regLog.addRegToRegLog(reg)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.regDao()
+                ?.insert(reg.convertToRegEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(reg.convertToLoggableEntity())
+        }.start()
     }
 
     lateinit var insurance: Insurance
@@ -137,19 +155,23 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     private val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
     fun returnWofExpiry(): String {
-        return format.format(expiryWOF)
-    }
+        val wofLogItems = wofLog.returnWofLog()
 
-    fun updateWofExpiry(newDate: Date) {
-        expiryWOF = newDate
+        if (wofLogItems.isEmpty())
+            return format.format(expiryWOF)
+
+        wofLogItems.sortByDescending { wof -> wof.wofDate }
+        return format.format(wofLogItems.first().wofDate)
     }
 
     fun returnRegExpiry(): String {
-        return format.format(regExpiry)
-    }
+        val regLogItems = regLog.returnRegLog()
 
-    fun updateRegExpiry(newRegExpiryDate: Date) {
-        regExpiry = newRegExpiryDate
+        if (regLogItems.isEmpty())
+            return format.format(regExpiry)
+
+        regLogItems.sortByDescending { reg -> reg.newRegExpiryDate }
+        return format.format(regLogItems.first().newRegExpiryDate)
     }
 
     fun convertToVehicleEntity() : VehicleEntity {

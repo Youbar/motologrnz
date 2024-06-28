@@ -12,6 +12,11 @@ import com.motologr.ui.data.objects.maint.RepairDao
 import com.motologr.ui.data.objects.maint.RepairEntity
 import com.motologr.ui.data.objects.maint.ServiceDao
 import com.motologr.ui.data.objects.maint.ServiceEntity
+import com.motologr.ui.data.objects.maint.Wof
+import com.motologr.ui.data.objects.maint.WofDao
+import com.motologr.ui.data.objects.maint.WofEntity
+import com.motologr.ui.data.objects.reg.RegDao
+import com.motologr.ui.data.objects.reg.RegEntity
 import com.motologr.ui.data.objects.vehicle.VehicleDao
 import com.motologr.ui.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
@@ -48,6 +53,8 @@ public class Converters {
 @Database(entities = [FuelEntity::class,
     LoggableEntity::class,
     VehicleEntity::class,
+    RegEntity::class,
+    WofEntity::class,
     RepairEntity::class,
     ServiceEntity::class], version = 1)
 @TypeConverters(Converters::class)
@@ -57,4 +64,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun vehicleDao(): VehicleDao
     abstract fun repairDao(): RepairDao
     abstract fun serviceDao(): ServiceDao
+    abstract fun regDao(): RegDao
+    abstract fun wofDao(): WofDao
 }
