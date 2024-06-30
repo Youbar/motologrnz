@@ -73,6 +73,15 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
 
     fun logInsurance(insurance: Insurance) {
         insuranceLog.addInsuranceToInsuranceLog(insurance)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceDao()
+                ?.insert(insurance.convertToInsuranceEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(insurance.convertToLoggableEntity())
+        }.start()
     }
 
     fun logFuel(fuel: Fuel) {

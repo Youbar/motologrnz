@@ -14,7 +14,6 @@ import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.objects.vehicle.Vehicle
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 
 class VehicleFragment : Fragment() {
 
@@ -47,9 +46,7 @@ class VehicleFragment : Fragment() {
         val vehicle : Vehicle? = DataManager.ReturnActiveVehicle()
 
         if (vehicle != null) {
-            val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
-
-            var vehicleText = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
+            val vehicleText = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
 
             var expiryWOF: String = vehicle.returnWofExpiry()
             expiryWOF = "Next WOF: $expiryWOF"
@@ -57,9 +54,9 @@ class VehicleFragment : Fragment() {
             var regExpiry: String = vehicle.returnRegExpiry()
             regExpiry = "Next Reg: $regExpiry"
 
-            var odometer: String = "Last Odometer Reading: " + vehicle.getLatestOdometerReading().toString() + " km"
+            val odometer: String = "Last Odometer Reading: " + vehicle.getLatestOdometerReading().toString() + " km"
 
-            var hasInsurance: Boolean = false
+            var hasInsurance = false
 
             if (vehicle.isInsuranceInitialised()) {
                 hasInsurance = vehicle.insurance.returnIsActive()

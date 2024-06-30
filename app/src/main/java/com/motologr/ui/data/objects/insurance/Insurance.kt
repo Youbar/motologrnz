@@ -1,6 +1,6 @@
 package com.motologr.ui.data.objects.insurance
 
-import com.motologr.ui.data.DataManager
+import com.motologr.MainActivity
 import com.motologr.ui.data.logging.Log
 import com.motologr.ui.data.logging.Loggable
 import java.math.BigDecimal
@@ -17,23 +17,19 @@ class Insurance (var insurer: String,
                  override var vehicleId: Int
 ) : Loggable(insurancePolicyStartDate, 200, billing, vehicleId) {
 
-    var insuranceBillingLog : InsuranceBillingLog = InsuranceBillingLog()
+    var insuranceBillLog : InsuranceBillLog = InsuranceBillLog()
 
-    init {
-        generateInsuranceBills()
-    }
-
-    private fun generateInsuranceBills() {
+    fun generateInsuranceBills() {
         val calendar : Calendar = Calendar.getInstance()
 
         val policyStartDate = insurancePolicyStartDate
 
         // Work our way backwards from last billing date
-        var lastBillingDate = lastBill
+        var firstBillingDate = lastBill
 
-        calendar.set(lastBillingDate.year + 1900, lastBillingDate.month, lastBillingDate.date)
+        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
 
-        while (lastBillingDate > policyStartDate) {
+        while (firstBillingDate > policyStartDate) {
             if (billingCycle == 0) {
                 calendar.add(Calendar.DATE, -14)
             } else if (billingCycle == 1) {
@@ -42,39 +38,61 @@ class Insurance (var insurer: String,
                 calendar.add(Calendar.YEAR, -1)
             }
 
-            lastBillingDate = calendar.time
+            firstBillingDate = calendar.time
         }
 
         // Then forwards
-        calendar.set(policyStartDate.year + 1900 + 1, policyStartDate.month, policyStartDate.date)
+        calendar.set(policyStartDate.year + 1900 + 1, policyStartDate.month, policyStartDate.date, 0, 0, 0)
         val policyEndDate = calendar.time
 
-        calendar.set(lastBillingDate.year + 1900, lastBillingDate.month, lastBillingDate.date)
-        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
+        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
 
-        while (lastBillingDate < policyEndDate) {
+        if (billingCycle == 2) {
+            val insuranceBill = InsuranceBill(lastBill, billing, id)
+            insuranceBillLog.addInsuranceBillToInsuranceBillLog(insuranceBill)
+            return
+        }
+
+        var billingMultiplier = 1
+        var billingDate = firstBillingDate
+
+        while (billingDate < policyEndDate) {
+            calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
+
             if (billingCycle == 0) {
-                calendar.add(Calendar.DATE, 14)
+                calendar.add(Calendar.DATE, 14 * billingMultiplier)
             } else if (billingCycle == 1) {
-                calendar.add(Calendar.MONTH, 1)
+                calendar.add(Calendar.MONTH, 1 * billingMultiplier)
             } else if (billingCycle == 2) {
-                calendar.add(Calendar.YEAR, 1)
+                calendar.add(Calendar.YEAR, 1 * billingMultiplier)
             }
 
-            lastBillingDate = calendar.time
+            if (billingDate < policyEndDate) {
+                val insuranceBill = InsuranceBill(billingDate, billing, id)
 
-            val insuranceBilling = InsuranceBilling(lastBillingDate, billing, vehicleId)
-            insuranceBillingLog.addInsuranceBillingToInsuranceBillingLog(insuranceBilling)
+                if (billingCycle != 0 || billingMultiplier < 27)
+                    insuranceBillLog.addInsuranceBillToInsuranceBillLog(insuranceBill)
+            }
+
+            billingDate = calendar.time
+            billingMultiplier += 1
         }
     }
 
-    fun returnInsuranceBillingLogs() : InsuranceBillingLog {
-        return insuranceBillingLog
+    fun generateInsuranceBills(insuranceBillEntities: List<InsuranceBillEntity>) {
+        for (insuranceBillEntity in insuranceBillEntities) {
+            if (insuranceBillEntity.insuranceId == id)
+                insuranceBillLog.addInsuranceBillToInsuranceBillLog(insuranceBillEntity)
+        }
+    }
+
+    fun returnInsuranceBillingLogs() : InsuranceBillLog {
+        return insuranceBillLog
     }
 
     fun getNextBillingDate() : Date {
 
-        for (insuranceBilling in insuranceBillingLog.returnInsuranceLog()) {
+        for (insuranceBilling in insuranceBillLog.returnInsuranceBillLog()) {
             if (insuranceBilling.billingDate > Calendar.getInstance().time) {
                 return insuranceBilling.billingDate
             }
@@ -139,22 +157,59 @@ class Insurance (var insurer: String,
             }
         }
     }
-}
 
-class InsuranceBillingLog : Log() {
-    private var insuranceBillingLog = ArrayList<InsuranceBilling>()
-
-    fun addInsuranceBillingToInsuranceBillingLog(insuranceBilling: InsuranceBilling) {
-        insuranceBillingLog.add(insuranceBilling)
-    }
-
-    fun returnInsuranceLog(): ArrayList<InsuranceBilling> {
-        return insuranceBillingLog
-    }
-
-    fun returnInsurance(index: Int) : InsuranceBilling {
-        return insuranceBillingLog[index]
+    fun convertToInsuranceEntity(): InsuranceEntity {
+        val fuelEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+        return fuelEntity
     }
 }
 
-class InsuranceBilling(var billingDate: Date, var price: BigDecimal, override var vehicleId: Int) : Loggable(billingDate, 201, price, vehicleId)
+class InsuranceBillLog : Log() {
+    private var insuranceBillLog = ArrayList<InsuranceBill>()
+
+    fun addInsuranceBillToInsuranceBillLog(insuranceBill: InsuranceBill) {
+        insuranceBillLog.add(insuranceBill)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceBillDao()
+                ?.insert(insuranceBill.convertToInsuranceBillEntity())
+        }.start()
+    }
+
+    fun addInsuranceBillToInsuranceBillLog(insuranceBillEntity: InsuranceBillEntity) {
+        insuranceBillLog.add(insuranceBillEntity.convertToInsuranceBillObject())
+    }
+
+    fun returnInsuranceBillLog(): ArrayList<InsuranceBill> {
+        return insuranceBillLog
+    }
+
+    fun returnInsurance(index: Int) : InsuranceBill {
+        return insuranceBillLog[index]
+    }
+
+    companion object {
+        fun castInsuranceBillLoggableEntities(insuranceBillEntities : List<InsuranceBillEntity>?) : InsuranceBillLog {
+            val insuranceBillLog = InsuranceBillLog()
+
+            if (insuranceBillEntities == null)
+                return insuranceBillLog
+
+            for (insuranceBillEntity in insuranceBillEntities){
+                insuranceBillLog.addInsuranceBillToInsuranceBillLog(insuranceBillEntity)
+            }
+
+            return insuranceBillLog
+        }
+    }
+}
+
+class InsuranceBill(var billingDate: Date,
+                    var price: BigDecimal,
+                    var insuranceId: Int) {
+    fun convertToInsuranceBillEntity() : InsuranceBillEntity {
+        val fuelEntity = InsuranceBillEntity(billingDate, price, insuranceId)
+        return fuelEntity
+    }
+}

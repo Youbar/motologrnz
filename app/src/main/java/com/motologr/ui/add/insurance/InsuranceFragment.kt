@@ -98,6 +98,7 @@ class InsuranceFragment : Fragment() {
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
         val insurance = Insurance(insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)
+        insurance.generateInsuranceBills()
 
         DataManager.ReturnActiveVehicle()?.logInsurance(insurance)
 

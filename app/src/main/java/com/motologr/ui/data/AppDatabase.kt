@@ -8,6 +8,10 @@ import com.motologr.ui.data.objects.LoggableDao
 import com.motologr.ui.data.objects.LoggableEntity
 import com.motologr.ui.data.objects.fuel.FuelEntity
 import com.motologr.ui.data.objects.fuel.FuelDao
+import com.motologr.ui.data.objects.insurance.InsuranceBillDao
+import com.motologr.ui.data.objects.insurance.InsuranceBillEntity
+import com.motologr.ui.data.objects.insurance.InsuranceDao
+import com.motologr.ui.data.objects.insurance.InsuranceEntity
 import com.motologr.ui.data.objects.maint.RepairDao
 import com.motologr.ui.data.objects.maint.RepairEntity
 import com.motologr.ui.data.objects.maint.ServiceDao
@@ -53,6 +57,8 @@ public class Converters {
 @Database(entities = [FuelEntity::class,
     LoggableEntity::class,
     VehicleEntity::class,
+    InsuranceEntity::class,
+    InsuranceBillEntity::class,
     RegEntity::class,
     WofEntity::class,
     RepairEntity::class,
@@ -62,6 +68,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun fuelDao(): FuelDao
     abstract fun loggableDao(): LoggableDao
     abstract fun vehicleDao(): VehicleDao
+    abstract fun insuranceDao(): InsuranceDao
+    abstract fun insuranceBillDao(): InsuranceBillDao
     abstract fun repairDao(): RepairDao
     abstract fun serviceDao(): ServiceDao
     abstract fun regDao(): RegDao

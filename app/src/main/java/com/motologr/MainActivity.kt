@@ -26,10 +26,12 @@ import com.motologr.databinding.ActivityMainBinding
 import com.motologr.ui.data.AppDatabase
 import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.logging.fuel.FuelLog
+import com.motologr.ui.data.logging.insurance.InsuranceLog
 import com.motologr.ui.data.logging.maint.RepairLog
 import com.motologr.ui.data.logging.maint.ServiceLog
 import com.motologr.ui.data.logging.maint.WofLog
 import com.motologr.ui.data.logging.reg.RegLog
+import com.motologr.ui.data.objects.insurance.InsuranceBillLog
 import com.motologr.ui.data.objects.vehicle.Vehicle
 import com.motologr.ui.data.sampleData.SampleData
 
@@ -124,6 +126,8 @@ class MainActivity : AppCompatActivity() {
                         vehicle.regLog = RegLog.castRegLoggableEntities(db?.regDao()?.getAllByVehicleId(vehicle.id))
                         vehicle.wofLog = WofLog.castWofLoggableEntities(db?.wofDao()?.getAllByVehicleId(vehicle.id))
                         vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelDao()?.getAllByVehicleId(vehicle.id))
+                        vehicle.insuranceLog = InsuranceLog.castInsuranceLoggableEntities(db?.insuranceDao()?.getAllByVehicleId(vehicle.id), db?.insuranceBillDao()?.getAll())
+
                         DataManager.pullVehicleFromDb(vehicle)
                     }
                 }
@@ -138,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                     vehicle.regLog = RegLog.castRegLoggableEntities(db?.regDao()?.getAllByVehicleId(vehicle.id))
                     vehicle.wofLog = WofLog.castWofLoggableEntities(db?.wofDao()?.getAllByVehicleId(vehicle.id))
                     vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelDao()?.getAllByVehicleId(vehicle.id))
-
+                    vehicle.insuranceLog = InsuranceLog.castInsuranceLoggableEntities(db?.insuranceDao()?.getAllByVehicleId(vehicle.id), db?.insuranceBillDao()?.getAll())
 
                     DataManager.pullVehicleFromDb(vehicle)
                 }
