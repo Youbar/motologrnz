@@ -25,10 +25,10 @@ class VehicleViewModel : ViewModel() {
         value = "and your next bill of \$TODO is due TODO"
     }
     private val _textApproxCostsTitle = MutableLiveData<String>().apply {
-        value = "Approx. Annual Costs:"
+        value = "Expenses so far:"
     }
     private val _textApproxCosts = MutableLiveData<String>().apply {
-        value = "\$TODO"
+        value = ""
     }
 
     val textVehicle: LiveData<String> = _textVehicle

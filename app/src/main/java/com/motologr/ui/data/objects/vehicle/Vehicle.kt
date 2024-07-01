@@ -153,12 +153,13 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         }.start()
     }
 
-    lateinit var insurance: Insurance
+    fun hasInsurance() : Boolean {
+        return insuranceLog.returnInsuranceLog().isNotEmpty()
+    }
 
-    fun isInsuranceInitialised() = ::insurance.isInitialized
-
-    fun setVehicleInsurance(_insurance: Insurance) {
-        insurance = _insurance
+    fun returnLatestInsurancePolicy() : Insurance {
+        insuranceLog.returnInsuranceLog().sortByDescending {x -> x.insurancePolicyStartDate}
+        return insuranceLog.returnInsuranceLog().first()
     }
 
     private val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")

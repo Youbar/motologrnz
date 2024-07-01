@@ -11,7 +11,9 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.ui.data.DataManager
+import com.motologr.ui.data.logging.Loggable
 import com.motologr.ui.data.objects.vehicle.Vehicle
+import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -56,30 +58,26 @@ class VehicleFragment : Fragment() {
 
             val odometer: String = "Last Odometer Reading: " + vehicle.getLatestOdometerReading().toString() + " km"
 
-            var hasInsurance = false
-
-            if (vehicle.isInsuranceInitialised()) {
-                hasInsurance = vehicle.insurance.returnIsActive()
-            }
-
             var insurer: String
             var insurerDate: String
 
-            if (hasInsurance) {
-                insurer = vehicle.insurance.insurer
+            if (vehicle.hasInsurance()) {
+                var insurance = vehicle.returnLatestInsurancePolicy()
+
+                insurer = insurance.insurer
                 insurer = "You are with $insurer insurance"
 
                 val df = DecimalFormat("0.00")
                 df.roundingMode = RoundingMode.CEILING
 
-                insurerDate = "and your next bill of $${df.format(vehicle.insurance.billing)} is due "
-                insurerDate += vehicle.insurance.getNextBillingDateString()
+                insurerDate = "and your next bill of $${df.format(insurance.billing)} is due "
+                insurerDate += insurance.getNextBillingDateString()
             } else {
                 insurer = "You do not have a registered insurer"
                 insurerDate = ""
             }
 
-
+            val approxCosts : String = "$" + calculateTotalExpenseForLoggables(vehicle.returnExpensesLogs()).toString()
 
             vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
                 carName.text = vehicleText
@@ -103,11 +101,20 @@ class VehicleFragment : Fragment() {
                 ApproxCostsTitle.text = it
             }
             vehicleViewModel.textApproxCosts.observe(viewLifecycleOwner) {
-                ApproxCosts.text = it
+                ApproxCosts.text = approxCosts
             }
         }
 
         return root
+    }
+
+    private fun calculateTotalExpenseForLoggables(expensesLogs : ArrayList<Loggable>) : BigDecimal {
+        var total : BigDecimal = 0.0.toBigDecimal()
+        for (expenseLog in expensesLogs) {
+            total += expenseLog.unitPrice;
+        }
+
+        return total
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -41,10 +41,10 @@ class InsuranceFragment : Fragment() {
 
         initialiseSaveButton()
 
-        val isInsuranceInitialized: Boolean = DataManager.ReturnActiveVehicle()?.isInsuranceInitialised() == true
+        val isInsuranceInitialized: Boolean = DataManager.ReturnActiveVehicle()?.hasInsurance() == true
 
         if (isInsuranceInitialized) {
-            val insurance = DataManager.ReturnActiveVehicle()?.insurance
+            val insurance = DataManager.ReturnActiveVehicle()?.returnLatestInsurancePolicy()
             if (insurance != null)
                 showCurrentData(insurance)
         }

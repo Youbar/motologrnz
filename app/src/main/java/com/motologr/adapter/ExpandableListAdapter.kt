@@ -1,5 +1,8 @@
 import android.content.Context
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.provider.ContactsContract.Data
 import android.view.LayoutInflater
@@ -9,6 +12,7 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.textview.MaterialTextView
 import com.motologr.R
 import com.motologr.ui.data.DataManager
 
@@ -52,9 +56,18 @@ class ExpandableListAdapter internal constructor(
         bannedStrings.add("Fuel")
         bannedStrings.add("Expenses")
 
+        parent.findViewById<ImageView>(R.id.imageView2).rotation = 0.toFloat()
+
         if (bannedStrings.contains(expandedListTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
-            listTitleImageView.setColorFilter(0)
+            listTitleImageView.setColorFilter(Color.WHITE)
+
+            val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
+            listTitleImageView2.setColorFilter(Color.WHITE)
+        }
+        else {
+            val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
+            listTitleImageView.rotation = 0.toFloat()
         }
 
         return convertView
@@ -104,12 +117,24 @@ class ExpandableListAdapter internal constructor(
             ArrayList()
         bannedStrings.add("Add New Vehicle")
 
+        val parentView = convertView.findViewById<ImageView>(R.id.imageView2)
+
+        if (parentView != null && isExpanded) {
+            parentView.rotation = 0.toFloat()
+        } else if (parentView != null) {
+            parentView.rotation = 90.toFloat()
+        }
+
         if (bannedStrings.contains(listTitleTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
             listTitleImageView.setColorFilter(Color.WHITE)
+            val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
+            listTitleImageView2.setColorFilter(Color.WHITE)
         } else {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
             listTitleImageView.setColorFilter(Color.BLACK)
+            val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
+            listTitleImageView2.setColorFilter(Color.BLACK)
         }
 
         return convertView
