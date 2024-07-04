@@ -42,7 +42,7 @@ class InsuranceLog : Log() {
                 val insurance = insuranceEntity.convertToInsuranceObject()
                 insurance.generateInsuranceBills(insuranceBillEntities)
 
-                insuranceLog.addInsuranceToInsuranceLog(insuranceEntity.convertToInsuranceObject())
+                insuranceLog.addInsuranceToInsuranceLog(insurance)
             }
 
             return insuranceLog
