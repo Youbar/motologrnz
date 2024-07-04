@@ -139,4 +139,23 @@ object DataManager {
 
         return (idCounterVehicle - 1)
     }
+
+    private var idCounterInsurance: Int = 0
+
+    fun setIdCounterInsurance() {
+        Thread {
+            val maxId = MainActivity.getDatabase()
+                ?.insuranceDao()
+                ?.getMaxId()
+
+            if (maxId != null)
+                idCounterInsurance = maxId + 1
+        }.start()
+    }
+
+    fun fetchIdForInsurance() : Int {
+        idCounterInsurance += 1
+
+        return (idCounterInsurance - 1)
+    }
 }

@@ -106,32 +106,8 @@ class ExpensesFragment : Fragment() {
         }
     }
 
-    private fun isWithinFinancialYear(loggableDate : Date) : Boolean {
-        val calendar = Calendar.getInstance()
-        val month = calendar.get(Calendar.MONTH)
-        val year = calendar.get(Calendar.YEAR)
-
-        var maxDate: Date
-        var minDate: Date
-
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
-
-        if (month < 3) {
-            maxDate = format.parse("01/04/" + year)
-            minDate = format.parse("31/03/" + (year - 1))
-        } else {
-            maxDate = format.parse("01/04/" + (year + 1))
-            minDate = format.parse("31/03/" + year)
-        }
-
-        return loggableDate.before(maxDate) and loggableDate.after(minDate)
-    }
-
     private fun calculateExpensesForFinancialYear() : ArrayList<BigDecimal> {
-        var expensesLogs : ArrayList<Loggable> = DataManager.ReturnActiveVehicle()!!.returnExpensesLogs()
-
-        // Need to add a filter to only take YTD values
-        expensesLogs = ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate) })
+        val expensesLogs : ArrayList<Loggable> = DataManager.ReturnActiveVehicle()!!.returnExpensesLogsWithinFinancialYear()
 
         // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100
         val repairsLogs = expensesLogs.filter { loggable -> loggable.classId == 0 }
@@ -139,6 +115,7 @@ class ExpensesFragment : Fragment() {
         val wofLogs = expensesLogs.filter { loggable -> loggable.classId == 2 }
         val regLogs = expensesLogs.filter { loggable -> loggable.classId == 3 }
         val fuelLogs = expensesLogs.filter { loggable -> loggable.classId == 100 }
+        val insuranceLogs = expensesLogs.filter { loggable -> loggable.classId == 201}
 
         var repairCost = calculateTotalExpenseForLoggables(ArrayList(repairsLogs));
         var serviceCost = calculateTotalExpenseForLoggables(ArrayList(servicesLogs));

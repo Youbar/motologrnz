@@ -1,6 +1,7 @@
 package com.motologr.ui.data.objects.vehicle
 
 import com.motologr.MainActivity
+import com.motologr.ui.data.DataManager
 import com.motologr.ui.data.logging.Loggable
 import com.motologr.ui.data.objects.reg.Reg
 import com.motologr.ui.data.logging.reg.RegLog
@@ -15,6 +16,7 @@ import com.motologr.ui.data.logging.insurance.InsuranceLog
 import com.motologr.ui.data.objects.fuel.Fuel
 import com.motologr.ui.data.objects.insurance.Insurance
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int, private val expiryWOF: Date, private val regExpiry: Date, var odometer: Int) {
@@ -54,9 +56,36 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         logs.addAll(fuelLog.returnFuelLog())
         logs.addAll(wofLog.returnWofLog())
         logs.addAll(regLog.returnRegLog())
+        logs.addAll(insuranceLog.returnInsuranceBillLogs())
         logs.sortByDescending { loggable -> loggable.sortableDate.time }
 
         return logs
+    }
+
+    fun returnExpensesLogsWithinFinancialYear() : ArrayList<Loggable> {
+        val expensesLogs : ArrayList<Loggable> = returnExpensesLogs()
+        return ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate) })
+    }
+
+    private fun isWithinFinancialYear(loggableDate : Date) : Boolean {
+        val calendar = Calendar.getInstance()
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        var maxDate: Date
+        var minDate: Date
+
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+        if (month < 3) {
+            maxDate = format.parse("01/04/" + year)
+            minDate = format.parse("31/03/" + (year - 1))
+        } else {
+            maxDate = format.parse("01/04/" + (year + 1))
+            minDate = format.parse("31/03/" + year)
+        }
+
+        return loggableDate.before(maxDate) and loggableDate.after(minDate)
     }
 
     fun returnLoggable(id: Int) : Loggable? {
@@ -78,9 +107,6 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
             MainActivity.getDatabase()
                 ?.insuranceDao()
                 ?.insert(insurance.convertToInsuranceEntity())
-            MainActivity.getDatabase()
-                ?.loggableDao()
-                ?.insert(insurance.convertToLoggableEntity())
         }.start()
     }
 

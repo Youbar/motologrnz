@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         DataManager.setIdCounterLoggable()
         DataManager.setIdCounterVehicle()
+        DataManager.setIdCounterInsurance()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 

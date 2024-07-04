@@ -21,9 +21,11 @@ data class InsuranceEntity(
     @ColumnInfo(name = "lastBill") val lastBill: Date,
     @ColumnInfo(name = "vehicleId") val vehicleId: Int)
 {
+    constructor(insurer: String, insurancePolicyStartDate: Date, coverage: Int, billingCycle: Int,
+                billing: BigDecimal, lastBill: Date, vehicleId: Int) : this(0, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+
     fun convertToInsuranceObject() : Insurance {
-        val insurance = Insurance(insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
-        insurance.id = id
+        val insurance = Insurance(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
         return insurance
     }
 }
@@ -35,6 +37,9 @@ interface InsuranceDao {
 
     @Query("SELECT * FROM Insurance WHERE vehicleId == :vehicleId")
     fun getAllByVehicleId(vehicleId : Int): List<InsuranceEntity>
+
+    @Query("SELECT * FROM Insurance WHERE id = (SELECT MAX(id) FROM Insurance)")
+    fun getMaxId(): Int
 
     @Insert
     fun insert(vararg repair: InsuranceEntity)
@@ -48,12 +53,13 @@ data class InsuranceBillEntity(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "billingDate") val billingDate: Date,
     @ColumnInfo(name = "price") val price: BigDecimal,
-    @ColumnInfo(name = "insuranceId") val insuranceId: Int)
+    @ColumnInfo(name = "insuranceId") val insuranceId: Int,
+    @ColumnInfo(name = "vehicleId") val vehicleId: Int)
 {
-    constructor(billingDate: Date, price: BigDecimal, insuranceId: Int) : this(0, billingDate, price, insuranceId)
+    constructor(billingDate: Date, price: BigDecimal, insuranceId: Int, vehicleId: Int) : this(0, billingDate, price, insuranceId, vehicleId)
 
     fun convertToInsuranceBillObject() : InsuranceBill {
-        val insuranceBill = InsuranceBill(billingDate, price, insuranceId)
+        val insuranceBill = InsuranceBill(billingDate, price, insuranceId, vehicleId)
         return insuranceBill
     }
 }

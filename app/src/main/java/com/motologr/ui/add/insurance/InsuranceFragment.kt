@@ -97,7 +97,7 @@ class InsuranceFragment : Fragment() {
         val insuranceValue: BigDecimal = binding.editTextInsuranceBill.text.toString().toBigDecimal()
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
-        val insurance = Insurance(insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)
+        val insurance = Insurance(DataManager.fetchIdForInsurance(), insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)
         insurance.generateInsuranceBills()
 
         DataManager.ReturnActiveVehicle()?.logInsurance(insurance)

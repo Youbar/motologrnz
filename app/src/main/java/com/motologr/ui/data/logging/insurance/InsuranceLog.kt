@@ -2,6 +2,7 @@ package com.motologr.ui.data.logging.insurance
 
 import com.motologr.ui.data.logging.Log
 import com.motologr.ui.data.objects.insurance.Insurance
+import com.motologr.ui.data.objects.insurance.InsuranceBill
 import com.motologr.ui.data.objects.insurance.InsuranceBillEntity
 import com.motologr.ui.data.objects.insurance.InsuranceEntity
 
@@ -18,6 +19,16 @@ class InsuranceLog : Log() {
 
     fun returnInsurance(index: Int) : Insurance {
         return insuranceLog[index]
+    }
+
+    fun returnInsuranceBillLogs(): ArrayList<InsuranceBill> {
+        val insuranceBills = ArrayList<InsuranceBill>()
+
+        for (insurance in insuranceLog) {
+            insuranceBills.addAll(insurance.returnInsuranceBillingLogs().returnInsuranceBillLog())
+        }
+
+        return insuranceBills
     }
 
     companion object {

@@ -8,14 +8,15 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-class Insurance (var insurer: String,
+class Insurance (var id : Int,
+                 var insurer: String,
                  var insurancePolicyStartDate: Date,
                  var coverage: Int,
                  var billingCycle: Int,
                  var billing: BigDecimal,
                  var lastBill: Date,
-                 override var vehicleId: Int
-) : Loggable(insurancePolicyStartDate, 200, billing, vehicleId) {
+                 var vehicleId: Int
+) {
 
     var insuranceBillLog : InsuranceBillLog = InsuranceBillLog()
 
@@ -48,7 +49,7 @@ class Insurance (var insurer: String,
         calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
 
         if (billingCycle == 2) {
-            val insuranceBill = InsuranceBill(lastBill, billing, id)
+            val insuranceBill = InsuranceBill(lastBill, billing, id, vehicleId)
             insuranceBillLog.addInsuranceBillToInsuranceBillLog(insuranceBill)
             return
         }
@@ -68,7 +69,7 @@ class Insurance (var insurer: String,
             }
 
             if (billingDate < policyEndDate) {
-                val insuranceBill = InsuranceBill(billingDate, billing, id)
+                val insuranceBill = InsuranceBill(billingDate, billing, id, vehicleId)
 
                 if (billingCycle != 0 || billingMultiplier < 27)
                     insuranceBillLog.addInsuranceBillToInsuranceBillLog(insuranceBill)
@@ -159,7 +160,7 @@ class Insurance (var insurer: String,
     }
 
     fun convertToInsuranceEntity(): InsuranceEntity {
-        val fuelEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+        val fuelEntity = InsuranceEntity(insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
         return fuelEntity
     }
 }
@@ -207,9 +208,10 @@ class InsuranceBillLog : Log() {
 
 class InsuranceBill(var billingDate: Date,
                     var price: BigDecimal,
-                    var insuranceId: Int) {
+                    var insuranceId: Int,
+                    override var vehicleId: Int) : Loggable(billingDate, 201, price, vehicleId) {
     fun convertToInsuranceBillEntity() : InsuranceBillEntity {
-        val fuelEntity = InsuranceBillEntity(billingDate, price, insuranceId)
+        val fuelEntity = InsuranceBillEntity(billingDate, price, insuranceId, vehicleId)
         return fuelEntity
     }
 }

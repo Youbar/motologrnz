@@ -77,7 +77,7 @@ class VehicleFragment : Fragment() {
                 insurerDate = ""
             }
 
-            val approxCosts : String = "$" + calculateTotalExpenseForLoggables(vehicle.returnExpensesLogs()).toString()
+            val approxCosts : String = "$" + calculateTotalExpenseForLoggables(vehicle.returnExpensesLogsWithinFinancialYear()).toString()
 
             vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
                 carName.text = vehicleText
