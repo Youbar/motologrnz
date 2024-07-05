@@ -15,6 +15,7 @@ import com.motologr.ui.data.logging.fuel.FuelLog
 import com.motologr.ui.data.logging.insurance.InsuranceLog
 import com.motologr.ui.data.objects.fuel.Fuel
 import com.motologr.ui.data.objects.insurance.Insurance
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -65,6 +66,15 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     fun returnExpensesLogsWithinFinancialYear() : ArrayList<Loggable> {
         val expensesLogs : ArrayList<Loggable> = returnExpensesLogs()
         return ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate) })
+    }
+
+    fun returnExpensesWithinFinancialYear() : BigDecimal {
+        var total : BigDecimal = 0.0.toBigDecimal()
+        for (expenseLog in returnExpensesLogsWithinFinancialYear()) {
+            total += expenseLog.unitPrice;
+        }
+
+        return total
     }
 
     private fun isWithinFinancialYear(loggableDate : Date) : Boolean {

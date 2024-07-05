@@ -8,13 +8,13 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
 
-class InsuranceBillUnitTests {
+class InsuranceBillUnitTests : UnitTestBase() {
     @Test
     fun generateInsuranceBills_Fortnightly_StartOfMonth() {
         val localDate = LocalDate.of(2023, 1, 1)
         val startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        val insurance = Insurance("AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         assertEquals(26, insurance.insuranceBillLog.returnInsuranceBillLog().count())
@@ -25,7 +25,7 @@ class InsuranceBillUnitTests {
         val localDate = LocalDate.of(2023, 1, 1)
         val startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        val insurance = Insurance("AA", startDate, 0, 1, 15.30.toBigDecimal(), startDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 1, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         assertEquals(12, insurance.insuranceBillLog.returnInsuranceBillLog().count())
@@ -36,7 +36,7 @@ class InsuranceBillUnitTests {
         val localDate = LocalDate.of(2023, 1, 1)
         val startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        val insurance = Insurance("AA", startDate, 0, 2, 15.30.toBigDecimal(), startDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 2, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         assertEquals(1, insurance.insuranceBillLog.returnInsuranceBillLog().count())
@@ -47,7 +47,7 @@ class InsuranceBillUnitTests {
         val localDate = LocalDate.of(2023, 1, 31)
         val startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        val insurance = Insurance("AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         assertEquals(26, insurance.insuranceBillLog.returnInsuranceBillLog().count())
@@ -58,7 +58,7 @@ class InsuranceBillUnitTests {
         val localDate = LocalDate.of(2023, 1, 31)
         val startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        val insurance = Insurance("AA", startDate, 0, 1, 15.30.toBigDecimal(), startDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 1, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         assertEquals(12, insurance.insuranceBillLog.returnInsuranceBillLog().count())
@@ -69,7 +69,7 @@ class InsuranceBillUnitTests {
         val localDate = LocalDate.of(2023, 1, 31)
         val startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        val insurance = Insurance("AA", startDate, 0, 2, 15.30.toBigDecimal(), startDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 2, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         assertEquals(1, insurance.insuranceBillLog.returnInsuranceBillLog().count())
@@ -80,7 +80,7 @@ class InsuranceBillUnitTests {
         val localDate = LocalDate.of(2024, 1, 1)
         val startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        val insurance = Insurance("AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         assertEquals(26, insurance.insuranceBillLog.returnInsuranceBillLog().count())
