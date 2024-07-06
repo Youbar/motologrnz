@@ -133,8 +133,10 @@ class FuelFragment : Fragment() {
 
         val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val fuelType: Int = parseFuelTypeRadioGroup()
-        val price: BigDecimal = binding.editTextFuelPrice.text.toString().toBigDecimal()
-        val litres: BigDecimal = binding.editTextFuelLitres.text.toString().toBigDecimal()
+        val price: BigDecimal = binding.editTextFuelPrice.text.toString()
+            .replace(",","").toBigDecimal()
+        val litres: BigDecimal = binding.editTextFuelLitres.text.toString()
+            .replace(",","").toBigDecimal()
         val purchaseDate: Date = binding.editTextFuelDate.getDate()
         val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
 

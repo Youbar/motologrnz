@@ -21,7 +21,7 @@ class InsuranceLoggingAdapter(private val mList: List<InsuranceLoggingItemsViewM
         // inflates the card_view_design view  
         // that is used to hold list item 
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_view_fuel_logging, parent, false)
+            .inflate(R.layout.card_view_insurance_policies, parent, false)
 
         return ViewHolder(view)
     }
@@ -54,9 +54,9 @@ class InsuranceLoggingAdapter(private val mList: List<InsuranceLoggingItemsViewM
 
     // Holds the views for adding it to image and text 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.fuel_logging_card_image)
-        val fuelDt: TextView = itemView.findViewById(R.id.fuel_logging_card_date)
-        val fuelPrice: TextView = itemView.findViewById(R.id.fuel_logging_card_price)
-        val fuelVolume: TextView = itemView.findViewById(R.id.fuel_logging_card_volume)
+        val imageView: ImageView = itemView.findViewById(R.id.insurance_policies_card_image)
+        val fuelDt: TextView = itemView.findViewById(R.id.insurance_policies_card_date)
+        val fuelPrice: TextView = itemView.findViewById(R.id.insurance_policies_card_price)
+        val fuelVolume: TextView = itemView.findViewById(R.id.insurance_policies_card_volume)
     }
 }

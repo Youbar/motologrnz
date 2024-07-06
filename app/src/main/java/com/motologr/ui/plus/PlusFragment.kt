@@ -95,10 +95,10 @@ class PlusFragment : Fragment() {
 
         val brandName: String = binding.editTextBrandInput.text.toString()
         val modelName: String = binding.editTextModelInput.text.toString()
-        val modelYear: Int = Integer.parseInt(binding.editTextYearInput.text.toString())
+        val modelYear: Int = Integer.valueOf(binding.editTextYearInput.text.toString())
         val modelWOF: Date = binding.editTextWofLastInput.getDate()
         val modelReg: Date = binding.editTextRegExpireInput.getDate()
-        val odometer: Int = Integer.parseInt(binding.editTextOdoInput.text.toString())
+        val odometer: Int = Integer.valueOf(binding.editTextOdoInput.text.toString())
 
         val vehicle = Vehicle(DataManager.FetchIdForVehicle(), brandName, modelName, modelYear, modelWOF, modelReg, odometer)
 
@@ -123,12 +123,22 @@ class PlusFragment : Fragment() {
             return false
         }
 
+        if (binding.editTextYearInput.text.toString().toIntOrNull() == null) {
+            displayValidationError("The value for vehicle model year is too high")
+            return false
+        }
+
         // DatePicker does not need validation
 
         // DatePicker does not need validation
 
         if (binding.editTextOdoInput.text.toString().isEmpty()) {
             displayValidationError("Please input the vehicle odometer reading")
+            return false
+        }
+
+        if (binding.editTextYearInput.text.toString().toIntOrNull() == null) {
+            displayValidationError("The value for vehicle odometer is too high")
             return false
         }
 

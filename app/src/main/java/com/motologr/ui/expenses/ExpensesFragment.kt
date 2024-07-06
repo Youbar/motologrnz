@@ -35,6 +35,8 @@ class ExpensesFragment : Fragment() {
         _binding = FragmentExpensesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        DataManager.updateTitle(activity, "Expenses for FY25")
+
         val expensesList = calculateExpensesForFinancialYear()
         setFragmentValues(expensesList, expensesViewModel)
 
@@ -130,16 +132,13 @@ class ExpensesFragment : Fragment() {
     }
 
     private fun returnFinancialYear() : String {
-
         val calendar = Calendar.getInstance()
         val month = calendar.get(Calendar.MONTH)
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
-
-        if (month < 3) {
-            return calendar.get(Calendar.YEAR).toString().takeLast(2)
+        return if (month < 3) {
+            calendar.get(Calendar.YEAR).toString().takeLast(2)
         } else {
-            return (calendar.get(Calendar.YEAR) + 1).toString().takeLast(2)
+            (calendar.get(Calendar.YEAR) + 1).toString().takeLast(2)
         }
     }
 

@@ -39,6 +39,8 @@ class InsuranceFragment : Fragment() {
 
         val root: View = binding.root
 
+        DataManager.updateTitle(activity, "Add Insurance Policy")
+
         initialiseSaveButton()
 
         val isInsuranceInitialized: Boolean = DataManager.ReturnActiveVehicle()?.hasInsurance() == true
@@ -94,7 +96,8 @@ class InsuranceFragment : Fragment() {
         val insurancePolicyStartDate: Date = binding.editTextInsurancePolicyStartDate.getDate()
         val insuranceType: Int = parseCoverageRadioGroup()
         val insuranceCycle: Int = parseBillingRadioGroup()
-        val insuranceValue: BigDecimal = binding.editTextInsuranceBill.text.toString().toBigDecimal()
+        val insuranceValue: BigDecimal = binding.editTextInsuranceBill.text.toString()
+            .replace(",","").toBigDecimal()
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
         val insurance = Insurance(DataManager.fetchIdForInsurance(), insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)

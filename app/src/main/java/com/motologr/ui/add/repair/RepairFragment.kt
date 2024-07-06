@@ -46,8 +46,11 @@ class RepairFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
+            DataManager.updateTitle(activity, "View Repair")
             var repair: Repair = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Repair
             setInterfaceToReadOnly(repair)
+        }else {
+            DataManager.updateTitle(activity, "Record Repair")
         }
 
         return root
@@ -69,7 +72,8 @@ class RepairFragment : Fragment() {
         val repairType: Int = parseRepairTypeRadioGroup()
         val repairDate: Date = binding.editTextRepairDate.getDate()
         val repairProvider: String = binding.editTextRepairProvider.text.toString()
-        val repairPrice: BigDecimal = binding.editTextRepairPrice.text.toString().toBigDecimal()
+        val repairPrice: BigDecimal = binding.editTextRepairPrice.text.toString()
+            .replace(",","").toBigDecimal()
         val repairComment: String = binding.editTextRepairComment.text.toString()
 
         val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment, vehicleId)

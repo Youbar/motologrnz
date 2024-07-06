@@ -55,7 +55,9 @@
                 android:id="@+id/radioButton_fuel_diesel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Diesel" />
+                android:text="Diesel"
+                android:visibility="invisible"
+                android:visible="false" />
 
         </RadioGroup>
 

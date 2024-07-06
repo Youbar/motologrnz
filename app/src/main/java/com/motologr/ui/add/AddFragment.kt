@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentAddBinding
+import com.motologr.ui.data.DataManager
 
 class AddFragment : Fragment() {
 
@@ -29,6 +30,8 @@ class AddFragment : Fragment() {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
+
+        DataManager.updateTitle(activity, "Record/Update Details")
 
         val buttonFuel: View = binding.buttonFuel
         buttonFuel.setOnClickListener() {

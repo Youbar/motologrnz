@@ -60,10 +60,10 @@ class ExpandableListAdapter internal constructor(
 
         if (bannedStrings.contains(expandedListTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
-            listTitleImageView.setColorFilter(Color.WHITE)
+            listTitleImageView.visibility = View.INVISIBLE
 
             val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
-            listTitleImageView2.setColorFilter(Color.WHITE)
+            listTitleImageView2.visibility = View.INVISIBLE
         }
         else {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
@@ -127,14 +127,16 @@ class ExpandableListAdapter internal constructor(
 
         if (bannedStrings.contains(listTitleTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
-            listTitleImageView.setColorFilter(Color.WHITE)
+            listTitleImageView.visibility = View.INVISIBLE
+
             val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
-            listTitleImageView2.setColorFilter(Color.WHITE)
+            listTitleImageView2.visibility = View.INVISIBLE
         } else {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
-            listTitleImageView.setColorFilter(Color.BLACK)
+            listTitleImageView.visibility = View.VISIBLE
+
             val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
-            listTitleImageView2.setColorFilter(Color.BLACK)
+            listTitleImageView2.visibility = View.VISIBLE
         }
 
         return convertView

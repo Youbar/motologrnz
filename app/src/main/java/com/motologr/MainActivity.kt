@@ -31,7 +31,6 @@ import com.motologr.ui.data.logging.maint.RepairLog
 import com.motologr.ui.data.logging.maint.ServiceLog
 import com.motologr.ui.data.logging.maint.WofLog
 import com.motologr.ui.data.logging.reg.RegLog
-import com.motologr.ui.data.objects.insurance.InsuranceBillLog
 import com.motologr.ui.data.objects.vehicle.Vehicle
 import com.motologr.ui.data.sampleData.SampleData
 
@@ -103,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             override fun onDrawerOpened(drawerView: View) {
                 super.onDrawerOpened(drawerView)
 
-                fuckingGarbageFunction()
+                setAppDrawerExpandableListView()
             }
         }
 
@@ -152,9 +151,6 @@ class MainActivity : AppCompatActivity() {
 
         thread.start()
 
-        fuckingGarbageFunction()
-
-
         navController.addOnDestinationChangedListener { controller: NavController?, destination: NavDestination, arguments: Bundle? ->
 
             // Hide/show top search bar
@@ -172,6 +168,7 @@ class MainActivity : AppCompatActivity() {
 
         thread.join()
         DataManager.setLatestVehicleActive()
+        setAppDrawerExpandableListView()
 
         if (DataManager.isVehicles())
             navController.navigate(R.id.nav_vehicle_1)
@@ -234,7 +231,7 @@ class MainActivity : AppCompatActivity() {
     private var adapter: ExpandableListAdapter? = null
     private var expandedGroups: ArrayList<Int> = ArrayList()
 
-    fun fuckingGarbageFunction() {
+    fun setAppDrawerExpandableListView() {
 
         val expandableListView: ExpandableListView = findViewById(R.id.navigation_menu)
 

@@ -35,6 +35,8 @@ class MaintLoggingFragment : Fragment() {
         _binding = FragmentMaintLoggingBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        DataManager.updateTitle(activity, "Maintenance Logs")
+
         // getting the recyclerview by its id
         val recyclerview = binding.recyclerViewMaintLogging
 

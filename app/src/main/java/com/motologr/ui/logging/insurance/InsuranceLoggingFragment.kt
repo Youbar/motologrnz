@@ -32,6 +32,8 @@ class InsuranceLoggingFragment : Fragment() {
         _binding = FragmentInsuranceLoggingBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        DataManager.updateTitle(activity, "Insurance Policies")
+
         // getting the recyclerview by its id
         val recyclerview = binding.recyclerViewInsuranceLogging
 

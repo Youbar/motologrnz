@@ -42,6 +42,8 @@ class RegFragment : Fragment() {
 
         val root: View = binding.root
 
+        DataManager.updateTitle(activity, "Update Registration")
+
         setFragmentText()
         initialiseSaveButton()
         setOnCheckedChangeListener()
@@ -163,7 +165,8 @@ class RegFragment : Fragment() {
         val regExpiryDate = binding.editTextRegCurrDate.text.toString()
         val newRegExpiryDate = binding.editTextRegNextDate.getDate()
         val monthsExtended = getMonthsExtended()
-        val price = binding.editTextRegPrice.text.toString().toBigDecimal()
+        val price = binding.editTextRegPrice.text.toString()
+            .replace(",","").toBigDecimal()
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 

@@ -33,6 +33,8 @@ class FuelLoggingFragment : Fragment() {
         _binding = FragmentFuelLoggingBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        DataManager.updateTitle(activity, "Fuel Logs")
+
         return root
     }
 

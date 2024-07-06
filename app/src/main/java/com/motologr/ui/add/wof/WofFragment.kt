@@ -47,8 +47,11 @@ class WofFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
+            DataManager.updateTitle(activity, "View WOF")
             var wof: Wof = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
             setInterfaceToReadOnly(wof)
+        } else {
+            DataManager.updateTitle(activity, "Update WOF")
         }
 
         return root
@@ -95,7 +98,8 @@ class WofFragment : Fragment() {
         val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val oldDate = binding.editTextWofCurrDate.text.toString()
         val newDate = binding.editTextWofNextDate.getDate()
-        val price = binding.editTextWofPrice.text.toString().toBigDecimal()
+        val price = binding.editTextWofPrice.text.toString()
+            .replace(",","").toBigDecimal()
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 

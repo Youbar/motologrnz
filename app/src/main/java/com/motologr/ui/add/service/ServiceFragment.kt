@@ -46,8 +46,11 @@ class ServiceFragment : Fragment() {
         val logPos: Int? = arguments?.getInt("position");
 
         if (logPos != null) {
+            DataManager.updateTitle(activity, "View Service")
             var service: Service = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Service
             setInterfaceToReadOnly(service)
+        } else {
+            DataManager.updateTitle(activity, "Record Service")
         }
 
         return root
@@ -69,7 +72,8 @@ class ServiceFragment : Fragment() {
         val serviceType: Int = parseServiceTypeRadioGroup()
         val serviceDate: Date = binding.editTextServiceDate.getDate()
         val serviceProvider: String = binding.editTextServiceProvider.text.toString()
-        val servicePrice: BigDecimal = binding.editTextServicePrice.text.toString().toBigDecimal()
+        val servicePrice: BigDecimal = binding.editTextServicePrice.text.toString()
+            .replace(",","").toBigDecimal()
         val serviceComment: String = binding.editTextServiceComment.text.toString()
 
         val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment, vehicleId)
