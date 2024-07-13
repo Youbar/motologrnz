@@ -43,14 +43,6 @@ class InsuranceFragment : Fragment() {
 
         initialiseSaveButton()
 
-        val isInsuranceInitialized: Boolean = DataManager.ReturnActiveVehicle()?.hasInsurance() == true
-
-        if (isInsuranceInitialized) {
-            val insurance = DataManager.ReturnActiveVehicle()?.returnLatestInsurancePolicy()
-            if (insurance != null)
-                showCurrentData(insurance)
-        }
-
         return root
     }
 
@@ -60,20 +52,6 @@ class InsuranceFragment : Fragment() {
         val month =  calendar.get(Calendar.MONTH)
         val year = calendar.get(Calendar.YEAR)
         binding.editTextInsuranceDate.updateDate(year, month, day)
-    }
-
-    private fun showCurrentData(insurance: Insurance) {
-        val insurerName: String = insurance.insurer
-        val insuranceType: Int = insurance.coverage
-        val insuranceCycle: Int = insurance.billingCycle
-        val insuranceValue: BigDecimal = insurance.billing
-        val insuranceDate: Date = insurance.lastBill
-
-        binding.editTextInsuranceInsurer.setText(insurerName)
-        binding.radioGroupInsuranceCoverage.check(binding.radioGroupInsuranceCoverage.getChildAt(insuranceType).id)
-        binding.radioGroupInsuranceCycle.check(binding.radioGroupInsuranceCycle.getChildAt(insuranceCycle).id)
-        binding.editTextInsuranceBill.setText(insuranceValue.toString())
-        updateDatePicker(insuranceDate)
     }
 
     override fun onDestroyView() {

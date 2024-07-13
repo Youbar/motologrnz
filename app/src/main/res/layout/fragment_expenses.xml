@@ -88,7 +88,7 @@
         tools:text="WOF:" />
 
     <TextView
-        android:id="@+id/text_expenses_total"
+        android:id="@+id/text_expenses_insurance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -97,6 +97,18 @@
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_expenses_wof"
+        tools:text="Insurance:" />
+
+    <TextView
+        android:id="@+id/text_expenses_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_expenses_insurance"
         tools:text="Total:" />
 
     <TextView
@@ -160,6 +172,18 @@
         tools:text="$26" />
 
     <TextView
+        android:id="@+id/text_expenses_insurance_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/text_expenses_insurance"
+        app:layout_constraintTop_toBottomOf="@+id/text_expenses_wof_value"
+        tools:text="$2611" />
+
+    <TextView
         android:id="@+id/text_expenses_total_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -168,7 +192,7 @@
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/text_expenses_total"
-        app:layout_constraintTop_toBottomOf="@+id/text_expenses_wof_value"
+        app:layout_constraintTop_toBottomOf="@+id/text_expenses_insurance_value"
         tools:text="$234234" />
 
     <TextView

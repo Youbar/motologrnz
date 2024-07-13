@@ -108,15 +108,6 @@ class VehicleFragment : Fragment() {
         return root
     }
 
-    private fun calculateTotalExpenseForLoggables(expensesLogs : ArrayList<Loggable>) : BigDecimal {
-        var total : BigDecimal = 0.0.toBigDecimal()
-        for (expenseLog in expensesLogs) {
-            total += expenseLog.unitPrice;
-        }
-
-        return total
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

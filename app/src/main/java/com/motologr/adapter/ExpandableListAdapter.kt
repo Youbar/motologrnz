@@ -4,6 +4,7 @@ import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.provider.ContactsContract.Data
 import android.view.LayoutInflater
 import android.view.View
@@ -63,7 +64,12 @@ class ExpandableListAdapter internal constructor(
             listTitleImageView.visibility = View.INVISIBLE
 
             val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
-            listTitleImageView2.visibility = View.INVISIBLE
+
+            if (expandedListTextView.text == "Add New Vehicle") {
+                listTitleImageView2.setImageResource(R.drawable.ic_menu_plus)
+            } else {
+                listTitleImageView2.visibility = View.INVISIBLE
+            }
         }
         else {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
@@ -130,7 +136,11 @@ class ExpandableListAdapter internal constructor(
             listTitleImageView.visibility = View.INVISIBLE
 
             val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
-            listTitleImageView2.visibility = View.INVISIBLE
+            if (listTitleTextView.text == "Add New Vehicle") {
+                listTitleImageView2.setImageResource(R.drawable.ic_menu_plus)
+            } else {
+                listTitleImageView2.visibility = View.INVISIBLE
+            }
         } else {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
             listTitleImageView.visibility = View.VISIBLE

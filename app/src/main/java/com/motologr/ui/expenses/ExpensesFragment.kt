@@ -55,12 +55,14 @@ class ExpensesFragment : Fragment() {
         val textExpensesRegValue: TextView = binding.textExpensesRegValue
         val textExpensesWOF: TextView = binding.textExpensesWof
         val textExpensesWOFValue: TextView = binding.textExpensesWofValue
+        val textExpensesInsurance: TextView = binding.textExpensesInsurance
+        val textExpensesInsuranceValue: TextView = binding.textExpensesInsuranceValue
         val textExpensesTotal: TextView = binding.textExpensesTotal
         val textExpensesTotalValue: TextView = binding.textExpensesTotalValue
         val buttonExpensesOK: Button = binding.buttonExpensesOk
         val buttonExpensesExport: Button = binding.buttonExpensesExport
 
-        // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 4, Total = 5
+        // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 4, Insurance = 5, Total = 6
         expensesViewModel.textExpensesTitle.observe(viewLifecycleOwner) {
             textExpensesTitle.text = it + returnFinancialYear()
         }
@@ -94,11 +96,17 @@ class ExpensesFragment : Fragment() {
         expensesViewModel.textExpensesWOFValue.observe(viewLifecycleOwner) {
             textExpensesWOFValue.text = expensesList[2].toString()
         }
+        expensesViewModel.textExpensesInsurance.observe(viewLifecycleOwner) {
+            textExpensesInsurance.text = it
+        }
+        expensesViewModel.textExpensesInsuranceValue.observe(viewLifecycleOwner) {
+            textExpensesInsuranceValue.text = expensesList[5].toString()
+        }
         expensesViewModel.textExpensesTotal.observe(viewLifecycleOwner) {
             textExpensesTotal.text = it
         }
         expensesViewModel.textExpensesTotalValue.observe(viewLifecycleOwner) {
-            textExpensesTotalValue.text = expensesList[5].toString()
+            textExpensesTotalValue.text = expensesList[6].toString()
         }
         expensesViewModel.buttonExpensesOK.observe(viewLifecycleOwner) {
             buttonExpensesOK.text = it
@@ -124,11 +132,12 @@ class ExpensesFragment : Fragment() {
         var wofCost = calculateTotalExpenseForLoggables(ArrayList(wofLogs));
         var regCost = calculateTotalExpenseForLoggables(ArrayList(regLogs));
         var fuelCost = calculateTotalExpenseForLoggables(ArrayList(fuelLogs));
+        var insuranceCost = calculateTotalExpenseForLoggables(ArrayList(insuranceLogs));
 
         var total = calculateTotalExpenseForLoggables(expensesLogs);
 
 
-        return arrayListOf(repairCost, serviceCost, wofCost, regCost, fuelCost, total)
+        return arrayListOf(repairCost, serviceCost, wofCost, regCost, fuelCost, insuranceCost, total)
     }
 
     private fun returnFinancialYear() : String {

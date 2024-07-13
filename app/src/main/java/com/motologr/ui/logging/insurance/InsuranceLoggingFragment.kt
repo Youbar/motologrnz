@@ -1,5 +1,6 @@
 package com.motologr.ui.logging.insurance
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,17 +45,24 @@ class InsuranceLoggingFragment : Fragment() {
         val data = ArrayList<InsuranceLoggingItemsViewModel>()
         val insuranceLog = DataManager.ReturnActiveVehicle()?.insuranceLog?.returnInsuranceLog()
 
-        var insuranceLogSize = (insuranceLog?.size?:0)
+        val insuranceLogSize = (insuranceLog?.size?:0)
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        var calendar = Calendar.getInstance()
 
-        if (insuranceLogSize > 0 && insuranceLog?.size?:0 > 0) {
+        val format = SimpleDateFormat("dd/MM/yy")
+
+        if (insuranceLogSize > 0) {
             for (i in 0 until insuranceLog!!.size) {
                 var insurance: Insurance = insuranceLog[i]
+
+                val policyStartDt = insurance.insurancePolicyStartDate
+                calendar.set(policyStartDt.year + 1900 + 1, policyStartDt.month, policyStartDt.date, 0, 0, 0)
+                val policyEndDt = calendar.time
+
                 data.add(
                     InsuranceLoggingItemsViewModel(
-                        R.drawable.ic_log_insurance_16, format.format(insurance.insurancePolicyStartDate), "$" + insurance.billing.toString(),
-                        insurance.returnCycleType())
+                        R.drawable.ic_log_insurance_16, format.format(insurance.insurancePolicyStartDate), "to " + format.format(policyEndDt),
+                        "$" + insurance.billing.toString(), insurance.returnCycleType())
                 )
             }
         }

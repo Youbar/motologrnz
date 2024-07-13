@@ -1,18 +1,11 @@
 package com.motologr.ui.logging.insurance
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.navigation.Navigation
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.motologr.MainActivity
 import com.motologr.R
-import com.motologr.ui.data.DataManager
 
 class InsuranceLoggingAdapter(private val mList: List<InsuranceLoggingItemsViewModel>) : RecyclerView.Adapter<InsuranceLoggingAdapter.ViewHolder>() {
 
@@ -35,9 +28,10 @@ class InsuranceLoggingAdapter(private val mList: List<InsuranceLoggingItemsViewM
         holder.imageView.setImageResource(ItemsViewModel.image)
 
         // sets the text to the textview from our itemHolder class 
-        holder.fuelDt.text = ItemsViewModel.fuelDt
-        holder.fuelPrice.text = ItemsViewModel.fuelPrice
-        holder.fuelVolume.text = ItemsViewModel.fuelVolume
+        holder.startDt.text = ItemsViewModel.startDt
+        holder.endDt.text = ItemsViewModel.endDt
+        holder.policyPrice.text = ItemsViewModel.policyPrice
+        holder.policyFrequency.text = ItemsViewModel.policyFrequency
 
 /*        holder.itemView.setOnClickListener { v ->
             val bundle: Bundle = Bundle()
@@ -55,8 +49,9 @@ class InsuranceLoggingAdapter(private val mList: List<InsuranceLoggingItemsViewM
     // Holds the views for adding it to image and text 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val imageView: ImageView = itemView.findViewById(R.id.insurance_policies_card_image)
-        val fuelDt: TextView = itemView.findViewById(R.id.insurance_policies_card_date)
-        val fuelPrice: TextView = itemView.findViewById(R.id.insurance_policies_card_price)
-        val fuelVolume: TextView = itemView.findViewById(R.id.insurance_policies_card_volume)
+        val startDt: TextView = itemView.findViewById(R.id.insurance_policies_card_date)
+        val endDt: TextView = itemView.findViewById(R.id.insurance_policies_card_end_date)
+        val policyPrice: TextView = itemView.findViewById(R.id.insurance_policies_card_price)
+        val policyFrequency: TextView = itemView.findViewById(R.id.insurance_policies_card_frequency)
     }
 }

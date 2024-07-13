@@ -53,9 +53,9 @@ class FuelLoggingFragment : Fragment() {
         val data = ArrayList<FuelLoggingItemsViewModel>()
         val fuelLog = DataManager.ReturnActiveVehicle()?.returnFuelLog()
 
-        var fuelLogSize = (fuelLog?.size?:0)
+        val fuelLogSize = (fuelLog?.size?:0)
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val format = SimpleDateFormat("dd/MM/yy")
 
         if (fuelLogSize > 0 && fuelLog?.size?:0 > 0) {
             for (i in 0 until fuelLog!!.size) {

@@ -186,9 +186,9 @@ class MainActivity : AppCompatActivity() {
                     val vehicleOptions: MutableList<String> =
                         ArrayList()
                     vehicleOptions.add("Overview")
-                    vehicleOptions.add("Insurance")
-                    vehicleOptions.add("Maintenance")
                     vehicleOptions.add("Fuel")
+                    vehicleOptions.add("Maintenance")
+                    vehicleOptions.add("Insurance")
                     vehicleOptions.add("Expenses")
 
                     val vehicleId = vehicle?.id!!
