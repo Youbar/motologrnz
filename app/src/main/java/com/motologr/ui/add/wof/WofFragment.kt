@@ -11,11 +11,11 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentWofBinding
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.objects.vehicle.Vehicle
-import com.motologr.ui.data.objects.maint.Wof
-import com.motologr.ui.data.getDate
-import com.motologr.ui.data.toCalendar
+import com.motologr.data.DataManager
+import com.motologr.data.objects.vehicle.Vehicle
+import com.motologr.data.objects.maint.Wof
+import com.motologr.data.getDate
+import com.motologr.data.toCalendar
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

@@ -16,7 +16,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_insurance_logging_title" />
+        app:layout_constraintTop_toBottomOf="@+id/text_insurance_logging_title"
+        tools:listitem="@layout/card_view_insurance_policies" />
 
     <TextView
         android:id="@+id/text_insurance_logging_title"

@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.motologr.R
-import com.motologr.ui.data.DataManager
+import com.motologr.data.DataManager
 
 class MaintLoggingAdapter(private val mList: List<MaintLoggingItemsViewModel>) : RecyclerView.Adapter<MaintLoggingAdapter.ViewHolder>() {
 

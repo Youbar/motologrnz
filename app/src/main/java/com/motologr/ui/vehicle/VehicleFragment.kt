@@ -10,10 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.logging.Loggable
-import com.motologr.ui.data.objects.vehicle.Vehicle
-import java.math.BigDecimal
+import com.motologr.data.DataManager
+import com.motologr.data.objects.vehicle.Vehicle
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -61,14 +59,14 @@ class VehicleFragment : Fragment() {
             var insurer: String
             var insurerDate: String
 
+            val df = DecimalFormat("0.00")
+            df.roundingMode = RoundingMode.CEILING
+
             if (vehicle.hasInsurance()) {
                 var insurance = vehicle.returnLatestInsurancePolicy()
 
                 insurer = insurance.insurer
                 insurer = "You are with $insurer insurance"
-
-                val df = DecimalFormat("0.00")
-                df.roundingMode = RoundingMode.CEILING
 
                 insurerDate = "and your next bill of $${df.format(insurance.billing)} is due "
                 insurerDate += insurance.getNextBillingDateString()
@@ -77,7 +75,7 @@ class VehicleFragment : Fragment() {
                 insurerDate = ""
             }
 
-            val approxCosts : String = "$" + vehicle.returnExpensesWithinFinancialYear().toString()
+            val approxCosts : String = "$" + df.format(vehicle.returnExpensesWithinFinancialYear())
 
             vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
                 carName.text = vehicleText

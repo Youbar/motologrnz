@@ -1,6 +1,6 @@
 package com.motologr
 
-import com.motologr.ui.data.objects.insurance.Insurance
+import com.motologr.data.objects.insurance.Insurance
 import org.junit.Test
 
 import org.junit.Assert.*

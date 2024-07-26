@@ -3,178 +3,82 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/add_fuel_scroll_view"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/text_insurance_coverage"
+            android:id="@+id/policy_insurer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="What is your coverage?"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText_insurance_policy_start_date"
-            app:layout_constraintTop_toBottomOf="@+id/editText_insurance_policy_start_date" />
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:hint="AA Insurance"/>
 
         <TextView
-            android:id="@+id/text_insurance_billing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="What is your billing cycle?"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/radioGroup_insurance_coverage"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup_insurance_coverage" />
-
-        <TextView
-            android:id="@+id/text_insurance_insurer"
+            android:id="@+id/policy_start_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Who is your insurer?"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/policy_insurer"
+            tools:hint="Start Date - 14/05/24" />
 
-        <EditText
-            android:id="@+id/editText_insurance_insurer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:hint="Insurer name (e.g. AA)"
-            android:inputType="text"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/text_insurance_insurer"
-            app:layout_constraintTop_toBottomOf="@+id/text_insurance_insurer" />
-
-        <RadioGroup
-            android:id="@+id/radioGroup_insurance_coverage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="@+id/text_insurance_coverage"
-            app:layout_constraintTop_toBottomOf="@+id/text_insurance_coverage">
-
-            <RadioButton
-                android:id="@+id/radioButton_insurance_comp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Comprehensive" />
-
-            <RadioButton
-                android:id="@+id/radioButton_insurance_thirdplus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Third Party Fire &amp; Theft" />
-
-            <RadioButton
-                android:id="@+id/radioButton_insurance_third"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Third Party" />
-        </RadioGroup>
-
-        <RadioGroup
-            android:id="@+id/radioGroup_insurance_cycle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="@+id/text_insurance_billing"
-            app:layout_constraintTop_toBottomOf="@+id/text_insurance_billing">
-
-            <RadioButton
-                android:id="@+id/radioButton_insurance_fortnightly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fortnightly" />
-
-            <RadioButton
-                android:id="@+id/radioButton_insurance_monthly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Monthly" />
-
-            <RadioButton
-                android:id="@+id/radioButton_insurance_annual"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Annually" />
-        </RadioGroup>
-
-        <EditText
-            android:id="@+id/editText_insurance_bill"
+        <TextView
+            android:id="@+id/policy_end_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:ems="6"
-            android:hint="$12.34"
-            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@+id/radioGroup_insurance_cycle"
-            app:layout_constraintTop_toBottomOf="@+id/text_insurance_billing" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/policy_start_date"
+            tools:hint="End Date - 14/05/25" />
 
         <TextView
-            android:id="@+id/text_insurance_date"
+            android:id="@+id/policy_pricing_and_cycle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="When was your last bill?"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/radioGroup_insurance_cycle"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup_insurance_cycle" />
-
-
-        <DatePicker
-            android:id="@+id/editText_insurance_date"
-            android:layout_width="248dp"
-            android:layout_height="124dp"
-            android:layout_marginTop="16dp"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            app:layout_constraintStart_toStartOf="@+id/text_insurance_date"
-            app:layout_constraintTop_toBottomOf="@+id/text_insurance_date" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/policy_end_date"
+            tools:hint="Pricing - $18.90 per month" />
 
         <TextView
-            android:id="@+id/text_insurance_policy_start_date"
+            android:id="@+id/policy_coverage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="When did your policy begin?"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText_insurance_insurer"
-            app:layout_constraintTop_toBottomOf="@+id/editText_insurance_insurer" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/policy_pricing_and_cycle"
+            tools:hint="Coverage - 3rd Party+" />
 
-
-        <DatePicker
-            android:id="@+id/editText_insurance_policy_start_date"
-            android:layout_width="248dp"
-            android:layout_height="124dp"
-            android:layout_marginTop="16dp"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            app:layout_constraintStart_toStartOf="@+id/text_insurance_policy_start_date"
-            app:layout_constraintTop_toBottomOf="@+id/text_insurance_policy_start_date" />
-
-
-        <Button
-            android:id="@+id/button_insurance_save"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/insurance_bill_recycler_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_insurance_date" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/policy_coverage"
+            tools:listitem="@layout/card_view_insurance_bill" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -23,16 +23,16 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
 import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
-import com.motologr.ui.data.AppDatabase
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.logging.fuel.FuelLog
-import com.motologr.ui.data.logging.insurance.InsuranceLog
-import com.motologr.ui.data.logging.maint.RepairLog
-import com.motologr.ui.data.logging.maint.ServiceLog
-import com.motologr.ui.data.logging.maint.WofLog
-import com.motologr.ui.data.logging.reg.RegLog
-import com.motologr.ui.data.objects.vehicle.Vehicle
-import com.motologr.ui.data.sampleData.SampleData
+import com.motologr.data.AppDatabase
+import com.motologr.data.DataManager
+import com.motologr.data.logging.fuel.FuelLog
+import com.motologr.data.logging.insurance.InsuranceLog
+import com.motologr.data.logging.maint.RepairLog
+import com.motologr.data.logging.maint.ServiceLog
+import com.motologr.data.logging.maint.WofLog
+import com.motologr.data.logging.reg.RegLog
+import com.motologr.data.objects.vehicle.Vehicle
+import com.motologr.data.sampleData.SampleData
 
 class MainActivity : AppCompatActivity() {
 

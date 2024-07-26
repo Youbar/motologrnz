@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.motologr.R
 import com.motologr.databinding.FragmentInsuranceLoggingBinding
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.objects.insurance.Insurance
+import com.motologr.data.DataManager
+import com.motologr.data.objects.insurance.Insurance
 import java.text.SimpleDateFormat
 
 class InsuranceLoggingFragment : Fragment() {

@@ -13,9 +13,8 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.textview.MaterialTextView
 import com.motologr.R
-import com.motologr.ui.data.DataManager
+import com.motologr.data.DataManager
 
 
 class ExpandableListAdapter internal constructor(

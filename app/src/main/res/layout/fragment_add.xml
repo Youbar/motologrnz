@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/add_fuel_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -19,8 +19,8 @@
             android:layout_marginTop="16dp"
             android:text="Repair"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@+id/button_service"
-            app:layout_constraintTop_toBottomOf="@+id/text_service_repair" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_WOF" />
 
         <TextView
             android:id="@+id/text_title"
@@ -133,6 +133,6 @@
             android:text="Add insurance policy:"
             android:textSize="28sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_service" />
+            app:layout_constraintTop_toBottomOf="@+id/button_repair" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

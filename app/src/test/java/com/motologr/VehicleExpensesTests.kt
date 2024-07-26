@@ -1,9 +1,9 @@
 package com.motologr
 
-import com.motologr.ui.data.objects.maint.Repair
-import com.motologr.ui.data.objects.maint.Service
-import com.motologr.ui.data.objects.maint.Wof
-import com.motologr.ui.data.objects.vehicle.Vehicle
+import com.motologr.data.objects.maint.Repair
+import com.motologr.data.objects.maint.Service
+import com.motologr.data.objects.maint.Wof
+import com.motologr.data.objects.vehicle.Vehicle
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDate

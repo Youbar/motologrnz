@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentAddBinding
-import com.motologr.ui.data.DataManager
+import com.motologr.data.DataManager
 
 class AddFragment : Fragment() {
 

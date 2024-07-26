@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.motologr.databinding.FragmentExpensesBinding
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.logging.Loggable
+import com.motologr.data.DataManager
+import com.motologr.data.logging.Loggable
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar

@@ -14,10 +14,10 @@ import androidx.navigation.fragment.findNavController
 import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelBinding
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.objects.fuel.Fuel
-import com.motologr.ui.data.getDate
-import com.motologr.ui.data.toCalendar
+import com.motologr.data.DataManager
+import com.motologr.data.objects.fuel.Fuel
+import com.motologr.data.getDate
+import com.motologr.data.toCalendar
 import java.math.BigDecimal
 import java.util.Calendar
 import java.util.Date

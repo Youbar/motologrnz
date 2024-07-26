@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelLoggingBinding
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.objects.fuel.Fuel
+import com.motologr.data.DataManager
+import com.motologr.data.objects.fuel.Fuel
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 class FuelLoggingFragment : Fragment() {
@@ -57,12 +59,15 @@ class FuelLoggingFragment : Fragment() {
 
         val format = SimpleDateFormat("dd/MM/yy")
 
+        val df = DecimalFormat("0.00")
+        df.roundingMode = RoundingMode.CEILING
+
         if (fuelLogSize > 0 && fuelLog?.size?:0 > 0) {
             for (i in 0 until fuelLog!!.size) {
                 var fuel: Fuel = fuelLog[i]
                 data.add(
                     FuelLoggingItemsViewModel(
-                        R.drawable.ic_log_fuel_16, format.format(fuel.purchaseDate), "$" + fuel.price.toString(),
+                        R.drawable.ic_log_fuel_16, format.format(fuel.purchaseDate), "$" + df.format(fuel.price),
                         fuel.litres.toString() + " L")
                 )
             }

@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.motologr.MainActivity
 import com.motologr.R
-import com.motologr.ui.data.DataManager
+import com.motologr.data.DataManager
 
 class FuelLoggingAdapter(private val mList: List<FuelLoggingItemsViewModel>) : RecyclerView.Adapter<FuelLoggingAdapter.ViewHolder>() {
 

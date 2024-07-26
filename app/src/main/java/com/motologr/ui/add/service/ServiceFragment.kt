@@ -12,10 +12,10 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentServiceBinding
-import com.motologr.ui.data.DataManager
-import com.motologr.ui.data.objects.maint.Service
-import com.motologr.ui.data.getDate
-import com.motologr.ui.data.toCalendar
+import com.motologr.data.DataManager
+import com.motologr.data.objects.maint.Service
+import com.motologr.data.getDate
+import com.motologr.data.toCalendar
 import java.math.BigDecimal
 import java.util.Calendar
 import java.util.Date
