@@ -17,6 +17,15 @@ class Insurance (var id : Int,
                  var lastBill: Date,
                  var vehicleId: Int
 ) {
+    var endDt : Date
+        get() {
+            val calendar = Calendar.getInstance()
+            calendar.set(insurancePolicyStartDate.year + 1900 + 1, insurancePolicyStartDate.month, insurancePolicyStartDate.date, 0, 0, 0)
+            return calendar.time
+        }
+        set(value){
+            endDt = value
+        }
 
     var insuranceBillLog : InsuranceBillLog = InsuranceBillLog()
 
@@ -93,28 +102,22 @@ class Insurance (var id : Int,
 
     fun getNextBillingDate() : Date {
 
-        for (insuranceBilling in insuranceBillLog.returnInsuranceBillLog()) {
+        val insuranceBills = insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortBy{ x -> x.billingDate}
+
+        for (insuranceBilling in insuranceBills) {
             if (insuranceBilling.billingDate > Calendar.getInstance().time) {
                 return insuranceBilling.billingDate
             }
         }
 
         val calendar : Calendar = Calendar.getInstance()
-        calendar.set(lastBill.year + 1900, lastBill.month, lastBill.date)
-
-        if (billingCycle == 0) {
-            calendar.add(Calendar.DATE, 14)
-        } else if (billingCycle == 1) {
-            calendar.add(Calendar.MONTH, 1)
-        } else if (billingCycle == 2) {
-            calendar.add(Calendar.YEAR, 1)
-        }
 
         return calendar.time
     }
 
     fun getNextBillingDateString() : String {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yy")
 
         return format.format(getNextBillingDate())
     }

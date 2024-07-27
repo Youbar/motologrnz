@@ -9,14 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.motologr.R
-import com.motologr.databinding.FragmentInsuranceLoggingBinding
 import com.motologr.data.DataManager
-import com.motologr.data.objects.insurance.Insurance
+import com.motologr.data.objects.insurance.InsuranceBill
+import com.motologr.databinding.FragmentInsurancePolicyBinding
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 class InsurancePolicyFragment : Fragment() {
 
-    private var _binding: FragmentInsuranceLoggingBinding? = null
+    private var _binding: FragmentInsurancePolicyBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -27,43 +30,59 @@ class InsurancePolicyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val fuelLoggingViewModel =
+        val insurancePolicyViewModel =
             ViewModelProvider(this).get(InsurancePolicyViewModel::class.java)
 
-        _binding = FragmentInsuranceLoggingBinding.inflate(inflater, container, false)
+        _binding = FragmentInsurancePolicyBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         DataManager.updateTitle(activity, "Insurance Policies")
 
         // getting the recyclerview by its id
-        val recyclerview = binding.recyclerViewInsuranceLogging
+        val recyclerview = binding.insuranceBillRecyclerView
 
         // this creates a vertical layout Manager
         recyclerview.layoutManager = LinearLayoutManager(root.context)
 
         // ArrayList of class ItemsViewModel
         val data = ArrayList<InsurancePolicyBillsViewModel>()
-        val insuranceLog = DataManager.ReturnActiveVehicle()?.insuranceLog?.returnInsuranceLog()
 
-        val insuranceLogSize = (insuranceLog?.size?:0)
+        val bundle = arguments
+        if (bundle != null) {
+            val policyIndex = bundle.getInt("positon")
 
-        var calendar = Calendar.getInstance()
+            val insurance = DataManager.ReturnActiveVehicle()?.insuranceLog?.returnInsurance(policyIndex)
 
-        val format = SimpleDateFormat("dd/MM/yy")
+            val format = SimpleDateFormat("dd/MM/yy")
 
-        if (insuranceLogSize > 0) {
-            for (i in 0 until insuranceLog!!.size) {
-                var insurance: Insurance = insuranceLog[i]
+            if (insurance != null) {
+                binding.policyInsurer.text = "${insurance.insurer}"
+                binding.policyStartDate.text = "Start Date - ${format.format(insurance.insurancePolicyStartDate)}"
+                binding.policyEndDate.text = "End Date - ${format.format(insurance.endDt)}"
+                binding.policyPricingAndCycle.text = "Pricing - $${insurance.billing} ${insurance.returnCycleType()}"
+                binding.policyCoverage.text = "Coverage - ${insurance.returnCoverageType()}"
+            }
 
-                val policyStartDt = insurance.insurancePolicyStartDate
-                calendar.set(policyStartDt.year + 1900 + 1, policyStartDt.month, policyStartDt.date, 0, 0, 0)
-                val policyEndDt = calendar.time
+            val insuranceBillLog = insurance?.insuranceBillLog?.returnInsuranceBillLog()
+            insuranceBillLog?.sortBy { x -> x.billingDate }
+            val insuranceBillLogSize = insuranceBillLog?.size?:0
 
-                data.add(
-                    InsurancePolicyBillsViewModel(
-                        R.drawable.ic_log_insurance_16, format.format(insurance.insurancePolicyStartDate), "to " + format.format(policyEndDt),
-                        "$" + insurance.billing.toString(), insurance.returnCycleType())
-                )
+            val localDate = LocalDate.now()
+
+            if (insuranceBillLogSize > 0) {
+                for (i in 0 until insuranceBillLogSize) {
+                    val insuranceBill: InsuranceBill = insuranceBillLog!![i]
+                    val billDtAsLocalDate = insuranceBill.billingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+
+                    val billPaid = localDate.isAfter(billDtAsLocalDate)
+                            || localDate.isEqual(billDtAsLocalDate)
+
+                    data.add(
+                        InsurancePolicyBillsViewModel(
+                            R.drawable.ic_log_bill_16, format.format(insuranceBill.billingDate),
+                            "$" + insurance.billing.toString(), billPaid)
+                    )
+                }
             }
         }
 

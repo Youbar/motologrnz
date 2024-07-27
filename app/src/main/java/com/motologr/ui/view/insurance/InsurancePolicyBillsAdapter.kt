@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.motologr.R
 
@@ -14,7 +15,7 @@ class InsurancePolicyBillsAdapter(private val mList: List<InsurancePolicyBillsVi
         // inflates the card_view_design view  
         // that is used to hold list item 
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_view_insurance_policies, parent, false)
+            .inflate(R.layout.card_view_insurance_bill, parent, false)
 
         return ViewHolder(view)
     }
@@ -28,10 +29,15 @@ class InsurancePolicyBillsAdapter(private val mList: List<InsurancePolicyBillsVi
         holder.imageView.setImageResource(ItemsViewModel.image)
 
         // sets the text to the textview from our itemHolder class 
-        holder.startDt.text = ItemsViewModel.startDt
-        holder.endDt.text = ItemsViewModel.endDt
-        holder.policyPrice.text = ItemsViewModel.policyPrice
-        holder.policyFrequency.text = ItemsViewModel.policyFrequency
+        holder.billDt.text = ItemsViewModel.billingDt
+        holder.billPrice.text = ItemsViewModel.policyPrice
+
+        if (ItemsViewModel.paid) {
+            holder.billPaid.setImageResource(R.drawable.ic_log_check_16)
+            holder.billPaid.isVisible = true
+        }
+        else
+            holder.billPaid.isVisible = false
 
 /*        holder.itemView.setOnClickListener { v ->
             val bundle: Bundle = Bundle()
@@ -48,10 +54,9 @@ class InsurancePolicyBillsAdapter(private val mList: List<InsurancePolicyBillsVi
 
     // Holds the views for adding it to image and text 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.insurance_policies_card_image)
-        val startDt: TextView = itemView.findViewById(R.id.insurance_policies_card_date)
-        val endDt: TextView = itemView.findViewById(R.id.insurance_policies_card_end_date)
-        val policyPrice: TextView = itemView.findViewById(R.id.insurance_policies_card_price)
-        val policyFrequency: TextView = itemView.findViewById(R.id.insurance_policies_card_frequency)
+        val imageView: ImageView = itemView.findViewById(R.id.insurance_bill_card_image)
+        val billDt: TextView = itemView.findViewById(R.id.insurance_bill_card_date)
+        val billPrice: TextView = itemView.findViewById(R.id.insurance_bill_card_price)
+        val billPaid: ImageView = itemView.findViewById(R.id.insurance_bill_card_image_paid)
     }
 }

@@ -1,9 +1,11 @@
 package com.motologr.ui.logging.insurance
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.motologr.R
 
@@ -33,12 +35,12 @@ class InsuranceLoggingAdapter(private val mList: List<InsuranceLoggingItemsViewM
         holder.policyPrice.text = ItemsViewModel.policyPrice
         holder.policyFrequency.text = ItemsViewModel.policyFrequency
 
-/*        holder.itemView.setOnClickListener { v ->
-            val bundle: Bundle = Bundle()
+        holder.itemView.setOnClickListener { v ->
+            val bundle = Bundle()
             bundle.putInt("position", position)
 
-            holder.itemView.findNavController().navigate(R.id.nav_fuel, bundle)
-        }*/
+            holder.itemView.findNavController().navigate(R.id.nav_insurance_policy, bundle)
+        }
     }
 
     // return the number of the items in the list 
