@@ -31,6 +31,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
 
     fun getLatestOdometerReading() : Int {
         var odometerReadings = fuelLog.returnFuelLog()
+        odometerReadings = ArrayList(odometerReadings.filter { log -> log.odometerReading > 0 })
         if (odometerReadings.isEmpty())
             return odometer
 

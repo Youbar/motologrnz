@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
@@ -38,6 +39,10 @@ class FuelLoggingAdapter(private val mList: List<FuelLoggingItemsViewModel>) : R
         holder.fuelDt.text = ItemsViewModel.fuelDt
         holder.fuelPrice.text = ItemsViewModel.fuelPrice
         holder.fuelVolume.text = ItemsViewModel.fuelVolume
+
+        if (ItemsViewModel.fuelVolume == "-1.0 L") {
+            holder.fuelVolume.isVisible = false
+        }
 
         holder.itemView.setOnClickListener { v ->
             val bundle: Bundle = Bundle()

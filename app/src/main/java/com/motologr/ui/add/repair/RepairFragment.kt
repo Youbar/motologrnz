@@ -1,5 +1,6 @@
 package com.motologr.ui.add.repair
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +11,8 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
+import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentRepairBinding
 import com.motologr.data.DataManager
@@ -51,6 +54,13 @@ class RepairFragment : Fragment() {
             setInterfaceToReadOnly(repair)
         }else {
             DataManager.updateTitle(activity, "Record Repair")
+
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
+
+            if (sharedPref != null) {
+                val defaultMechanic = sharedPref.getString(getString(R.string.default_mechanic_key), "")
+                binding.editTextRepairProvider.setText(defaultMechanic)
+            }
         }
 
         return root

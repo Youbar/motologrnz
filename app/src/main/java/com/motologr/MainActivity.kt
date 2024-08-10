@@ -34,6 +34,7 @@ import com.motologr.data.logging.maint.WofLog
 import com.motologr.data.logging.reg.RegLog
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.data.sampleData.SampleData
+import com.motologr.ui.view.settings.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
 

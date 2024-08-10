@@ -2,6 +2,7 @@ package com.motologr.ui.view.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import com.motologr.R
 
 class SettingsFragment : PreferenceFragmentCompat() {

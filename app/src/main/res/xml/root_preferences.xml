@@ -3,7 +3,7 @@
     <PreferenceCategory app:title="@string/maintenance_header">
 
         <EditTextPreference
-            app:key="default_mechanic"
+            app:key="@string/default_mechanic_key"
             app:title="@string/default_mechanic_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -20,7 +20,7 @@
     <PreferenceCategory app:title="@string/logging_header">
 
         <SwitchPreferenceCompat
-            app:key="sync"
+            app:key="track_fuel_consumption"
             app:title="@string/fuel_consumption_title"
             app:summaryOff="@string/fuel_consumption_summary_off"
             app:summaryOn="@string/fuel_consumption_summary_on"

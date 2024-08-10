@@ -19,9 +19,11 @@
 
     <!-- Maintenance Preferences -->
     <string name="default_mechanic_title">Default Mechanic</string>
+    <string name="default_mechanic_key">default_mechanic</string>
 
     <!-- Logging Preferences -->
     <string name="fuel_consumption_title">Track fuel consumption</string>
+    <string name="fuel_consumption_key">track_fuel_consumption</string>
     <string name="fuel_consumption_summary_on">You will need to record your odometer and litres purchased when logging fuel</string>
     <string name="fuel_consumption_summary_off">You will only need to record the price of your petrol when logging fuel</string>
 </resources>

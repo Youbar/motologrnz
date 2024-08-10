@@ -10,6 +10,7 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentServiceBinding
 import com.motologr.data.DataManager
@@ -51,6 +52,13 @@ class ServiceFragment : Fragment() {
             setInterfaceToReadOnly(service)
         } else {
             DataManager.updateTitle(activity, "Record Service")
+
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
+
+            if (sharedPref != null) {
+                val defaultMechanic = sharedPref.getString(getString(R.string.default_mechanic_key), "")
+                binding.editTextServiceProvider.setText(defaultMechanic)
+            }
         }
 
         return root

@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
@@ -75,7 +77,14 @@ class VehicleFragment : Fragment() {
                 insurerDate = ""
             }
 
-            val approxCosts : String = "$" + df.format(vehicle.returnExpensesWithinFinancialYear())
+            var odometerVisible = false
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
+
+            if (sharedPref != null) {
+                odometerVisible = sharedPref.getBoolean(getString(R.string.fuel_consumption_key), false)
+            }
+
+                val approxCosts : String = "$" + df.format(vehicle.returnExpensesWithinFinancialYear())
 
             vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
                 carName.text = vehicleText
@@ -88,6 +97,7 @@ class VehicleFragment : Fragment() {
             }
             vehicleViewModel.textOdometer.observe(viewLifecycleOwner) {
                 Odometer.text = odometer
+                Odometer.isVisible = odometerVisible
             }
             vehicleViewModel.textInsurer.observe(viewLifecycleOwner) {
                 Insurer.text = insurer
