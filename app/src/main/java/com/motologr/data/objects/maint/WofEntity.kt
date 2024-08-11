@@ -16,10 +16,11 @@ data class WofEntity(
     @ColumnInfo(name = "wofDate") val wofDate: Date,
     @ColumnInfo(name = "wofCompletedDate") val wofCompletedDate: Date,
     @ColumnInfo(name = "price") val price: BigDecimal,
-    @ColumnInfo(name = "vehicleId") val vehicleId: Int)
+    @ColumnInfo(name = "vehicleId") val vehicleId: Int,
+    @ColumnInfo(name = "wofProvider") val wofProvider: String)
 {
     fun convertToWofObject() : Wof {
-        val wof = Wof(wofDate, wofCompletedDate, price, vehicleId)
+        val wof = Wof(wofDate, wofCompletedDate, price, vehicleId, wofProvider)
         wof.id = id
         return wof
     }

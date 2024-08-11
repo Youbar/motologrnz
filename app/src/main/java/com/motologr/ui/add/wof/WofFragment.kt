@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentWofBinding
 import com.motologr.data.DataManager
@@ -53,6 +54,13 @@ class WofFragment : Fragment() {
         } else {
             DataManager.updateTitle(activity, "Update WOF")
             applyWOFYearRule()
+
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
+
+            if (sharedPref != null) {
+                val defaultMechanic = sharedPref.getString(getString(R.string.default_mechanic_key), "")
+                binding.editTextWofProvider.setText(defaultMechanic)
+            }
         }
 
         return root
@@ -122,10 +130,11 @@ class WofFragment : Fragment() {
         val newDate = binding.editTextWofNextDate.getDate()
         val price = binding.editTextWofPrice.text.toString()
             .replace(",","").toBigDecimal()
+        val wofProvider = binding.editTextWofProvider.text.toString()
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-        val wof = Wof(newDate, format.parse(oldDate), price, vehicleId)
+        val wof = Wof(newDate, format.parse(oldDate), price, vehicleId, wofProvider)
         vehicle.logWof(wof)
 
         findNavController().navigate(R.id.action_nav_wof_to_nav_vehicle_1)

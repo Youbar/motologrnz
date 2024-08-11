@@ -26,6 +26,7 @@ import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
 import com.motologr.data.AppDatabase
 import com.motologr.data.DataManager
+import com.motologr.data.MIGRATION_1_2
 import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.logging.maint.RepairLog
@@ -53,7 +54,9 @@ class MainActivity : AppCompatActivity() {
             db = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "motologr"
-            ).build()
+            )
+                .addMigrations(MIGRATION_1_2)
+                .build()
 
             DataManager.setIdCounterLoggable()
             DataManager.setIdCounterVehicle()

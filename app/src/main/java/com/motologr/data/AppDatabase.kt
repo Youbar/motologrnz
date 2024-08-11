@@ -25,7 +25,7 @@ import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
 
-public class Converters {
+class Converters {
     @TypeConverter
     fun fromTimestamp(value : Long?) : Date? {
         if (value == null)
@@ -61,7 +61,9 @@ public class Converters {
     RegEntity::class,
     WofEntity::class,
     RepairEntity::class,
-    ServiceEntity::class], version = 1)
+    ServiceEntity::class],
+    version = 2)
+
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun fuelDao(): FuelDao

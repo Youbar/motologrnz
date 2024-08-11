@@ -7,10 +7,11 @@ import java.util.Date
 class Wof(var wofDate: Date,
           var wofCompletedDate: Date,
           var price: BigDecimal,
-          override var vehicleId: Int) : Loggable(wofCompletedDate, 2, price, vehicleId) {
+          override var vehicleId: Int,
+          var wofProvider: String) : Loggable(wofCompletedDate, 2, price, vehicleId) {
 
     fun convertToWofEntity() : WofEntity {
-        val wofEntity = WofEntity(id, wofDate, wofCompletedDate, price, vehicleId)
+        val wofEntity = WofEntity(id, wofDate, wofCompletedDate, price, vehicleId, wofProvider)
         return wofEntity
     }
 }
