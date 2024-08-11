@@ -86,6 +86,10 @@ object DataManager {
         activeVehicle = int;
     }
 
+    fun setFirstVehicleActive() {
+        SetActiveVehicle(0)
+    }
+
     fun setLatestVehicleActive() {
         SetActiveVehicle(vehicleArray.lastIndex)
     }
@@ -105,14 +109,12 @@ object DataManager {
     private var idCounterLoggable: Int = 0
 
     fun setIdCounterLoggable() {
-        Thread {
-            val maxId = MainActivity.getDatabase()
-                ?.loggableDao()
-                ?.getMaxId()
+        val maxId = MainActivity.getDatabase()
+            ?.loggableDao()
+            ?.getMaxId()
 
-            if (maxId != null)
-                idCounterLoggable = maxId + 1
-        }.start()
+        if (maxId != null)
+            idCounterLoggable = maxId + 1
     }
 
     fun FetchIdForLoggable() : Int {
@@ -124,14 +126,12 @@ object DataManager {
     private var idCounterVehicle: Int = 0
 
     fun setIdCounterVehicle() {
-        Thread {
-            val maxId = MainActivity.getDatabase()
-                ?.vehicleDao()
-                ?.getMaxId()
+        val maxId = MainActivity.getDatabase()
+            ?.vehicleDao()
+            ?.getMaxId()
 
-            if (maxId != null)
-                idCounterVehicle = maxId + 1
-        }.start()
+        if (maxId != null)
+            idCounterVehicle = maxId + 1
     }
 
     fun FetchIdForVehicle() : Int {
@@ -143,14 +143,12 @@ object DataManager {
     private var idCounterInsurance: Int = 0
 
     fun setIdCounterInsurance() {
-        Thread {
-            val maxId = MainActivity.getDatabase()
-                ?.insuranceDao()
-                ?.getMaxId()
+        val maxId = MainActivity.getDatabase()
+            ?.insuranceDao()
+            ?.getMaxId()
 
-            if (maxId != null)
-                idCounterInsurance = maxId + 1
-        }.start()
+        if (maxId != null)
+            idCounterInsurance = maxId + 1
     }
 
     fun fetchIdForInsurance() : Int {

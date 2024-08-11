@@ -48,23 +48,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initDb() {
-        Thread {
+    private fun initDb() : Thread {
+        return Thread {
             db = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "motologr"
             ).build()
-        }.start()
+
+            DataManager.setIdCounterLoggable()
+            DataManager.setIdCounterVehicle()
+            DataManager.setIdCounterInsurance()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initDb()
-
-        DataManager.setIdCounterLoggable()
-        DataManager.setIdCounterVehicle()
-        DataManager.setIdCounterInsurance()
+        var thread: Thread = initDb()
+        thread.start()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        val thread: Thread
+        thread.join()
 
         if (BuildConfig.DEBUG) {
             thread = Thread {
@@ -169,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         thread.join()
-        DataManager.setLatestVehicleActive()
+        DataManager.setFirstVehicleActive()
         setAppDrawerExpandableListView()
 
         if (DataManager.isVehicles())

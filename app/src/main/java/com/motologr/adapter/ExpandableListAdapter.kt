@@ -56,8 +56,6 @@ class ExpandableListAdapter internal constructor(
         bannedStrings.add("Fuel")
         bannedStrings.add("Expenses")
 
-        parent.findViewById<ImageView>(R.id.imageView2).rotation = 0.toFloat()
-
         if (bannedStrings.contains(expandedListTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
             listTitleImageView.visibility = View.INVISIBLE
@@ -72,7 +70,7 @@ class ExpandableListAdapter internal constructor(
         }
         else {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
-            listTitleImageView.rotation = 0.toFloat()
+            listTitleImageView.rotation = 90.toFloat()
         }
 
         return convertView
@@ -123,18 +121,18 @@ class ExpandableListAdapter internal constructor(
         bannedStrings.add("Add New Vehicle")
 
         val parentView = convertView.findViewById<ImageView>(R.id.imageView2)
+        parentView.rotation = 90.toFloat() // 90 = pointing left
 
-        if (parentView != null && isExpanded) {
-            parentView.rotation = 0.toFloat()
-        } else if (parentView != null) {
-            parentView.rotation = 90.toFloat()
-        }
+        if (isExpanded)
+            parentView.rotation = 0.toFloat() // 0 = pointing down
+
+        val listTitleImageView2 = convertView.findViewById<ImageView>(R.id.vehicleIcon)
+        listTitleImageView2.setImageResource(R.drawable.ic_menu_car)
 
         if (bannedStrings.contains(listTitleTextView.text)) {
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
             listTitleImageView.visibility = View.INVISIBLE
 
-            val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
             if (listTitleTextView.text == "Add New Vehicle") {
                 listTitleImageView2.setImageResource(R.drawable.ic_menu_plus)
             } else {
@@ -144,7 +142,6 @@ class ExpandableListAdapter internal constructor(
             val listTitleImageView = convertView!!.findViewById<ImageView>(R.id.imageView2)
             listTitleImageView.visibility = View.VISIBLE
 
-            val listTitleImageView2 = convertView!!.findViewById<ImageView>(R.id.vehicleIcon)
             listTitleImageView2.visibility = View.VISIBLE
         }
 

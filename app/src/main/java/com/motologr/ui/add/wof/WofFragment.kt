@@ -48,13 +48,35 @@ class WofFragment : Fragment() {
 
         if (logPos != null) {
             DataManager.updateTitle(activity, "View WOF")
-            var wof: Wof = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
+            val wof: Wof = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
             setInterfaceToReadOnly(wof)
         } else {
             DataManager.updateTitle(activity, "Update WOF")
+            applyWOFYearRule()
         }
 
         return root
+    }
+
+    private fun applyWOFYearRule() {
+        val vehicle: Vehicle = DataManager.ReturnActiveVehicle()!!
+
+        var monthsToAdd = 12
+
+        if (vehicle.year < 2000) {
+            monthsToAdd = 6
+        }
+
+        val format = SimpleDateFormat("dd/MMM/yyyy")
+        val date: Date = format.parse(vehicle.returnWofExpiry())
+
+        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
+        calendar.add(Calendar.MONTH, monthsToAdd)
+        val day =  calendar.get(Calendar.DAY_OF_MONTH)
+        val month =  calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        binding.editTextWofNextDate.updateDate(year, month, day)
     }
 
     private fun UpdateDatePicker(date: Date) {

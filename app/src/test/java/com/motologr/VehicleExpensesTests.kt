@@ -6,9 +6,6 @@ import com.motologr.data.objects.maint.Wof
 import com.motologr.data.objects.vehicle.Vehicle
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Date
 
 class VehicleExpensesTests : UnitTestBase() {
     @Test
