@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         if (!DataManager.isVehicles()) {
             navController.navigate(R.id.nav_plus)
         } else {
-            navController.navigate(R.id.action_nav_plus_to_nav_vehicle_1, null, NavOptions.Builder()
+            navController.navigate(R.id.nav_vehicle_1, null, NavOptions.Builder()
                 .setPopUpTo(R.id.nav_vehicle_1, true).build())
         }
     }

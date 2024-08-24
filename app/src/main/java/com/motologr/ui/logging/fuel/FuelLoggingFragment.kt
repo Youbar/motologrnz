@@ -70,6 +70,8 @@ class FuelLoggingFragment : Fragment() {
                         R.drawable.ic_log_fuel_16, format.format(fuel.purchaseDate), "$" + df.format(fuel.price),
                         fuel.litres.toString() + " L")
                 )
+
+                data.sortBy { x -> x.fuelDt}
             }
         }
 

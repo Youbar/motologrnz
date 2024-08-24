@@ -38,4 +38,16 @@ class OdometerUnitTests : UnitTestBase() {
 
         assertEquals(125000, latestOdometerReading)
     }
+
+    @Test
+    fun getLatestOdometerReading_LessThanInitialOdometerReading() {
+        val vehicle = returnDefaultVehicle()
+
+        val someDate = returnDate(2024, 5, 14)
+        val fuel = Fuel(0, 125.0.toBigDecimal(), 0.0.toBigDecimal(), someDate, 124700, 0)
+        vehicle.logFuel(fuel)
+        val latestOdometerReading = vehicle.getLatestOdometerReading()
+
+        assertEquals(125000, latestOdometerReading)
+    }
 }

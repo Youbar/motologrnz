@@ -64,7 +64,6 @@ class InsurancePolicyFragment : Fragment() {
             }
 
             val insuranceBillLog = insurance?.insuranceBillLog?.returnInsuranceBillLog()
-            insuranceBillLog?.sortBy { x -> x.billingDate }
             val insuranceBillLogSize = insuranceBillLog?.size?:0
 
             val localDate = LocalDate.now()
@@ -85,6 +84,8 @@ class InsurancePolicyFragment : Fragment() {
                 }
             }
         }
+
+        data.sortBy { x -> x.billingDt }
 
         // This will pass the ArrayList to our Adapter
         val adapter = InsurancePolicyBillsAdapter(data)

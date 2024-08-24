@@ -92,6 +92,8 @@ class MaintLoggingFragment : Fragment() {
             }
         }
 
+        data.sortBy { x -> x.maintDt }
+
         // This will pass the ArrayList to our Adapter
         val adapter = MaintLoggingAdapter(data)
 

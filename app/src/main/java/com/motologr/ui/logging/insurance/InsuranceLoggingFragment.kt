@@ -64,6 +64,8 @@ class InsuranceLoggingFragment : Fragment() {
                         R.drawable.ic_log_insurance_16, format.format(insurance.insurancePolicyStartDate), "to " + format.format(policyEndDt),
                         "$" + insurance.billing.toString(), insurance.returnCycleType())
                 )
+
+                data.sortBy { x -> x.startDt }
             }
         }
 

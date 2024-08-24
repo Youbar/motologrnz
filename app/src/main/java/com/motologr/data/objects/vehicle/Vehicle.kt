@@ -38,7 +38,12 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
             return odometer
 
         odometerReadings.sortByDescending { log -> log.odometerReading }
-        return odometerReadings.first().odometerReading
+        val firstOdometerReading = odometerReadings.first().odometerReading
+
+        if (firstOdometerReading > odometer)
+            return firstOdometerReading
+
+        return odometer
     }
 
     fun returnMaintLogs() : ArrayList<Loggable> {
