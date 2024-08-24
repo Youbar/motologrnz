@@ -36,6 +36,7 @@ import com.motologr.databinding.ActivityMainBinding
 import com.motologr.data.AppDatabase
 import com.motologr.data.DataManager
 import com.motologr.data.MIGRATION_1_2
+import com.motologr.data.MIGRATION_2_3
 import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.logging.maint.RepairLog
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                 AppDatabase::class.java, "motologr"
             )
                 .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
                 .build()
 
             DataManager.setIdCounterLoggable()

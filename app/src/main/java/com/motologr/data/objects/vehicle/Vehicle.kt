@@ -22,6 +22,8 @@ import java.util.Date
 
 class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int, private val expiryWOF: Date, private val regExpiry: Date, var odometer: Int) {
 
+    var vehicleImage: Int = 0
+
     var insuranceLog: InsuranceLog = InsuranceLog()
     var fuelLog: FuelLog = FuelLog()
     var serviceLog: ServiceLog = ServiceLog()
@@ -222,7 +224,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     }
 
     fun convertToVehicleEntity() : VehicleEntity {
-        val vehicleEntity = VehicleEntity(id, brandName, modelName, year, expiryWOF, regExpiry, odometer)
+        val vehicleEntity = VehicleEntity(id, brandName, modelName, year, expiryWOF, regExpiry, odometer, vehicleImage)
         return vehicleEntity
     }
 

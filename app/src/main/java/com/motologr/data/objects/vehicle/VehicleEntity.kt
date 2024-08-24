@@ -17,10 +17,12 @@ data class VehicleEntity(
     @ColumnInfo(name = "year") val year: Int,
     @ColumnInfo(name = "expiryWOF") val expiryWOF: Date,
     @ColumnInfo(name = "regExpiry") val regExpiry: Date,
-    @ColumnInfo(name = "odometer") val odometer: Int)
+    @ColumnInfo(name = "odometer") val odometer: Int,
+    @ColumnInfo(name = "vehicleImage") val vehicleImage: Int)
 {
     fun convertToVehicleObject() : Vehicle {
         val vehicle = Vehicle(id, brandName, modelName, year, expiryWOF, regExpiry, odometer)
+        vehicle.vehicleImage = vehicleImage
         return vehicle
     }
 }
@@ -32,6 +34,9 @@ interface VehicleDao {
 
     @Query("SELECT * FROM Vehicle")
     fun getAll(): List<VehicleEntity>
+
+    @Query("UPDATE Vehicle SET vehicleImage = :newVehicleImageId WHERE id = :vehicleId")
+    fun updateVehicleImage(newVehicleImageId: Int, vehicleId: Int)
 
     @Insert
     fun insert(vararg vehicle: VehicleEntity)

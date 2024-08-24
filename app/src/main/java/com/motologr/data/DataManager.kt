@@ -107,6 +107,34 @@ object DataManager {
         return vehicleArray.size
     }
 
+    private fun changeActiveVehicleImage(newVehicleImageId : Int) {
+        val activeVehicle = this.ReturnActiveVehicle()!!
+        activeVehicle.vehicleImage = newVehicleImageId
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.vehicleDao()
+                ?.updateVehicleImage(newVehicleImageId, activeVehicle.id)
+        }.start()
+    }
+
+    fun changeActiveVehicleImageId() : Int{
+        val currentVehicleImageId = this.ReturnActiveVehicle()?.vehicleImage
+
+        if (currentVehicleImageId == null) {
+            return 0;
+        }
+
+        var newVehicleImageId = 0
+
+        if (currentVehicleImageId < 2)
+            newVehicleImageId = currentVehicleImageId + 1
+
+        changeActiveVehicleImage(newVehicleImageId)
+
+        return newVehicleImageId
+    }
+
     private var idCounterLoggable: Int = 0
 
     fun setIdCounterLoggable() {

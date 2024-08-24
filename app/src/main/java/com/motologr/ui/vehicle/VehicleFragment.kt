@@ -1,15 +1,15 @@
 package com.motologr.ui.vehicle
 
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.motologr.R
@@ -131,6 +131,28 @@ class VehicleFragment : Fragment() {
         fab.setOnClickListener { _ ->
             findNavController().navigate(R.id.action_nav_vehicle_1_to_nav_add)
         }
+
+        val car: ImageView = binding.imageCar
+
+        val activeVehicle: Vehicle? = DataManager.ReturnActiveVehicle()
+
+        if (activeVehicle != null)
+            setVehicleImage(activeVehicle.vehicleImage, car)
+
+        car.setOnClickListener { _ ->
+            val newVehicleImageId = DataManager.changeActiveVehicleImageId()
+
+            setVehicleImage(newVehicleImageId, car)
+        }
+    }
+
+    private fun setVehicleImage(vehicleImageId : Int, car : ImageView) {
+        if (vehicleImageId == 0)
+            car.setImageResource(R.drawable.car_sedan)
+        if (vehicleImageId == 1)
+            car.setImageResource(R.drawable.car_suv)
+        if (vehicleImageId == 2)
+            car.setImageResource(R.drawable.car_truck)
     }
 
     override fun onDestroyView() {
