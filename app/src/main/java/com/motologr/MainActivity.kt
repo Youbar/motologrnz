@@ -1,7 +1,10 @@
 package com.motologr
 
 import ExpandableListAdapter
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
@@ -10,13 +13,19 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -176,8 +185,12 @@ class MainActivity : AppCompatActivity() {
         DataManager.setFirstVehicleActive()
         setAppDrawerExpandableListView()
 
-        if (DataManager.isVehicles())
-            navController.navigate(R.id.nav_vehicle_1)
+        if (!DataManager.isVehicles()) {
+            navController.navigate(R.id.nav_plus)
+        } else {
+            navController.navigate(R.id.action_nav_plus_to_nav_vehicle_1, null, NavOptions.Builder()
+                .setPopUpTo(R.id.nav_vehicle_1, true).build())
+        }
     }
 
     internal object ExpandableListData {
@@ -246,7 +259,11 @@ class MainActivity : AppCompatActivity() {
         val titleList = ArrayList(listData.keys)
 
         titleList.removeIf { i -> i == -1 }
-        titleList.add(-1)
+
+        // Cap garage at 3 vehicles
+        if (DataManager.ReturnVehicleArrayLength() < 3) {
+            titleList.add(-1)
+        }
 
         adapter = ExpandableListAdapter(this, titleList as ArrayList<Int>, listData)
 
@@ -305,5 +322,49 @@ class MainActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+/*    fun checkPermission() : Boolean {
+        // checking of permissions.
+        val permission1 = ContextCompat.checkSelfPermission (applicationContext, WRITE_EXTERNAL_STORAGE);
+        val permission2 = ContextCompat.checkSelfPermission (applicationContext, READ_EXTERNAL_STORAGE);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    fun requestPermission() {
+        // requesting permissions if not provided.
+        ActivityCompat.requestPermissions(this,
+            arrayOf (WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE),
+            200 // PERMISSION_REQUEST_CODE
+        );
+    }*/
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        val requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    // Permission is granted. Continue the action or workflow in your
+                    // app.
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // feature requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                }
+            }
+
+
+        if (requestCode == 200) { // PERMISSION_REQUEST_CODE)
+            requestPermissionLauncher.launch("WRITE_EXTERNAL_STORAGE")
+        }
     }
 }

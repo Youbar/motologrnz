@@ -10,7 +10,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.preference.PreferenceManager
 import com.motologr.MainActivity
 import com.motologr.R
@@ -20,6 +22,8 @@ import com.motologr.data.objects.fuel.Fuel
 import com.motologr.data.getDate
 import com.motologr.data.toCalendar
 import java.math.BigDecimal
+import java.math.MathContext
+import java.math.RoundingMode
 import java.util.Calendar
 import java.util.Date
 
@@ -149,13 +153,13 @@ class FuelFragment : Fragment() {
         val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
         val fuelType: Int = parseFuelTypeRadioGroup()
         val price: BigDecimal = binding.editTextFuelPrice.text.toString()
-            .replace(",","").toBigDecimal()
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
         val purchaseDate: Date = binding.editTextFuelDate.getDate()
 
         var fuel: Fuel
         if (trackingFuelConsumption) {
             val litres: BigDecimal = binding.editTextFuelLitres.text.toString()
-                .replace(",","").toBigDecimal()
+                .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
             val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
 
             fuel = Fuel(fuelType, price, litres, purchaseDate, odometer, vehicleId)
@@ -164,7 +168,8 @@ class FuelFragment : Fragment() {
         }
 
         DataManager.ReturnActiveVehicle()?.logFuel(fuel)
-        findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1)
+        findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1, null, NavOptions.Builder()
+            .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }
 
     private fun parseFuelTypeRadioGroup() : Int {

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentRegBinding
@@ -166,14 +167,15 @@ class RegFragment : Fragment() {
         val newRegExpiryDate = binding.editTextRegNextDate.getDate()
         val monthsExtended = getMonthsExtended()
         val price = binding.editTextRegPrice.text.toString()
-            .replace(",","").toBigDecimal()
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
         val reg = Reg(newRegExpiryDate, format.parse(regExpiryDate), monthsExtended, price, vehicleId)
 
         vehicle.logReg(reg)
-        findNavController().navigate(R.id.action_nav_reg_to_nav_vehicle_1)
+        findNavController().navigate(R.id.action_nav_reg_to_nav_vehicle_1, null, NavOptions.Builder()
+            .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }
 
     private fun displayValidationError(toastText : String) {

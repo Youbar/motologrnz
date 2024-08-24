@@ -73,6 +73,5 @@ class ExpensesViewModel : ViewModel() {
     val textExpensesInsuranceValue: LiveData<String> = _textExpensesInsuranceValue
     val textExpensesTotal: LiveData<String> = _textExpensesTotal
     val textExpensesTotalValue: LiveData<String> = _textExpensesTotalValue
-    val buttonExpensesOK: LiveData<String> = _buttonExpensesOK
     val buttonExpensesExport: LiveData<String> = _buttonExpensesExport
 }

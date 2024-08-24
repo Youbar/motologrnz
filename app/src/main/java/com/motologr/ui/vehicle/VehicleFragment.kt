@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.motologr.R
@@ -36,6 +38,9 @@ class VehicleFragment : Fragment() {
         _binding = FragmentVehicleBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        if (!DataManager.isVehicles())
+            findNavController().navigate(R.id.nav_plus)
+
         val carName: TextView = binding.textCar
         val WOFDue: TextView = binding.textWOFDue
         val RegDue: TextView = binding.textRegDue
@@ -48,6 +53,8 @@ class VehicleFragment : Fragment() {
         val vehicle : Vehicle? = DataManager.ReturnActiveVehicle()
 
         if (vehicle != null) {
+            DataManager.updateTitle(activity, vehicle.brandName + " " + vehicle.modelName)
+
             val vehicleText = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
 
             var expiryWOF: String = vehicle.returnWofExpiry()

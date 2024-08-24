@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.motologr.R
@@ -18,6 +19,7 @@ import com.motologr.data.objects.maint.Service
 import com.motologr.data.getDate
 import com.motologr.data.toCalendar
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.Calendar
 import java.util.Date
 
@@ -81,13 +83,14 @@ class ServiceFragment : Fragment() {
         val serviceDate: Date = binding.editTextServiceDate.getDate()
         val serviceProvider: String = binding.editTextServiceProvider.text.toString()
         val servicePrice: BigDecimal = binding.editTextServicePrice.text.toString()
-            .replace(",","").toBigDecimal()
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
         val serviceComment: String = binding.editTextServiceComment.text.toString()
 
         val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment, vehicleId)
 
         DataManager.ReturnActiveVehicle()?.logService(service)
-        findNavController().navigate(R.id.action_nav_service_to_nav_vehicle_1)
+        findNavController().navigate(R.id.action_nav_service_to_nav_vehicle_1, null, NavOptions.Builder()
+            .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }
 
     private fun UpdateDatePicker(date: Date) {

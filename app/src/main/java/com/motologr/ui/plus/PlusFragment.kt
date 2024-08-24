@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentPlusBinding
@@ -105,7 +106,8 @@ class PlusFragment : Fragment() {
         DataManager.CreateNewVehicle(vehicle)
         DataManager.setLatestVehicleActive()
 
-        findNavController().navigate(R.id.nav_vehicle_1)
+        findNavController().navigate(R.id.action_nav_plus_to_nav_vehicle_1, null, NavOptions.Builder()
+            .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }
 
     private fun displayValidationError(toastText : String) {

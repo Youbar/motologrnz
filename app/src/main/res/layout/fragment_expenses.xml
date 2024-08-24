@@ -7,24 +7,16 @@
     tools:context="com.motologr.ui.plus.PlusFragment">
 
     <Button
-        android:id="@+id/button_expenses_ok"
-        android:layout_width="wrap_content"
+        android:id="@+id/button_expenses_export"
+        android:layout_width="92dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="OK"/>
-
-    <Button
-        android:id="@+id/button_expenses_export"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Export" />
+        tools:text="Export"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/text_expenses_repairs"

@@ -1,17 +1,24 @@
 package com.motologr.ui.expenses
 
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.motologr.MainActivity
 import com.motologr.databinding.FragmentExpensesBinding
 import com.motologr.data.DataManager
 import com.motologr.data.logging.Loggable
 import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -40,6 +47,18 @@ class ExpensesFragment : Fragment() {
         val expensesList = calculateExpensesForFinancialYear()
         setFragmentValues(expensesList, expensesViewModel)
 
+        val mainActivity = activity as MainActivity
+
+/*        binding.buttonExpensesExport.setOnClickListener() {
+            val checkPermission = mainActivity.checkSelfPermission("WRITE_EXTERNAL_STORAGE")
+            if (checkPermission == PERMISSION_DENIED)
+                mainActivity.requestPermissions(arrayOf ( "WRITE_EXTERNAL_STORAGE"), 200)
+            else {
+                val generatePDF = GeneratePDF(requireContext())
+                generatePDF.generatePDF()
+            }
+        }*/
+
         return root
     }
 
@@ -59,8 +78,10 @@ class ExpensesFragment : Fragment() {
         val textExpensesInsuranceValue: TextView = binding.textExpensesInsuranceValue
         val textExpensesTotal: TextView = binding.textExpensesTotal
         val textExpensesTotalValue: TextView = binding.textExpensesTotalValue
-        val buttonExpensesOK: Button = binding.buttonExpensesOk
         val buttonExpensesExport: Button = binding.buttonExpensesExport
+
+        val df = DecimalFormat("0.00")
+        df.roundingMode = RoundingMode.HALF_EVEN
 
         // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 4, Insurance = 5, Total = 6
         expensesViewModel.textExpensesTitle.observe(viewLifecycleOwner) {
@@ -70,46 +91,43 @@ class ExpensesFragment : Fragment() {
             textExpensesRepairs.text = it
         }
         expensesViewModel.textExpensesRepairsValue.observe(viewLifecycleOwner) {
-            textExpensesRepairsValue.text = expensesList[0].toString()
+            textExpensesRepairsValue.text = "$" + df.format(expensesList[0]).toString()
         }
         expensesViewModel.textExpensesServices.observe(viewLifecycleOwner) {
             textExpensesServices.text = it
         }
         expensesViewModel.textExpensesServicesValue.observe(viewLifecycleOwner) {
-            textExpensesServicesValue.text = expensesList[1].toString()
+            textExpensesServicesValue.text = "$" + df.format(expensesList[1]).toString()
         }
         expensesViewModel.textExpensesFuel.observe(viewLifecycleOwner) {
             textExpensesFuel.text = it
         }
         expensesViewModel.textExpensesFuelValue.observe(viewLifecycleOwner) {
-            textExpensesFuelValue.text = expensesList[4].toString()
+            textExpensesFuelValue.text = "$" + df.format(expensesList[4]).toString()
         }
         expensesViewModel.textExpensesReg.observe(viewLifecycleOwner) {
             textExpensesReg.text = it
         }
         expensesViewModel.textExpensesRegValue.observe(viewLifecycleOwner) {
-            textExpensesRegValue.text = expensesList[3].toString()
+            textExpensesRegValue.text = "$" + df.format(expensesList[3]).toString()
         }
         expensesViewModel.textExpensesWOF.observe(viewLifecycleOwner) {
             textExpensesWOF.text = it
         }
         expensesViewModel.textExpensesWOFValue.observe(viewLifecycleOwner) {
-            textExpensesWOFValue.text = expensesList[2].toString()
+            textExpensesWOFValue.text = "$" + df.format(expensesList[2]).toString()
         }
         expensesViewModel.textExpensesInsurance.observe(viewLifecycleOwner) {
             textExpensesInsurance.text = it
         }
         expensesViewModel.textExpensesInsuranceValue.observe(viewLifecycleOwner) {
-            textExpensesInsuranceValue.text = expensesList[5].toString()
+            textExpensesInsuranceValue.text = "$" + df.format(expensesList[5]).toString()
         }
         expensesViewModel.textExpensesTotal.observe(viewLifecycleOwner) {
             textExpensesTotal.text = it
         }
         expensesViewModel.textExpensesTotalValue.observe(viewLifecycleOwner) {
-            textExpensesTotalValue.text = expensesList[6].toString()
-        }
-        expensesViewModel.buttonExpensesOK.observe(viewLifecycleOwner) {
-            buttonExpensesOK.text = it
+            textExpensesTotalValue.text = "$" + df.format(expensesList[6]).toString()
         }
         expensesViewModel.buttonExpensesExport.observe(viewLifecycleOwner) {
             buttonExpensesExport.text = it

@@ -26,8 +26,9 @@ fun Calendar.toCalendar(date: Date) : Calendar {
 object DataManager {
 
     fun updateTitle(activity: FragmentActivity?, newTitle: String) {
-        val toolbar = activity?.findViewById(R.id.toolbar) as Toolbar
-        toolbar.title = newTitle
+        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
+        if (toolbar != null)
+            toolbar.title = newTitle
     }
 
     fun roundOffDecimal(number: Double): String {

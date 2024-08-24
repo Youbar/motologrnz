@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentInsuranceBinding
@@ -16,6 +17,7 @@ import com.motologr.data.objects.insurance.Insurance
 import com.motologr.data.getDate
 import com.motologr.data.toCalendar
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.Calendar
 import java.util.Date
 
@@ -75,7 +77,7 @@ class InsuranceFragment : Fragment() {
         val insuranceType: Int = parseCoverageRadioGroup()
         val insuranceCycle: Int = parseBillingRadioGroup()
         val insuranceValue: BigDecimal = binding.editTextInsuranceBill.text.toString()
-            .replace(",","").toBigDecimal()
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
         val insurance = Insurance(DataManager.fetchIdForInsurance(), insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)
@@ -83,7 +85,8 @@ class InsuranceFragment : Fragment() {
 
         DataManager.ReturnActiveVehicle()?.logInsurance(insurance)
 
-        findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1)
+        findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1, null, NavOptions.Builder()
+            .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }
 
     private fun parseCoverageRadioGroup() : Int {

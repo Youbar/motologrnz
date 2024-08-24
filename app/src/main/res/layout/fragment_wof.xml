@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:ems="10"
-            android:inputType="numberDecimal"
+            android:inputType="textMultiLine"
             app:layout_constraintStart_toStartOf="@+id/text_wof_provider_prompt"
             app:layout_constraintTop_toBottomOf="@+id/text_wof_provider_prompt" />
 
