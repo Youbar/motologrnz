@@ -120,10 +120,12 @@
 
     <ImageView
         android:id="@+id/image_car"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
-        android:src="@drawable/ic_menu_car_image"
+        android:layout_marginRight="24dp"
+        android:src="@drawable/car_sedan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
