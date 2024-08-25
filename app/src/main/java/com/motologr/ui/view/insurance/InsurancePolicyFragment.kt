@@ -69,6 +69,8 @@ class InsurancePolicyFragment : Fragment() {
             val localDate = LocalDate.now()
 
             if (insuranceBillLogSize > 0) {
+                insuranceBillLog!!.sortByDescending { x -> x.billingDate.time }
+
                 for (i in 0 until insuranceBillLogSize) {
                     val insuranceBill: InsuranceBill = insuranceBillLog!![i]
                     val billDtAsLocalDate = insuranceBill.billingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
@@ -84,9 +86,7 @@ class InsurancePolicyFragment : Fragment() {
                 }
             }
         }
-
-        data.sortBy { x -> x.billingDt }
-
+        
         // This will pass the ArrayList to our Adapter
         val adapter = InsurancePolicyBillsAdapter(data)
 

@@ -17,6 +17,7 @@ import com.motologr.data.DataManager
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.data.objects.maint.Wof
 import com.motologr.data.getDate
+import com.motologr.data.helpers.DatePickerHelper
 import com.motologr.data.toCalendar
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
@@ -87,6 +88,8 @@ class WofFragment : Fragment() {
         val year = calendar.get(Calendar.YEAR)
 
         binding.editTextWofNextDate.updateDate(year, month, day)
+
+        //DatePickerHelper.setNumericMonth(binding.editTextWofNextDate)
     }
 
     private fun UpdateDatePicker(date: Date) {

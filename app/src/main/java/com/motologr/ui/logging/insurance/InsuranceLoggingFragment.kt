@@ -52,6 +52,8 @@ class InsuranceLoggingFragment : Fragment() {
         val format = SimpleDateFormat("dd/MM/yy")
 
         if (insuranceLogSize > 0) {
+            insuranceLog!!.sortByDescending { x -> x.insurancePolicyStartDate.time }
+
             for (i in 0 until insuranceLog!!.size) {
                 var insurance: Insurance = insuranceLog[i]
 
@@ -64,8 +66,6 @@ class InsuranceLoggingFragment : Fragment() {
                         R.drawable.ic_log_insurance_16, format.format(insurance.insurancePolicyStartDate), "to " + format.format(policyEndDt),
                         "$" + insurance.billing.toString(), insurance.returnCycleType())
                 )
-
-                data.sortBy { x -> x.startDt }
             }
         }
 

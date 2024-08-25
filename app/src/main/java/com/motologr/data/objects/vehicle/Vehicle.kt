@@ -202,7 +202,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     }
 
     fun returnLatestInsurancePolicy() : Insurance {
-        insuranceLog.returnInsuranceLog().sortByDescending {x -> x.insurancePolicyStartDate}
+        insuranceLog.returnInsuranceLog().sortByDescending {x -> x.insurancePolicyStartDate.time }
         return insuranceLog.returnInsuranceLog().first()
     }
 
@@ -214,7 +214,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         if (wofLogItems.isEmpty())
             return format.format(expiryWOF)
 
-        wofLogItems.sortByDescending { wof -> wof.wofDate }
+        wofLogItems.sortByDescending { wof -> wof.wofDate.time }
         return format.format(wofLogItems.first().wofDate)
     }
 
@@ -224,7 +224,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         if (regLogItems.isEmpty())
             return format.format(regExpiry)
 
-        regLogItems.sortByDescending { reg -> reg.newRegExpiryDate }
+        regLogItems.sortByDescending { reg -> reg.newRegExpiryDate.time }
         return format.format(regLogItems.first().newRegExpiryDate)
     }
 

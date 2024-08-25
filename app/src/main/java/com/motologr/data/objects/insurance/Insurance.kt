@@ -103,7 +103,7 @@ class Insurance (var id : Int,
     fun getNextBillingDate() : Date {
 
         val insuranceBills = insuranceBillLog.returnInsuranceBillLog()
-        insuranceBills.sortBy{ x -> x.billingDate}
+        insuranceBills.sortBy{ x -> x.billingDate.time }
 
         for (insuranceBilling in insuranceBills) {
             if (insuranceBilling.billingDate > Calendar.getInstance().time) {

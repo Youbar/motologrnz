@@ -55,6 +55,8 @@ class MaintLoggingFragment : Fragment() {
         df.roundingMode = RoundingMode.CEILING
 
         if (maintLog != null && maintLog.size > 0) {
+            maintLog.sortByDescending { x -> x.sortableDate.time }
+
             for (i in 0 until maintLog!!.size) {
                 var loggable: Loggable = maintLog[i]
 
@@ -91,8 +93,6 @@ class MaintLoggingFragment : Fragment() {
                 }
             }
         }
-
-        data.sortBy { x -> x.maintDt }
 
         // This will pass the ArrayList to our Adapter
         val adapter = MaintLoggingAdapter(data)

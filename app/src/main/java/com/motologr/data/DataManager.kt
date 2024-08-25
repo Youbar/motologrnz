@@ -25,6 +25,16 @@ fun Calendar.toCalendar(date: Date) : Calendar {
 
 object DataManager {
 
+    private var isInitialised = false
+
+    fun initialiseDataManager() {
+        isInitialised = true
+    }
+
+    fun isInitialised() : Boolean {
+        return isInitialised
+    }
+
     fun updateTitle(activity: FragmentActivity?, newTitle: String) {
         val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
         if (toolbar != null)
@@ -88,7 +98,8 @@ object DataManager {
     }
 
     fun setFirstVehicleActive() {
-        SetActiveVehicle(0)
+        if (vehicleArray.size > 0)
+            SetActiveVehicle(0)
     }
 
     fun setLatestVehicleActive() {

@@ -1,10 +1,8 @@
 package com.motologr
 
 import ExpandableListAdapter
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
@@ -13,19 +11,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -45,7 +39,6 @@ import com.motologr.data.logging.maint.WofLog
 import com.motologr.data.logging.reg.RegLog
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.data.sampleData.SampleData
-import com.motologr.ui.view.settings.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -77,6 +70,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         var thread: Thread = initDb()
         thread.start()
@@ -132,6 +127,10 @@ class MainActivity : AppCompatActivity() {
 
         if (BuildConfig.DEBUG) {
             thread = Thread {
+                if (DataManager.isInitialised())
+                    return@Thread
+
+                DataManager.initialiseDataManager()
                 val vehicles : List<Vehicle> = Vehicle.castVehicleEntities(db?.vehicleDao()?.getAll())
 
                 if (vehicles.isEmpty())
@@ -148,9 +147,15 @@ class MainActivity : AppCompatActivity() {
                         DataManager.pullVehicleFromDb(vehicle)
                     }
                 }
+
+                DataManager.setFirstVehicleActive()
             }
         } else {
             thread = Thread {
+                if (DataManager.isInitialised())
+                    return@Thread
+
+                DataManager.initialiseDataManager()
                 val vehicles : List<Vehicle> = Vehicle.castVehicleEntities(db?.vehicleDao()?.getAll())
 
                 for(vehicle in vehicles) {
@@ -163,6 +168,8 @@ class MainActivity : AppCompatActivity() {
 
                     DataManager.pullVehicleFromDb(vehicle)
                 }
+
+                DataManager.setFirstVehicleActive()
             }
         }
 
@@ -184,7 +191,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         thread.join()
-        DataManager.setFirstVehicleActive()
         setAppDrawerExpandableListView()
 
         if (!DataManager.isVehicles()) {
@@ -268,6 +274,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         adapter = ExpandableListAdapter(this, titleList as ArrayList<Int>, listData)
+
+        if (expandableListView.expandableListAdapter != null)
+            return
 
         expandableListView.setAdapter(adapter)
 

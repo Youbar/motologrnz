@@ -63,6 +63,8 @@ class FuelLoggingFragment : Fragment() {
         df.roundingMode = RoundingMode.CEILING
 
         if (fuelLogSize > 0 && fuelLog?.size?:0 > 0) {
+            fuelLog!!.sortByDescending { x -> x.purchaseDate.time }
+
             for (i in 0 until fuelLog!!.size) {
                 var fuel: Fuel = fuelLog[i]
                 data.add(
@@ -70,8 +72,6 @@ class FuelLoggingFragment : Fragment() {
                         R.drawable.ic_log_fuel_16, format.format(fuel.purchaseDate), "$" + df.format(fuel.price),
                         fuel.litres.toString() + " L")
                 )
-
-                data.sortBy { x -> x.fuelDt}
             }
         }
 
