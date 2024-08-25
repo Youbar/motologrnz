@@ -39,7 +39,7 @@ class Insurance (var id : Int,
 
         calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
 
-        while (firstBillingDate > policyStartDate) {
+        while (firstBillingDate.time > policyStartDate.time) {
             if (billingCycle == 0) {
                 calendar.add(Calendar.DATE, -14)
             } else if (billingCycle == 1) {
@@ -63,29 +63,30 @@ class Insurance (var id : Int,
             return
         }
 
-        var billingMultiplier = 1
         var billingDate = firstBillingDate
 
-        while (billingDate < policyEndDate) {
-            calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
+        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
 
+        var numberBills = 0
+        while (billingDate < policyEndDate) {
             if (billingCycle == 0) {
-                calendar.add(Calendar.DATE, 14 * billingMultiplier)
+                calendar.add(Calendar.DATE, 14)
             } else if (billingCycle == 1) {
-                calendar.add(Calendar.MONTH, 1 * billingMultiplier)
+                calendar.add(Calendar.MONTH, 1)
             } else if (billingCycle == 2) {
-                calendar.add(Calendar.YEAR, 1 * billingMultiplier)
+                calendar.add(Calendar.YEAR, 1)
             }
 
-            if (billingDate < policyEndDate) {
+            if (billingDate < policyEndDate && billingDate >= policyStartDate) {
                 val insuranceBill = InsuranceBill(billingDate, billing, id, vehicleId)
 
-                if (billingCycle != 0 || billingMultiplier < 27)
+                if ((numberBills < 26 && billingCycle == 0) || (numberBills < 12 && billingCycle == 1)) {
                     insuranceBillLog.addInsuranceBillToInsuranceBillLog(insuranceBill)
+                    numberBills += 1
+                }
             }
 
             billingDate = calendar.time
-            billingMultiplier += 1
         }
     }
 
@@ -163,7 +164,7 @@ class Insurance (var id : Int,
     }
 
     fun convertToInsuranceEntity(): InsuranceEntity {
-        val fuelEntity = InsuranceEntity(insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+        val fuelEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
         return fuelEntity
     }
 }

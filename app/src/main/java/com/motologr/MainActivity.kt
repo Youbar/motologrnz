@@ -275,8 +275,9 @@ class MainActivity : AppCompatActivity() {
 
         adapter = ExpandableListAdapter(this, titleList as ArrayList<Int>, listData)
 
-        if (expandableListView.expandableListAdapter != null)
-            return
+        // If rotation is enabled, stops drawer layout resetting
+/*        if (expandableListView.expandableListAdapter != null)
+            return*/
 
         expandableListView.setAdapter(adapter)
 

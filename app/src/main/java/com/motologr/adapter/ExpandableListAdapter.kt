@@ -13,9 +13,13 @@ import com.motologr.data.DataManager
 
 class ExpandableListAdapter internal constructor(
     private val context: Context,
-    private val submenuList: List<Int>,
-    private val menuList: HashMap<Int, List<String>>
+    private var submenuList: List<Int>,
+    private var menuList: HashMap<Int, List<String>>
 ) : BaseExpandableListAdapter() {
+
+    fun updateData() {
+
+    }
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         return this.menuList[this.submenuList[listPosition]]!![expandedListPosition]

@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.Date
 
 class InsuranceBillUnitTests : UnitTestBase() {
@@ -17,7 +18,11 @@ class InsuranceBillUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
-        assertEquals(26, insurance.insuranceBillLog.returnInsuranceBillLog().count())
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(26, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
 
     @Test
@@ -28,7 +33,11 @@ class InsuranceBillUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 1, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
-        assertEquals(12, insurance.insuranceBillLog.returnInsuranceBillLog().count())
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(12, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
 
     @Test
@@ -39,7 +48,11 @@ class InsuranceBillUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 2, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
-        assertEquals(1, insurance.insuranceBillLog.returnInsuranceBillLog().count())
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(1, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
 
     @Test
@@ -50,7 +63,11 @@ class InsuranceBillUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
-        assertEquals(26, insurance.insuranceBillLog.returnInsuranceBillLog().count())
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(26, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
 
     @Test
@@ -61,7 +78,11 @@ class InsuranceBillUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 1, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
-        assertEquals(12, insurance.insuranceBillLog.returnInsuranceBillLog().count())
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(12, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
 
     @Test
@@ -72,7 +93,11 @@ class InsuranceBillUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 2, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
-        assertEquals(1, insurance.insuranceBillLog.returnInsuranceBillLog().count())
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(1, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
 
     @Test
@@ -83,6 +108,10 @@ class InsuranceBillUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
-        assertEquals(26, insurance.insuranceBillLog.returnInsuranceBillLog().count())
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(26, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
 }

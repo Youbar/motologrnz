@@ -10,12 +10,12 @@ class SampleData {
     init {
         val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
-        val vehicle = Vehicle(0, "Mazda", "323",
+        val vehicle = Vehicle(DataManager.FetchIdForVehicle(), "Mazda", "323",
             1989,
             format.parse("10/09/2024"),
             format.parse("08/08/2024"),
             125000)
-
+        
         DataManager.CreateNewVehicle(vehicle)
         DataManager.setLatestVehicleActive()
         val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
