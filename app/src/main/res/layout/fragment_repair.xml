@@ -103,11 +103,10 @@
             android:id="@+id/text_repair_date_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:text="Repair Date"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
+            app:layout_constraintStart_toStartOf="@+id/editText_repair_date"
             app:layout_constraintTop_toBottomOf="@+id/text_repair_title" />
 
         <TextView
@@ -135,7 +134,7 @@
             android:id="@+id/editText_repair_date"
             android:layout_width="248dp"
             android:layout_height="124dp"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:calendarViewShown="false"
             android:datePickerMode="spinner"

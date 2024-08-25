@@ -1,6 +1,7 @@
 package com.motologr.data.sampleData
 
 import com.motologr.data.DataManager
+import com.motologr.data.objects.insurance.Insurance
 import com.motologr.data.objects.maint.Repair
 import com.motologr.data.objects.maint.Service
 import com.motologr.data.objects.vehicle.Vehicle
@@ -15,7 +16,7 @@ class SampleData {
             format.parse("10/09/2024"),
             format.parse("08/08/2024"),
             125000)
-        
+
         DataManager.CreateNewVehicle(vehicle)
         DataManager.setLatestVehicleActive()
         val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
@@ -25,10 +26,14 @@ class SampleData {
         var repair: Repair = Repair(0, 104.23.toBigDecimal(), format.parse("1/04/2024"), "Av", "", vehicleId)
         var repair2: Repair = Repair(0, 104.24.toBigDecimal(), format.parse("1/04/2025"), "Av", "", vehicleId)
 
+        val insurance = Insurance(0, "AA", format.parse("23/10/2023"), 0, 1, 15.30.toBigDecimal(), format.parse("25/07/2024"), vehicleId)
+        insurance.generateInsuranceBills()
+
         DataManager.ReturnVehicle(0)?.logService(service)
         DataManager.ReturnVehicle(0)?.logService(service2)
         DataManager.ReturnVehicle(0)?.logRepair(repair)
         DataManager.ReturnVehicle(0)?.logRepair(repair2)
+        DataManager.ReturnVehicle(0)?.logInsurance(insurance)
 
         DataManager.SetActiveVehicle(0)
     }

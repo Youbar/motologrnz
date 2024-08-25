@@ -12,6 +12,8 @@ import com.motologr.R
 import com.motologr.data.DataManager
 import com.motologr.data.objects.insurance.InsuranceBill
 import com.motologr.databinding.FragmentInsurancePolicyBinding
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -49,17 +51,20 @@ class InsurancePolicyFragment : Fragment() {
 
         val bundle = arguments
         if (bundle != null) {
-            val policyIndex = bundle.getInt("positon")
+            val policyIndex = bundle.getInt("position")
 
             val insurance = DataManager.ReturnActiveVehicle()?.insuranceLog?.returnInsurance(policyIndex)
 
             val format = SimpleDateFormat("dd/MM/yy")
 
+            val df = DecimalFormat("0.00")
+            df.roundingMode = RoundingMode.HALF_UP
+
             if (insurance != null) {
                 binding.policyInsurer.text = "${insurance.insurer}"
                 binding.policyStartDate.text = "Start Date - ${format.format(insurance.insurancePolicyStartDate)}"
                 binding.policyEndDate.text = "End Date - ${format.format(insurance.endDt)}"
-                binding.policyPricingAndCycle.text = "Pricing - $${insurance.billing} ${insurance.returnCycleType()}"
+                binding.policyPricingAndCycle.text = "Pricing - $${df.format(insurance.billing)} ${insurance.returnCycleType()}"
                 binding.policyCoverage.text = "Coverage - ${insurance.returnCoverageType()}"
             }
 
@@ -86,7 +91,7 @@ class InsurancePolicyFragment : Fragment() {
                 }
             }
         }
-        
+
         // This will pass the ArrayList to our Adapter
         val adapter = InsurancePolicyBillsAdapter(data)
 

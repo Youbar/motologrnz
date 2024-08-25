@@ -27,6 +27,15 @@ class Insurance (var id : Int,
             endDt = value
         }
 
+    init {
+        val calendar = Calendar.getInstance()
+        calendar.set(insurancePolicyStartDate.year + 1900 + 1, insurancePolicyStartDate.month, insurancePolicyStartDate.date, 0, 0, 0)
+        insurancePolicyStartDate = calendar.time
+
+        calendar.set(lastBill.year + 1900 + 1, lastBill.month, lastBill.date, 0, 0, 0)
+        lastBill = calendar.time
+    }
+
     var insuranceBillLog : InsuranceBillLog = InsuranceBillLog()
 
     fun generateInsuranceBills() {
@@ -37,7 +46,7 @@ class Insurance (var id : Int,
         // Work our way backwards from last billing date
         var firstBillingDate = lastBill
 
-        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
+        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date, 0, 0, 0)
 
         while (firstBillingDate.time > policyStartDate.time) {
             if (billingCycle == 0) {
@@ -55,7 +64,7 @@ class Insurance (var id : Int,
         calendar.set(policyStartDate.year + 1900 + 1, policyStartDate.month, policyStartDate.date, 0, 0, 0)
         val policyEndDate = calendar.time
 
-        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
+        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date, 0, 0, 0)
 
         if (billingCycle == 2) {
             val insuranceBill = InsuranceBill(lastBill, billing, id, vehicleId)
@@ -65,7 +74,7 @@ class Insurance (var id : Int,
 
         var billingDate = firstBillingDate
 
-        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date)
+        calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date, 0, 0, 0)
 
         var numberBills = 0
         while (billingDate < policyEndDate) {

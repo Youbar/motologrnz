@@ -114,4 +114,58 @@ class InsuranceBillUnitTests : UnitTestBase() {
         assertEquals(26, insuranceBills.count())
         assert(insuranceBills.last().billingDate.time >= startDate.time)
     }
+
+    @Test
+    fun generateInsuranceBills_Fortnightly_TimeOffset() {
+        var localDate = LocalDate.of(2023, 10, 25)
+        val startDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+
+        localDate = LocalDate.of(2024, 7, 25)
+        val lastBillDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+
+        val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), lastBillDate, 0)
+        insurance.generateInsuranceBills()
+
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(26, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
+    }
+
+    @Test
+    fun generateInsuranceBills_Monthly_TimeOffset() {
+        var localDate = LocalDate.of(2023, 10, 25)
+        val startDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+
+        localDate = LocalDate.of(2024, 7, 25)
+        val lastBillDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+
+        val insurance = Insurance(0, "AA", startDate, 0, 1, 15.30.toBigDecimal(), lastBillDate, 0)
+        insurance.generateInsuranceBills()
+
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(12, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
+    }
+
+    @Test
+    fun generateInsuranceBills_Yearly_TimeOffset() {
+        var localDate = LocalDate.of(2023, 10, 25)
+        val startDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+
+        localDate = LocalDate.of(2024, 7, 25)
+        val lastBillDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+
+        val insurance = Insurance(0, "AA", startDate, 0, 2, 15.30.toBigDecimal(), lastBillDate, 0)
+        insurance.generateInsuranceBills()
+
+        val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
+        insuranceBills.sortByDescending { x -> x.billingDate.time }
+
+        assertEquals(1, insuranceBills.count())
+        assert(insuranceBills.last().billingDate.time >= startDate.time)
+    }
 }

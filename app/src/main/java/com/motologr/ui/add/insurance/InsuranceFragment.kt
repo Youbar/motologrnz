@@ -154,6 +154,14 @@ class InsuranceFragment : Fragment() {
             return false
         }
 
+        val insurancePolicyStartDate: Date = binding.editTextInsurancePolicyStartDate.getDate()
+        val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
+
+        if (insuranceDate.time < insurancePolicyStartDate.time) {
+            displayValidationError("Your last bill cannot be prior to your insurance start date")
+            return false
+        }
+
         // DatePicker does not need validation
 
         return true
