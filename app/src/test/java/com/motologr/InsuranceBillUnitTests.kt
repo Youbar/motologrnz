@@ -137,6 +137,7 @@ class InsuranceBillUnitTests : UnitTestBase() {
     fun generateInsuranceBills_Monthly_TimeOffset() {
         var localDate = LocalDate.of(2023, 10, 25)
         val startDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+        val expectedStartDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
         localDate = LocalDate.of(2024, 7, 25)
         val lastBillDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
@@ -148,24 +149,22 @@ class InsuranceBillUnitTests : UnitTestBase() {
         insuranceBills.sortByDescending { x -> x.billingDate.time }
 
         assertEquals(12, insuranceBills.count())
-        assert(insuranceBills.last().billingDate.time >= startDate.time)
+        assert(insuranceBills.last().billingDate.time >= expectedStartDate.time)
     }
 
     @Test
     fun generateInsuranceBills_Yearly_TimeOffset() {
         var localDate = LocalDate.of(2023, 10, 25)
         val startDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
+        val expectedStartDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
-        localDate = LocalDate.of(2024, 7, 25)
-        val lastBillDate = Date.from(localDate.atTime(20, 40).toInstant(ZoneOffset.ofHours(12)))
-
-        val insurance = Insurance(0, "AA", startDate, 0, 2, 15.30.toBigDecimal(), lastBillDate, 0)
+        val insurance = Insurance(0, "AA", startDate, 0, 2, 15.30.toBigDecimal(), startDate, 0)
         insurance.generateInsuranceBills()
 
         val insuranceBills = insurance.insuranceBillLog.returnInsuranceBillLog()
         insuranceBills.sortByDescending { x -> x.billingDate.time }
 
         assertEquals(1, insuranceBills.count())
-        assert(insuranceBills.last().billingDate.time >= startDate.time)
+        assert(insuranceBills.last().billingDate.time >= expectedStartDate.time)
     }
 }

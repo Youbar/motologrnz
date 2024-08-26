@@ -29,10 +29,10 @@ class Insurance (var id : Int,
 
     init {
         val calendar = Calendar.getInstance()
-        calendar.set(insurancePolicyStartDate.year + 1900 + 1, insurancePolicyStartDate.month, insurancePolicyStartDate.date, 0, 0, 0)
+        calendar.set(insurancePolicyStartDate.year + 1900, insurancePolicyStartDate.month, insurancePolicyStartDate.date, 0, 0, 0)
         insurancePolicyStartDate = calendar.time
 
-        calendar.set(lastBill.year + 1900 + 1, lastBill.month, lastBill.date, 0, 0, 0)
+        calendar.set(lastBill.year + 1900, lastBill.month, lastBill.date, 0, 0, 0)
         lastBill = calendar.time
     }
 
