@@ -11,10 +11,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.material3.Text
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -318,6 +320,12 @@ class MainActivity : AppCompatActivity() {
         if (item.itemId == R.id.action_settings) {
             val navigationController = findNavController(R.id.nav_host_fragment_content_main)
             navigationController.navigate(R.id.nav_settings)
+            return true
+        }
+        if (item.itemId == R.id.action_addons) {
+            setContent {
+                Text("Hello world!")
+            }
             return true
         }
         return super.onOptionsItemSelected(item)

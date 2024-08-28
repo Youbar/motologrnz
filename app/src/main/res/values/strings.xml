@@ -6,6 +6,7 @@
     <string name="nav_header_subtitle">ktstudios2000@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="action_addons">Addons</string>
 
     <string name="menu_car">Mazda 323</string>
     <string name="menu_motorcycle">KTM Duke 200</string>

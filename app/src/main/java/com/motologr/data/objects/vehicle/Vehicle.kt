@@ -1,7 +1,6 @@
 package com.motologr.data.objects.vehicle
 
 import com.motologr.MainActivity
-import com.motologr.data.DataManager
 import com.motologr.data.logging.Loggable
 import com.motologr.data.objects.reg.Reg
 import com.motologr.data.logging.reg.RegLog
@@ -197,8 +196,13 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         }.start()
     }
 
-    fun hasInsurance() : Boolean {
-        return insuranceLog.returnInsuranceLog().isNotEmpty()
+    fun hasCurrentInsurance() : Boolean {
+        val calendar = Calendar.getInstance()
+
+        val insuranceLog = insuranceLog.returnInsuranceLog()
+        insuranceLog.sortByDescending {x -> x.endDt.time }
+
+        return calendar.time <= insuranceLog.first().endDt
     }
 
     fun returnLatestInsurancePolicy() : Insurance {

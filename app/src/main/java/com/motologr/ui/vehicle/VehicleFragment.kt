@@ -1,7 +1,6 @@
 package com.motologr.ui.vehicle
 
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +70,7 @@ class VehicleFragment : Fragment() {
             val df = DecimalFormat("0.00")
             df.roundingMode = RoundingMode.CEILING
 
-            if (vehicle.hasInsurance()) {
+            if (vehicle.hasCurrentInsurance()) {
                 var insurance = vehicle.returnLatestInsurancePolicy()
 
                 insurer = insurance.insurer
