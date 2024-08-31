@@ -12,6 +12,8 @@ import com.motologr.R
 import com.motologr.databinding.FragmentInsuranceLoggingBinding
 import com.motologr.data.DataManager
 import com.motologr.data.objects.insurance.Insurance
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 class InsuranceLoggingFragment : Fragment() {
@@ -61,10 +63,13 @@ class InsuranceLoggingFragment : Fragment() {
                 calendar.set(policyStartDt.year + 1900 + 1, policyStartDt.month, policyStartDt.date, 0, 0, 0)
                 val policyEndDt = calendar.time
 
+                val df = DecimalFormat("0.00")
+                df.roundingMode = RoundingMode.HALF_UP
+
                 data.add(
                     InsuranceLoggingItemsViewModel(
                         R.drawable.ic_log_insurance_16, format.format(insurance.insurancePolicyStartDate), "to " + format.format(policyEndDt),
-                        "$" + insurance.billing.toString(), insurance.returnCycleType())
+                        "$" + df.format(insurance.billing), insurance.returnCycleType())
                 )
             }
         }

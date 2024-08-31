@@ -317,17 +317,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val navigationController = findNavController(R.id.nav_host_fragment_content_main)
+
         if (item.itemId == R.id.action_settings) {
-            val navigationController = findNavController(R.id.nav_host_fragment_content_main)
             navigationController.navigate(R.id.nav_settings)
             return true
         }
         if (item.itemId == R.id.action_addons) {
-            setContent {
-                Text("Hello world!")
-            }
+            navigationController.navigate(R.id.nav_addons)
             return true
         }
+
         return super.onOptionsItemSelected(item)
     }
 

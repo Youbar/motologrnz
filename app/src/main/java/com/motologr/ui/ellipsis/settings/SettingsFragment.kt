@@ -1,4 +1,4 @@
-package com.motologr.ui.view.settings
+package com.motologr.ui.ellipsis.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

@@ -117,6 +117,10 @@
         android:name="com.motologr.ui.logging.insurance.InsuranceLoggingFragment" />
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.motologr.ui.view.settings.SettingsFragment"
+        android:name="com.motologr.ui.ellipsis.settings.SettingsFragment"
         android:label="Settings" />
+    <fragment
+        android:id="@+id/nav_addons"
+        android:name="com.motologr.ui.ellipsis.addons.AddonsFragment"
+        android:label="Addons" />
 </navigation>

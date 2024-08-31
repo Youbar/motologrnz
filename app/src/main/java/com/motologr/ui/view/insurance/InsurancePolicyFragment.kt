@@ -83,10 +83,13 @@ class InsurancePolicyFragment : Fragment() {
                     val billPaid = localDate.isAfter(billDtAsLocalDate)
                             || localDate.isEqual(billDtAsLocalDate)
 
+                    val df = DecimalFormat("0.00")
+                    df.roundingMode = RoundingMode.HALF_UP
+
                     data.add(
                         InsurancePolicyBillsViewModel(
                             R.drawable.ic_log_bill_16, format.format(insuranceBill.billingDate),
-                            "$" + insurance.billing.toString(), billPaid)
+                            "$" + df.format(insurance.billing), billPaid)
                     )
                 }
             }
