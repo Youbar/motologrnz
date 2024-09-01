@@ -200,6 +200,10 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         val calendar = Calendar.getInstance()
 
         val insuranceLog = insuranceLog.returnInsuranceLog()
+
+        if (insuranceLog.size < 1)
+            return false
+
         insuranceLog.sortByDescending {x -> x.endDt.time }
 
         return calendar.time <= insuranceLog.first().endDt

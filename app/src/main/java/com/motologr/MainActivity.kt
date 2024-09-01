@@ -27,9 +27,13 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.PurchasesResponseListener
+import com.android.billingclient.api.QueryPurchasesParams
 import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
 import com.motologr.data.AppDatabase
+import com.motologr.data.BillingHelper
 import com.motologr.data.DataManager
 import com.motologr.data.MIGRATION_1_2
 import com.motologr.data.MIGRATION_2_3
@@ -41,6 +45,8 @@ import com.motologr.data.logging.maint.WofLog
 import com.motologr.data.logging.reg.RegLog
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.data.sampleData.SampleData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -195,12 +201,29 @@ class MainActivity : AppCompatActivity() {
         thread.join()
         setAppDrawerExpandableListView()
 
+        BillingHelper.initBillingHelper(this)
+
         if (!DataManager.isVehicles()) {
             navController.navigate(R.id.nav_plus)
         } else {
             navController.navigate(R.id.nav_vehicle_1, null, NavOptions.Builder()
                 .setPopUpTo(R.id.nav_vehicle_1, true).build())
         }
+    }
+
+    private val purchasesResponseListener =
+        PurchasesResponseListener { billingResult, purchases ->
+            // To be implemented in a later section.
+        }
+
+    override fun onResume() {
+        super.onResume()
+
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.INAPP)
+
+        // uses queryPurchasesAsync Kotlin extension function
+        val purchasesResult = BillingHelper.billingClient.queryPurchasesAsync(params.build(), purchasesResponseListener)
     }
 
     internal object ExpandableListData {

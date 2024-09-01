@@ -30,7 +30,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.lifecycle.ViewModelProvider
+import com.android.billingclient.api.ProductDetails
 import com.motologr.R
+import com.motologr.data.BillingHelper
+import com.motologr.data.BillingHelper.queryProductDetailsParams
 import com.motologr.ui.theme.AppTheme
 
 class AddonsFragment : Fragment() {
@@ -46,6 +50,9 @@ class AddonsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_addons, container, false)
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
 
+        val addonsViewModel =
+            ViewModelProvider(this).get(AddonsViewModel::class.java)
+
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -54,9 +61,21 @@ class AddonsFragment : Fragment() {
             }
         }
 
+        val getPurchases: () -> Unit = {
+            BillingHelper.billingClient.queryProductDetailsAsync(queryProductDetailsParams) {
+                    billingResult,
+                    productDetailsList ->
+                someVal = ArrayList(productDetailsList)
+            }
+        }
+
+        getPurchases()
+
         return view
     }
 }
+
+var someVal = ArrayList<ProductDetails>()
 
 @Preview
 @Composable
@@ -77,7 +96,7 @@ fun ComposableView() {
                                 modifier = Modifier.weight(1.0f)
                                     .padding(PaddingValues(6.dp, 0.dp)),
                                 fontSize = 2.5.em)
-                            Button(onClick = { }, contentPadding = PaddingValues(8.dp)) {
+                            Button(onClick = { BillingHelper.requestPurchase(someVal.first()) }, enabled = someVal.size > 0, contentPadding = PaddingValues(8.dp)) {
                                 Text("Purchase", fontSize = 3.em, textAlign = TextAlign.Center)
                             }
                         }
