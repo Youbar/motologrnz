@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.motologr.data.billing.AddonDao
+import com.motologr.data.billing.AddonEntity
 import com.motologr.data.objects.LoggableDao
 import com.motologr.data.objects.LoggableEntity
 import com.motologr.data.objects.fuel.FuelEntity
@@ -61,8 +63,9 @@ class Converters {
     RegEntity::class,
     WofEntity::class,
     RepairEntity::class,
-    ServiceEntity::class],
-    version = 3)
+    ServiceEntity::class,
+    AddonEntity::class],
+    version = 5)
 
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -75,4 +78,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun serviceDao(): ServiceDao
     abstract fun regDao(): RegDao
     abstract fun wofDao(): WofDao
+    abstract fun addonDao(): AddonDao
 }

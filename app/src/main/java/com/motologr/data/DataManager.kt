@@ -129,7 +129,7 @@ object DataManager {
         }.start()
     }
 
-    fun changeActiveVehicleImageId() : Int{
+    fun changeActiveVehicleImageId(isArtPackEnabled : Boolean) : Int{
         val currentVehicleImageId = this.ReturnActiveVehicle()?.vehicleImage
 
         if (currentVehicleImageId == null) {
@@ -138,7 +138,9 @@ object DataManager {
 
         var newVehicleImageId = 0
 
-        if (currentVehicleImageId < 2)
+        if (currentVehicleImageId < 2 && !isArtPackEnabled)
+            newVehicleImageId = currentVehicleImageId + 1
+        else if (currentVehicleImageId < 7 && isArtPackEnabled)
             newVehicleImageId = currentVehicleImageId + 1
 
         changeActiveVehicleImage(newVehicleImageId)

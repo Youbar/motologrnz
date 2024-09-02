@@ -11,7 +11,7 @@ class VehicleImageIdUnitTests : UnitTestBase() {
         DataManager.CreateNewVehicle(vehicle)
         DataManager.SetActiveVehicle(0)
 
-        val newVehicleImageId = DataManager.changeActiveVehicleImageId()
+        val newVehicleImageId = DataManager.changeActiveVehicleImageId(false)
 
         assertEquals(1, newVehicleImageId)
     }
@@ -23,7 +23,7 @@ class VehicleImageIdUnitTests : UnitTestBase() {
         DataManager.SetActiveVehicle(0)
         DataManager.ReturnActiveVehicle()!!.vehicleImage = 1
 
-        val newVehicleImageId = DataManager.changeActiveVehicleImageId()
+        val newVehicleImageId = DataManager.changeActiveVehicleImageId(false)
 
         assertEquals(2, newVehicleImageId)
     }
@@ -35,7 +35,31 @@ class VehicleImageIdUnitTests : UnitTestBase() {
         DataManager.CreateNewVehicle(vehicle)
         DataManager.SetActiveVehicle(0)
 
-        val newVehicleImageId = DataManager.changeActiveVehicleImageId()
+        val newVehicleImageId = DataManager.changeActiveVehicleImageId(false)
+
+        assertEquals(0, newVehicleImageId)
+    }
+
+    @Test
+    fun updateVehicleImageId_NoOverflow_ArtPackEnabled() {
+        val vehicle = returnDefaultVehicle()
+        vehicle.vehicleImage = 2
+        DataManager.CreateNewVehicle(vehicle)
+        DataManager.SetActiveVehicle(0)
+
+        val newVehicleImageId = DataManager.changeActiveVehicleImageId(true)
+
+        assertEquals(3, newVehicleImageId)
+    }
+
+    @Test
+    fun updateVehicleImageId_Overflow_ArtPackEnabled() {
+        val vehicle = returnDefaultVehicle()
+        vehicle.vehicleImage = 7
+        DataManager.CreateNewVehicle(vehicle)
+        DataManager.SetActiveVehicle(0)
+
+        val newVehicleImageId = DataManager.changeActiveVehicleImageId(true)
 
         assertEquals(0, newVehicleImageId)
     }

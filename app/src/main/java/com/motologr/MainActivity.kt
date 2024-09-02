@@ -11,12 +11,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
-import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.compose.material3.Text
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -27,16 +25,15 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.PurchasesResponseListener
-import com.android.billingclient.api.QueryPurchasesParams
 import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
 import com.motologr.data.AppDatabase
-import com.motologr.data.BillingHelper
+import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.DataManager
 import com.motologr.data.MIGRATION_1_2
 import com.motologr.data.MIGRATION_2_3
+import com.motologr.data.MIGRATION_3_4
+import com.motologr.data.MIGRATION_4_5
 import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.logging.maint.RepairLog
@@ -45,8 +42,6 @@ import com.motologr.data.logging.maint.WofLog
 import com.motologr.data.logging.reg.RegLog
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.data.sampleData.SampleData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,11 +63,15 @@ class MainActivity : AppCompatActivity() {
             )
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_4_5)
                 .build()
 
             DataManager.setIdCounterLoggable()
             DataManager.setIdCounterVehicle()
             DataManager.setIdCounterInsurance()
+
+            BillingClientHelper.initBillingHelper(this)
         }
     }
 
@@ -201,8 +200,6 @@ class MainActivity : AppCompatActivity() {
         thread.join()
         setAppDrawerExpandableListView()
 
-        BillingHelper.initBillingHelper(this)
-
         if (!DataManager.isVehicles()) {
             navController.navigate(R.id.nav_plus)
         } else {
@@ -211,19 +208,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val purchasesResponseListener =
-        PurchasesResponseListener { billingResult, purchases ->
-            // To be implemented in a later section.
-        }
-
     override fun onResume() {
         super.onResume()
 
-        val params = QueryPurchasesParams.newBuilder()
-            .setProductType(BillingClient.ProductType.INAPP)
-
-        // uses queryPurchasesAsync Kotlin extension function
-        val purchasesResult = BillingHelper.billingClient.queryPurchasesAsync(params.build(), purchasesResponseListener)
+        BillingClientHelper.validatePurchases()
     }
 
     internal object ExpandableListData {

@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.em
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.ProductDetails
 import com.motologr.R
-import com.motologr.data.BillingHelper
-import com.motologr.data.BillingHelper.queryProductDetailsParams
+import com.motologr.data.billing.BillingClientHelper
+import com.motologr.data.billing.BillingClientHelper.queryProductDetailsParams
 import com.motologr.ui.theme.AppTheme
 
 class AddonsFragment : Fragment() {
@@ -62,12 +62,14 @@ class AddonsFragment : Fragment() {
         }
 
         val getPurchases: () -> Unit = {
-            BillingHelper.billingClient.queryProductDetailsAsync(queryProductDetailsParams) {
+            BillingClientHelper.billingClient.queryProductDetailsAsync(queryProductDetailsParams) {
                     billingResult,
                     productDetailsList ->
-                someVal = ArrayList(productDetailsList)
+                productDetails = ArrayList(productDetailsList)
             }
         }
+
+        // 4. Add functionality for IAP being active
 
         getPurchases()
 
@@ -75,7 +77,7 @@ class AddonsFragment : Fragment() {
     }
 }
 
-var someVal = ArrayList<ProductDetails>()
+var productDetails = ArrayList<ProductDetails>()
 
 @Preview
 @Composable
@@ -96,7 +98,8 @@ fun ComposableView() {
                                 modifier = Modifier.weight(1.0f)
                                     .padding(PaddingValues(6.dp, 0.dp)),
                                 fontSize = 2.5.em)
-                            Button(onClick = { BillingHelper.requestPurchase(someVal.first()) }, enabled = someVal.size > 0, contentPadding = PaddingValues(8.dp)) {
+                            Button(onClick = { BillingClientHelper.requestPurchase(productDetails.first { x -> x.productId == "art_pack_addon_1" }) },
+                                enabled = productDetails.size > 0, contentPadding = PaddingValues(8.dp)) {
                                 Text("Purchase", fontSize = 3.em, textAlign = TextAlign.Center)
                             }
                         }

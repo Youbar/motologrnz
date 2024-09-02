@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
+import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.objects.vehicle.Vehicle
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -139,7 +140,7 @@ class VehicleFragment : Fragment() {
             setVehicleImage(activeVehicle.vehicleImage, car)
 
         car.setOnClickListener { _ ->
-            val newVehicleImageId = DataManager.changeActiveVehicleImageId()
+            val newVehicleImageId = DataManager.changeActiveVehicleImageId(BillingClientHelper.isArtPackEnabled)
 
             setVehicleImage(newVehicleImageId, car)
         }
@@ -152,6 +153,16 @@ class VehicleFragment : Fragment() {
             car.setImageResource(R.drawable.car_suv)
         if (vehicleImageId == 2)
             car.setImageResource(R.drawable.car_truck)
+        if (vehicleImageId == 3)
+            car.setImageResource(R.drawable.car_prem_hatchback)
+        if (vehicleImageId == 4)
+            car.setImageResource(R.drawable.car_prem_convertible)
+        if (vehicleImageId == 5)
+            car.setImageResource(R.drawable.car_prem_van)
+        if (vehicleImageId == 6)
+            car.setImageResource(R.drawable.car_prem_convertible_2)
+        if (vehicleImageId == 7)
+            car.setImageResource(R.drawable.car_prem_compact)
     }
 
     override fun onDestroyView() {
