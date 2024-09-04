@@ -12,9 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.preference.PreferenceManager
-import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelBinding
 import com.motologr.data.DataManager
@@ -22,7 +20,6 @@ import com.motologr.data.objects.fuel.Fuel
 import com.motologr.data.getDate
 import com.motologr.data.toCalendar
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 import java.util.Calendar
 import java.util.Date
@@ -69,7 +66,7 @@ class FuelFragment : Fragment() {
 
         if (logPos != null) {
             DataManager.updateTitle(activity, "View Fuel Record")
-            var fuel: Fuel = DataManager.ReturnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
+            var fuel: Fuel = DataManager.returnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
             setInterfaceToReadOnly(fuel)
         } else {
             DataManager.updateTitle(activity, "Record Fuel Purchase")
@@ -150,7 +147,7 @@ class FuelFragment : Fragment() {
             return
         }
 
-        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
+        val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
         val fuelType: Int = parseFuelTypeRadioGroup()
         val price: BigDecimal = binding.editTextFuelPrice.text.toString()
             .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
@@ -167,7 +164,7 @@ class FuelFragment : Fragment() {
             fuel = Fuel(fuelType, price, -1.0.toBigDecimal(), purchaseDate, -1, vehicleId);
         }
 
-        DataManager.ReturnActiveVehicle()?.logFuel(fuel)
+        DataManager.returnActiveVehicle()?.logFuel(fuel)
         findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1, null, NavOptions.Builder()
             .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }

@@ -50,7 +50,7 @@ class VehicleFragment : Fragment() {
         val ApproxCostsTitle: TextView = binding.textApproxCostsTitle
         val ApproxCosts: TextView = binding.textApproxCosts
 
-        val vehicle : Vehicle? = DataManager.ReturnActiveVehicle()
+        val vehicle : Vehicle? = DataManager.returnActiveVehicle()
 
         if (vehicle != null) {
             DataManager.updateTitle(activity, vehicle.brandName + " " + vehicle.modelName)
@@ -134,7 +134,7 @@ class VehicleFragment : Fragment() {
 
         val car: ImageView = binding.imageCar
 
-        val activeVehicle: Vehicle? = DataManager.ReturnActiveVehicle()
+        val activeVehicle: Vehicle? = DataManager.returnActiveVehicle()
 
         if (activeVehicle != null)
             setVehicleImage(activeVehicle.vehicleImage, car)

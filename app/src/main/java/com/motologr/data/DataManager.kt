@@ -48,24 +48,24 @@ object DataManager {
     }
 
     private var vehicleArray = ArrayList<Vehicle>()
-    fun CreateNewVehicle(brandName: String, modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {
-        val newVehicle = Vehicle(FetchIdForVehicle(), brandName, modelName, year, expiryWOF, regExpiry, odometer)
+    fun createNewVehicle(brandName: String, modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {
+        val newVehicle = Vehicle(fetchIdForVehicle(), brandName, modelName, year, expiryWOF, regExpiry, odometer)
         vehicleArray.add(newVehicle)
 
-        PostVehicleToDb(newVehicle)
+        postVehicleToDb(newVehicle)
     }
 
-    fun CreateNewVehicle(newVehicle: Vehicle) {
+    fun createNewVehicle(newVehicle: Vehicle) {
         vehicleArray.add(newVehicle)
 
-        PostVehicleToDb(newVehicle)
+        postVehicleToDb(newVehicle)
     }
 
     fun pullVehicleFromDb(newVehicle: Vehicle) {
         vehicleArray.add(newVehicle)
     }
 
-    fun PostVehicleToDb(newVehicle: Vehicle) {
+    private fun postVehicleToDb(newVehicle: Vehicle) {
         Thread {
             MainActivity.getDatabase()
                 ?.vehicleDao()
@@ -73,7 +73,7 @@ object DataManager {
         }.start()
     }
 
-    fun ReturnVehicle(index : Int): Vehicle? {
+    fun returnVehicle(index : Int): Vehicle? {
         if (vehicleArray.lastIndex >= index) {
             return vehicleArray[index]
         }
@@ -85,7 +85,7 @@ object DataManager {
         return vehicleArray.isNotEmpty()
     }
 
-    fun ReturnVehicleById(id : Int): Vehicle? {
+    fun returnVehicleById(id : Int): Vehicle? {
         val vehicle: Vehicle? = vehicleArray.find { v -> v.id == id }
 
         return vehicle
@@ -93,20 +93,20 @@ object DataManager {
 
     private var activeVehicle : Int = -1
 
-    fun SetActiveVehicle(int: Int) {
-        activeVehicle = int;
+    fun setActiveVehicle(int: Int) {
+        activeVehicle = int
     }
 
     fun setFirstVehicleActive() {
         if (vehicleArray.size > 0)
-            SetActiveVehicle(0)
+            setActiveVehicle(0)
     }
 
     fun setLatestVehicleActive() {
-        SetActiveVehicle(vehicleArray.lastIndex)
+        setActiveVehicle(vehicleArray.lastIndex)
     }
 
-    fun ReturnActiveVehicle(): Vehicle? {
+    fun returnActiveVehicle(): Vehicle? {
         if (vehicleArray.lastIndex >= activeVehicle && activeVehicle >= 0) {
             return vehicleArray[activeVehicle]
         }
@@ -114,12 +114,12 @@ object DataManager {
         return null
     }
 
-    fun ReturnVehicleArrayLength() : Int {
+    fun returnVehicleArrayLength() : Int {
         return vehicleArray.size
     }
 
     private fun changeActiveVehicleImage(newVehicleImageId : Int) {
-        val activeVehicle = this.ReturnActiveVehicle()!!
+        val activeVehicle = this.returnActiveVehicle()!!
         activeVehicle.vehicleImage = newVehicleImageId
 
         Thread {
@@ -130,11 +130,7 @@ object DataManager {
     }
 
     fun changeActiveVehicleImageId(isArtPackEnabled : Boolean) : Int{
-        val currentVehicleImageId = this.ReturnActiveVehicle()?.vehicleImage
-
-        if (currentVehicleImageId == null) {
-            return 0;
-        }
+        val currentVehicleImageId = this.returnActiveVehicle()?.vehicleImage ?: return 0
 
         var newVehicleImageId = 0
 
@@ -159,7 +155,7 @@ object DataManager {
             idCounterLoggable = maxId + 1
     }
 
-    fun FetchIdForLoggable() : Int {
+    fun fetchIdForLoggable() : Int {
         idCounterLoggable += 1
 
         return (idCounterLoggable - 1)
@@ -176,7 +172,7 @@ object DataManager {
             idCounterVehicle = maxId + 1
     }
 
-    fun FetchIdForVehicle() : Int {
+    fun fetchIdForVehicle() : Int {
         idCounterVehicle += 1
 
         return (idCounterVehicle - 1)

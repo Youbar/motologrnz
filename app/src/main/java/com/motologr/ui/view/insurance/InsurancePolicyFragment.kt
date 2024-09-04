@@ -1,6 +1,5 @@
 package com.motologr.ui.view.insurance
 
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import com.motologr.databinding.FragmentInsurancePolicyBinding
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -53,7 +51,7 @@ class InsurancePolicyFragment : Fragment() {
         if (bundle != null) {
             val policyIndex = bundle.getInt("position")
 
-            val insurance = DataManager.ReturnActiveVehicle()?.insuranceLog?.returnInsurance(policyIndex)
+            val insurance = DataManager.returnActiveVehicle()?.insuranceLog?.returnInsurance(policyIndex)
 
             val format = SimpleDateFormat("dd/MM/yy")
 

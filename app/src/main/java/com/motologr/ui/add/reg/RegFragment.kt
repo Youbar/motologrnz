@@ -95,7 +95,7 @@ class RegFragment : Fragment() {
     }
 
     private fun setDateEstimate(months : Int) {
-        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
+        val vehicle: Vehicle = DataManager.returnActiveVehicle() ?: return
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
         val date: Date = format.parse(vehicle.returnRegExpiry())
@@ -160,9 +160,9 @@ class RegFragment : Fragment() {
         if (!isValidRegInputs())
             return
 
-        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
+        val vehicle: Vehicle = DataManager.returnActiveVehicle() ?: return
 
-        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
+        val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
         val regExpiryDate = binding.editTextRegCurrDate.text.toString()
         val newRegExpiryDate = binding.editTextRegNextDate.getDate()
         val monthsExtended = getMonthsExtended()
@@ -199,7 +199,7 @@ class RegFragment : Fragment() {
     }
 
     private fun setFragmentText() {
-        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
+        val vehicle: Vehicle = DataManager.returnActiveVehicle() ?: return
 
         binding.editTextRegCurrDate.setText(vehicle.returnRegExpiry())
     }

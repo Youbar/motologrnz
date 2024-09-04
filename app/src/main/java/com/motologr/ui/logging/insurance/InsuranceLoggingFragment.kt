@@ -45,7 +45,7 @@ class InsuranceLoggingFragment : Fragment() {
 
         // ArrayList of class ItemsViewModel
         val data = ArrayList<InsuranceLoggingItemsViewModel>()
-        val insuranceLog = DataManager.ReturnActiveVehicle()?.insuranceLog?.returnInsuranceLog()
+        val insuranceLog = DataManager.returnActiveVehicle()?.insuranceLog?.returnInsuranceLog()
 
         val insuranceLogSize = (insuranceLog?.size?:0)
 

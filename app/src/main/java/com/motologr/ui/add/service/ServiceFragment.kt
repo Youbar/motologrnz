@@ -50,7 +50,7 @@ class ServiceFragment : Fragment() {
 
         if (logPos != null) {
             DataManager.updateTitle(activity, "View Service")
-            var service: Service = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Service
+            var service: Service = DataManager.returnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Service
             setInterfaceToReadOnly(service)
         } else {
             DataManager.updateTitle(activity, "Record Service")
@@ -78,7 +78,7 @@ class ServiceFragment : Fragment() {
         if (!isValidServiceInputs())
             return
 
-        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
+        val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
         val serviceType: Int = parseServiceTypeRadioGroup()
         val serviceDate: Date = binding.editTextServiceDate.getDate()
         val serviceProvider: String = binding.editTextServiceProvider.text.toString()
@@ -88,7 +88,7 @@ class ServiceFragment : Fragment() {
 
         val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment, vehicleId)
 
-        DataManager.ReturnActiveVehicle()?.logService(service)
+        DataManager.returnActiveVehicle()?.logService(service)
         findNavController().navigate(R.id.action_nav_service_to_nav_vehicle_1, null, NavOptions.Builder()
             .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }

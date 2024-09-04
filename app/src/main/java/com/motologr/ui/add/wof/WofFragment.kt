@@ -17,7 +17,6 @@ import com.motologr.data.DataManager
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.data.objects.maint.Wof
 import com.motologr.data.getDate
-import com.motologr.data.helpers.DatePickerHelper
 import com.motologr.data.toCalendar
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
@@ -52,7 +51,7 @@ class WofFragment : Fragment() {
 
         if (logPos != null) {
             DataManager.updateTitle(activity, "View WOF")
-            val wof: Wof = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
+            val wof: Wof = DataManager.returnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
             setInterfaceToReadOnly(wof)
         } else {
             DataManager.updateTitle(activity, "Update WOF")
@@ -70,7 +69,7 @@ class WofFragment : Fragment() {
     }
 
     private fun applyWOFYearRule() {
-        val vehicle: Vehicle = DataManager.ReturnActiveVehicle()!!
+        val vehicle: Vehicle = DataManager.returnActiveVehicle()!!
 
         var monthsToAdd = 12
 
@@ -131,9 +130,9 @@ class WofFragment : Fragment() {
         if (!isValidWofInputs())
             return
 
-        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
+        val vehicle: Vehicle = DataManager.returnActiveVehicle() ?: return
 
-        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
+        val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
         val oldDate = binding.editTextWofCurrDate.text.toString()
         val newDate = binding.editTextWofNextDate.getDate()
         val price = binding.editTextWofPrice.text.toString()
@@ -171,7 +170,7 @@ class WofFragment : Fragment() {
     }
 
     private fun setFragmentText() {
-        val vehicle: Vehicle = DataManager.ReturnActiveVehicle() ?: return
+        val vehicle: Vehicle = DataManager.returnActiveVehicle() ?: return
 
         binding.editTextWofCurrDate.setText(vehicle.returnWofExpiry())
     }

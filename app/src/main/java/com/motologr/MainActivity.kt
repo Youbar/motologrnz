@@ -220,8 +220,8 @@ class MainActivity : AppCompatActivity() {
                 val expandableListDetail =
                     HashMap<Int, List<String>>()
 
-                for (i in 0 until DataManager.ReturnVehicleArrayLength()) {
-                    val vehicle : Vehicle? = DataManager.ReturnVehicle(i)
+                for (i in 0 until DataManager.returnVehicleArrayLength()) {
+                    val vehicle : Vehicle? = DataManager.returnVehicle(i)
 
                     val vehicleOptions: MutableList<String> =
                         ArrayList()
@@ -282,7 +282,7 @@ class MainActivity : AppCompatActivity() {
         titleList.removeIf { i -> i == -1 }
 
         // Cap garage at 3 vehicles
-        if (DataManager.ReturnVehicleArrayLength() < 3) {
+        if (DataManager.returnVehicleArrayLength() < 3) {
             titleList.add(-1)
         }
 
@@ -313,7 +313,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         expandableListView.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-            DataManager.SetActiveVehicle(groupPosition)
+            DataManager.setActiveVehicle(groupPosition)
             navigateToVehicleOption(listData[(titleList)[groupPosition]]!!.get(childPosition))
             // Pass
             binding.drawerLayout.closeDrawer(Gravity.LEFT)
@@ -330,11 +330,15 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val navigationController = findNavController(R.id.nav_host_fragment_content_main)
 
-        if (item.itemId == R.id.action_settings) {
+        val settingsDestination = navigationController.findDestination(R.id.action_settings)
+        val addonsDestination = navigationController.findDestination(R.id.nav_addons)
+
+        // Navigation can be nested (e.g. Settings -> Purchases -> Settings)
+        if (item.itemId == R.id.action_settings && navigationController.currentDestination != settingsDestination) {
             navigationController.navigate(R.id.nav_settings)
             return true
         }
-        if (item.itemId == R.id.action_addons) {
+        if (item.itemId == R.id.action_addons && navigationController.currentDestination != addonsDestination) {
             navigationController.navigate(R.id.nav_addons)
             return true
         }

@@ -1,15 +1,11 @@
 package com.motologr.ui.expenses
 
-import android.content.pm.PackageManager
-import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.motologr.MainActivity
@@ -19,9 +15,7 @@ import com.motologr.data.logging.Loggable
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 
 class ExpensesFragment : Fragment() {
 
@@ -135,7 +129,7 @@ class ExpensesFragment : Fragment() {
     }
 
     private fun calculateExpensesForFinancialYear() : ArrayList<BigDecimal> {
-        val expensesLogs : ArrayList<Loggable> = DataManager.ReturnActiveVehicle()!!.returnExpensesLogsWithinFinancialYear()
+        val expensesLogs : ArrayList<Loggable> = DataManager.returnActiveVehicle()!!.returnExpensesLogsWithinFinancialYear()
 
         // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100
         val repairsLogs = expensesLogs.filter { loggable -> loggable.classId == 0 }

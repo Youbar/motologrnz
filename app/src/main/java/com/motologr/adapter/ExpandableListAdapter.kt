@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.motologr.R
 import com.motologr.data.DataManager
 
@@ -106,8 +105,8 @@ class ExpandableListAdapter internal constructor(
         listTitleTextView.setTypeface(null, Typeface.BOLD)
 
         val listId = getGroup(listPosition) as Int
-        val vehicleBrand: String? = DataManager.ReturnVehicleById(listId)?.brandName;
-        val vehicleName : String? = DataManager.ReturnVehicleById(listId)?.modelName
+        val vehicleBrand: String? = DataManager.returnVehicleById(listId)?.brandName;
+        val vehicleName : String? = DataManager.returnVehicleById(listId)?.modelName
 
         if (vehicleBrand != null && vehicleName != null)
             listTitleTextView.text = vehicleBrand + " " + vehicleName

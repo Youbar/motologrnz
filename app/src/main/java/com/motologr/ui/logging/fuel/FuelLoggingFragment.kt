@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelLoggingBinding
 import com.motologr.data.DataManager
@@ -53,7 +52,7 @@ class FuelLoggingFragment : Fragment() {
 
         // ArrayList of class ItemsViewModel
         val data = ArrayList<FuelLoggingItemsViewModel>()
-        val fuelLog = DataManager.ReturnActiveVehicle()?.returnFuelLog()
+        val fuelLog = DataManager.returnActiveVehicle()?.returnFuelLog()
 
         val fuelLogSize = (fuelLog?.size?:0)
 

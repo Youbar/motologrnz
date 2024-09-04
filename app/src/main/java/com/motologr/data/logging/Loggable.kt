@@ -13,7 +13,7 @@ open class Loggable(var sortableDate: Date,
     var id : Int = -1
 
     init {
-        id = DataManager.FetchIdForLoggable()
+        id = DataManager.fetchIdForLoggable()
     }
 
     fun convertToLoggableEntity() : LoggableEntity {

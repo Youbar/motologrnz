@@ -33,8 +33,6 @@ import androidx.compose.ui.unit.em
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.ProductDetails
 import com.motologr.R
-import com.motologr.data.billing.BillingClientHelper
-import com.motologr.data.billing.BillingClientHelper.queryProductDetailsParams
 import com.motologr.ui.theme.AppTheme
 
 class AddonsFragment : Fragment() {
@@ -49,9 +47,7 @@ class AddonsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_addons, container, false)
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
-
-        val addonsViewModel =
-            ViewModelProvider(this).get(AddonsViewModel::class.java)
+        addonsViewModel = ViewModelProvider(this).get(AddonsViewModel::class.java)
 
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -61,21 +57,11 @@ class AddonsFragment : Fragment() {
             }
         }
 
-        val getPurchases: () -> Unit = {
-            BillingClientHelper.billingClient.queryProductDetailsAsync(queryProductDetailsParams) {
-                    billingResult,
-                    productDetailsList ->
-                productDetails = ArrayList(productDetailsList)
-            }
-        }
-
-        // 4. Add functionality for IAP being active
-
-        getPurchases()
-
         return view
     }
 }
+
+lateinit var addonsViewModel: AddonsViewModel
 
 var productDetails = ArrayList<ProductDetails>()
 
@@ -98,9 +84,9 @@ fun ComposableView() {
                                 modifier = Modifier.weight(1.0f)
                                     .padding(PaddingValues(6.dp, 0.dp)),
                                 fontSize = 2.5.em)
-                            Button(onClick = { BillingClientHelper.requestPurchase(productDetails.first { x -> x.productId == "art_pack_addon_1" }) },
-                                enabled = productDetails.size > 0, contentPadding = PaddingValues(8.dp)) {
-                                Text("Purchase", fontSize = 3.em, textAlign = TextAlign.Center)
+                            Button(onClick = { addonsViewModel.purchaseArtPack() },
+                                enabled = addonsViewModel.isArtPackPurchaseEnabled, contentPadding = PaddingValues(8.dp)) {
+                                Text(addonsViewModel.artPackButtonText, fontSize = 3.em, textAlign = TextAlign.Center)
                             }
                         }
                     }

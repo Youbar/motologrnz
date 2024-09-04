@@ -71,7 +71,7 @@ class InsuranceFragment : Fragment() {
         if (!isValidInsuranceInputs())
             return
 
-        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
+        val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
         val insurerName: String = binding.editTextInsuranceInsurer.text.toString()
         val insurancePolicyStartDate: Date = binding.editTextInsurancePolicyStartDate.getDate()
         val insuranceType: Int = parseCoverageRadioGroup()
@@ -83,7 +83,7 @@ class InsuranceFragment : Fragment() {
         val insurance = Insurance(DataManager.fetchIdForInsurance(), insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)
         insurance.generateInsuranceBills()
 
-        DataManager.ReturnActiveVehicle()?.logInsurance(insurance)
+        DataManager.returnActiveVehicle()?.logInsurance(insurance)
 
         findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1, null, NavOptions.Builder()
             .setPopUpTo(R.id.nav_vehicle_1, true).build())

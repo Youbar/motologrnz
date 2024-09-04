@@ -1,6 +1,5 @@
 package com.motologr.ui.add.repair
 
-import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,7 +11,6 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
 import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentRepairBinding
@@ -52,7 +50,7 @@ class RepairFragment : Fragment() {
 
         if (logPos != null) {
             DataManager.updateTitle(activity, "View Repair")
-            var repair: Repair = DataManager.ReturnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Repair
+            var repair: Repair = DataManager.returnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Repair
             setInterfaceToReadOnly(repair)
         }else {
             DataManager.updateTitle(activity, "Record Repair")
@@ -80,7 +78,7 @@ class RepairFragment : Fragment() {
         if (!isValidRepairInputs())
             return
 
-        val vehicleId: Int = DataManager.ReturnActiveVehicle()?.id!!
+        val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
         val repairType: Int = parseRepairTypeRadioGroup()
         val repairDate: Date = binding.editTextRepairDate.getDate()
         val repairProvider: String = binding.editTextRepairProvider.text.toString()
@@ -90,7 +88,7 @@ class RepairFragment : Fragment() {
 
         val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment, vehicleId)
 
-        DataManager.ReturnActiveVehicle()?.logRepair(repair)
+        DataManager.returnActiveVehicle()?.logRepair(repair)
         findNavController().navigate(R.id.action_nav_repair_to_nav_vehicle_1, null, NavOptions.Builder()
             .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }

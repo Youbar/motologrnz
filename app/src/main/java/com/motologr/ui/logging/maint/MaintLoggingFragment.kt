@@ -49,7 +49,7 @@ class MaintLoggingFragment : Fragment() {
         val data = ArrayList<MaintLoggingItemsViewModel>()
         val format = SimpleDateFormat("dd/MM/yy")
 
-        val maintLog = DataManager.ReturnActiveVehicle()?.returnMaintLogs()
+        val maintLog = DataManager.returnActiveVehicle()?.returnMaintLogs()
 
         val df = DecimalFormat("0.00")
         df.roundingMode = RoundingMode.CEILING

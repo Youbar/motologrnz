@@ -101,9 +101,9 @@ class PlusFragment : Fragment() {
         val modelReg: Date = binding.editTextRegExpireInput.getDate()
         val odometer: Int = Integer.valueOf(binding.editTextOdoInput.text.toString())
 
-        val vehicle = Vehicle(DataManager.FetchIdForVehicle(), brandName, modelName, modelYear, modelWOF, modelReg, odometer)
+        val vehicle = Vehicle(DataManager.fetchIdForVehicle(), brandName, modelName, modelYear, modelWOF, modelReg, odometer)
 
-        DataManager.CreateNewVehicle(vehicle)
+        DataManager.createNewVehicle(vehicle)
         DataManager.setLatestVehicleActive()
 
         findNavController().navigate(R.id.action_nav_plus_to_nav_vehicle_1, null, NavOptions.Builder()

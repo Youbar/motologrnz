@@ -7,7 +7,6 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResponseListener
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
@@ -39,10 +38,13 @@ object BillingClientHelper {
         }.start()
     }
 
+    object Constants {
+        const val ART_PACK_ID = "art_pack_addon_1"
+    }
+
     var addons = ArrayList<BillingClientData>()
 
-    private const val ART_PACK_ID = "art_pack_addon_1"
-    val isArtPackEnabled : Boolean get() = addons.filter { x -> x.productId == ART_PACK_ID && !x.isRefunded }.isNotEmpty()
+    val isArtPackEnabled : Boolean get() = addons.any { x -> x.productId == Constants.ART_PACK_ID && !x.isRefunded }
 
     private val consumeResponseListener =
         ConsumeResponseListener { billingResult, _ ->
@@ -52,7 +54,8 @@ object BillingClientHelper {
     private fun checkForRefundedAddons(purchases : List<Purchase>) {
         // Try and match to item in addon
         for (addon in addons) {
-            val matchingPurchase = purchases.filter { x -> x.products.contains(addon.productId) && x.purchaseToken == addon.purchaseToken }.isNotEmpty()
+            val matchingPurchase =
+                purchases.any { x -> x.products.contains(addon.productId) && x.purchaseToken == addon.purchaseToken }
             if (matchingPurchase)
                 continue
             else {
@@ -182,7 +185,7 @@ object BillingClientHelper {
         billingClient.launchBillingFlow(activity, billingFlowParams)
     }
 
-    val acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener =
+    private val acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener =
         AcknowledgePurchaseResponseListener {
             billingResult ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -229,7 +232,7 @@ object BillingClientHelper {
         matchingAddons.first().isAcknowledged = true
     }
 
-    fun acknowledgePurchase(purchase: Purchase) {
+    private fun acknowledgePurchase(purchase: Purchase) {
         if (purchase.products.isEmpty())
             return
 
@@ -263,7 +266,7 @@ object BillingClientHelper {
         matchingAddons.first().isRefunded = true
     }
 
-    fun checkPurchaseRefundState(purchase: Purchase) {
+    private fun checkPurchaseRefundState(purchase: Purchase) {
         if (purchase.products.isEmpty())
             return
 
@@ -279,7 +282,7 @@ object BillingClientHelper {
         }
     }
 
-    suspend fun handlePurchase(purchase: Purchase) {
+    private suspend fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             recordPurchase(purchase)
 
