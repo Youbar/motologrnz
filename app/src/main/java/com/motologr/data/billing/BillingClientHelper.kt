@@ -64,7 +64,18 @@ object BillingClientHelper {
                 setRefunded(addon.productId, addon.purchaseToken)
             }
         }
+    }
 
+    private fun purchaseNotInAddons(purchase: Purchase) : Boolean {
+        if (addons.isEmpty())
+            return true
+
+        for (product in purchase.products) {
+            if (addons.none { x -> x.purchaseToken == purchase.purchaseToken && x.productId == product })
+                return true
+        }
+
+        return false
     }
 
     private val purchasesResponseListener =
@@ -76,8 +87,10 @@ object BillingClientHelper {
                 if (!purchase.isAcknowledged) {
                     val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                         .setPurchaseToken(purchase.purchaseToken)
-                        billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(),
+                    billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(),
                             acknowledgePurchaseResponseListener)
+                } else if (purchaseNotInAddons(purchase)) {
+                    recordPurchase(purchase)
                 }
                 else {
                     acknowledgePurchase(purchase)
@@ -238,10 +251,7 @@ object BillingClientHelper {
 
         val matchingAddons = addons.filter { x -> x.purchaseToken == purchaseToken && x.productId == productId }
 
-        if (matchingAddons.isEmpty())
-            return true
-
-        return false
+        return matchingAddons.isEmpty()
     }
 
     private fun setRefunded(productId: String, purchaseToken: String) {
