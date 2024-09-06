@@ -31,23 +31,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.lifecycle.ViewModelProvider
-import com.android.billingclient.api.ProductDetails
 import com.motologr.R
 import com.motologr.ui.theme.AppTheme
 
 class AddonsFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_addons, container, false)
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
-        addonsViewModel = ViewModelProvider(this).get(AddonsViewModel::class.java)
+        addonsViewModel = ViewModelProvider(this)[AddonsViewModel::class.java]
 
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -62,8 +56,6 @@ class AddonsFragment : Fragment() {
 }
 
 lateinit var addonsViewModel: AddonsViewModel
-
-var productDetails = ArrayList<ProductDetails>()
 
 @Preview
 @Composable

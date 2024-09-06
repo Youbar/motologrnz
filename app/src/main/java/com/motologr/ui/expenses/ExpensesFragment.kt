@@ -148,7 +148,6 @@ class ExpensesFragment : Fragment() {
 
         var total = calculateTotalExpenseForLoggables(expensesLogs);
 
-
         return arrayListOf(repairCost, serviceCost, wofCost, regCost, fuelCost, insuranceCost, total)
     }
 

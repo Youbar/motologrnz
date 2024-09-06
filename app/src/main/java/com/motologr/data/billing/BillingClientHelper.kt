@@ -55,6 +55,9 @@ object BillingClientHelper {
     private fun checkForRefundedAddons(purchases : List<Purchase>) {
         // Try and match to item in addon
         for (addon in addons) {
+            if (addon.isRefunded)
+                continue
+
             val matchingPurchase =
                 purchases.any { x -> x.products.contains(addon.productId) && x.purchaseToken == addon.purchaseToken }
             if (matchingPurchase)

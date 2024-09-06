@@ -1,8 +1,10 @@
 package com.motologr.ui.ellipsis.addons
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.ProductDetails
-import com.android.billingclient.api.Purchase
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.billing.BillingClientHelper.queryProductDetailsParams
 
@@ -14,44 +16,55 @@ class AddonsViewModel : ViewModel() {
 
     //region Art Pack
 
-    private val artPackProductDetails : ProductDetails
+    private val _artPackProductDetails : ProductDetails
         get() {
-            return productDetails.first { x -> x.productId == BillingClientHelper.Constants.ART_PACK_ID }
+            return _productDetails.first { x -> x.productId == BillingClientHelper.Constants.ART_PACK_ID }
         }
 
-    val isArtPackPurchaseEnabled : Boolean
+    private val _isArtPackPurchaseEnabled : Boolean
         get() {
-            return isPurchasesAvailable && !BillingClientHelper.isArtPackEnabled
+            return _isPurchasesAvailable && !BillingClientHelper.isArtPackEnabled
         }
 
-    val artPackButtonText : String
+    var isArtPackPurchaseEnabled by mutableStateOf(_isArtPackPurchaseEnabled)
+
+    private val _artPackButtonText : String
         get() {
-            return if (isArtPackPurchaseEnabled)
-                artPackProductDetails.oneTimePurchaseOfferDetails?.formattedPrice.toString()
-            else if (isPurchasesAvailable && !isArtPackPurchaseEnabled)
+            return if (_isArtPackPurchaseEnabled)
+                _artPackProductDetails.oneTimePurchaseOfferDetails?.formattedPrice.toString()
+            else if (_isPurchasesAvailable && !_isArtPackPurchaseEnabled)
                 "Owned"
             else
                 "Unavailable"
         }
 
+    var artPackButtonText by mutableStateOf(_artPackButtonText)
+
     fun purchaseArtPack() {
-        BillingClientHelper.requestPurchase(artPackProductDetails)
+        BillingClientHelper.requestPurchase(_artPackProductDetails)
     }
 
     //endregion
 
-    private val isPurchasesAvailable : Boolean
-        get() {
-            return productDetails.size > 0
-        }
+    private var _productDetails = ArrayList<ProductDetails>()
 
-    private var productDetails = ArrayList<ProductDetails>()
+    private val _isPurchasesAvailable : Boolean
+        get() {
+            if (_productDetails == null)
+                return false
+
+            return _productDetails.isNotEmpty()
+        }
 
     private fun getPurchases() {
         BillingClientHelper.billingClient.queryProductDetailsAsync(queryProductDetailsParams) {
                 billingResult,
                 productDetailsList ->
-            productDetails = ArrayList(productDetailsList)
+            _productDetails = ArrayList(productDetailsList)
+
+            // Trigger update on MutableState items
+            isArtPackPurchaseEnabled = _isArtPackPurchaseEnabled
+            artPackButtonText = _artPackButtonText
         }
     }
 }
