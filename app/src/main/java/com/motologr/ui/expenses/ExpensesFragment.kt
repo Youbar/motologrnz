@@ -51,7 +51,7 @@ class ExpensesFragment : Fragment() {
                 createExternalStorageDialog()
             else {
                 val generatePDF = GeneratePDF(requireContext(), expensesViewModel.getExpensesLogs())
-                generatePDF.generatePDF()
+                generatePDF.generatePDF(expensesViewModel.textExpensesTitle.value.toString())
             }
         }
 

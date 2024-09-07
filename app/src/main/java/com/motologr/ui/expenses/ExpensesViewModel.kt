@@ -200,7 +200,7 @@ class ExpensesViewModel : ViewModel() {
     private fun calculateTotalExpenseForLoggables(expensesLogs : List<Loggable>) : BigDecimal {
         var total : BigDecimal = 0.0.toBigDecimal()
         for (expenseLog in expensesLogs) {
-            total += expenseLog.unitPrice;
+            total += expenseLog.unitPrice
         }
 
         return total
