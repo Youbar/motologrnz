@@ -39,8 +39,13 @@ class ExpensesFragment : Fragment() {
         DataManager.updateTitle(activity, expensesViewModel.textExpensesTitle.value.toString())
 
         binding.buttonExpensesExport.setOnClickListener {
-            val permissionGranted = ContextCompat
-                .checkSelfPermission(requireContext(), WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            // At SDK 29 and above, writing PDF to external storage is automatically given
+            var permissionGranted = true
+
+            if (android.os.Build.VERSION.SDK_INT < 29) {
+                permissionGranted = ContextCompat
+                    .checkSelfPermission(requireContext(), WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            }
 
             if (!permissionGranted)
                 createExternalStorageDialog()

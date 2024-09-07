@@ -10,10 +10,6 @@ import com.motologr.data.billing.BillingClientHelper.queryProductDetailsParams
 
 class AddonsViewModel : ViewModel() {
 
-    init {
-        getPurchases()
-    }
-
     //region Art Pack
 
     private val _artPackProductDetails : ProductDetails
@@ -26,7 +22,7 @@ class AddonsViewModel : ViewModel() {
             return _isPurchasesAvailable && !BillingClientHelper.isArtPackEnabled
         }
 
-    var isArtPackPurchaseEnabled by mutableStateOf(_isArtPackPurchaseEnabled)
+    var isArtPackPurchaseEnabled by mutableStateOf(false)
 
     private val _artPackButtonText : String
         get() {
@@ -38,7 +34,7 @@ class AddonsViewModel : ViewModel() {
                 "Unavailable"
         }
 
-    var artPackButtonText by mutableStateOf(_artPackButtonText)
+    var artPackButtonText by mutableStateOf("Unavailable")
 
     fun purchaseArtPack() {
         BillingClientHelper.requestPurchase(_artPackProductDetails)
@@ -66,5 +62,9 @@ class AddonsViewModel : ViewModel() {
             isArtPackPurchaseEnabled = _isArtPackPurchaseEnabled
             artPackButtonText = _artPackButtonText
         }
+    }
+
+    init {
+        getPurchases()
     }
 }
