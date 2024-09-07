@@ -11,7 +11,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ExpandableListView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -357,49 +356,5 @@ class MainActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-/*    fun checkPermission() : Boolean {
-        // checking of permissions.
-        val permission1 = ContextCompat.checkSelfPermission (applicationContext, WRITE_EXTERNAL_STORAGE);
-        val permission2 = ContextCompat.checkSelfPermission (applicationContext, READ_EXTERNAL_STORAGE);
-        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    fun requestPermission() {
-        // requesting permissions if not provided.
-        ActivityCompat.requestPermissions(this,
-            arrayOf (WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE),
-            200 // PERMISSION_REQUEST_CODE
-        );
-    }*/
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // feature requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                }
-            }
-
-
-        if (requestCode == 200) { // PERMISSION_REQUEST_CODE)
-            requestPermissionLauncher.launch("WRITE_EXTERNAL_STORAGE")
-        }
     }
 }

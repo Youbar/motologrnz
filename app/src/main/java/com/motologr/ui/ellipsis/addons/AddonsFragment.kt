@@ -40,9 +40,9 @@ class AddonsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_addons, container, false)
-        val composeView = view.findViewById<ComposeView>(R.id.compose_view)
         addonsViewModel = ViewModelProvider(this)[AddonsViewModel::class.java]
 
+        val composeView = view.findViewById<ComposeView>(R.id.compose_view)
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
