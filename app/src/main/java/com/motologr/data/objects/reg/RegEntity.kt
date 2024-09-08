@@ -4,13 +4,21 @@ import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
 
-@Entity(tableName = "Reg")
+@Entity(tableName = "Reg",
+    foreignKeys =
+    [ForeignKey(entity = VehicleEntity::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("vehicleId"),
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE)])
 data class RegEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "newRegExpiryDate") val newRegExpiryDate: Date,

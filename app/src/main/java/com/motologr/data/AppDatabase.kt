@@ -65,7 +65,7 @@ class Converters {
     RepairEntity::class,
     ServiceEntity::class,
     AddonEntity::class],
-    version = 9)
+    version = 13)
 
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
