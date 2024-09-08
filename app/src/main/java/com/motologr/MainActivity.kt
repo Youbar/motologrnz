@@ -1,6 +1,7 @@
 package com.motologr
 
 import ExpandableListAdapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -29,10 +30,7 @@ import com.motologr.databinding.ActivityMainBinding
 import com.motologr.data.AppDatabase
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.DataManager
-import com.motologr.data.MIGRATION_1_2
-import com.motologr.data.MIGRATION_2_3
-import com.motologr.data.MIGRATION_3_4
-import com.motologr.data.MIGRATION_4_5
+import com.motologr.data.DatabaseMigration
 import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.logging.maint.RepairLog
@@ -60,10 +58,14 @@ class MainActivity : AppCompatActivity() {
                 applicationContext,
                 AppDatabase::class.java, "motologr"
             )
-                .addMigrations(MIGRATION_1_2)
-                .addMigrations(MIGRATION_2_3)
-                .addMigrations(MIGRATION_3_4)
-                .addMigrations(MIGRATION_4_5)
+                .addMigrations(DatabaseMigration.MIGRATION_1_2)
+                .addMigrations(DatabaseMigration.MIGRATION_2_3)
+                .addMigrations(DatabaseMigration.MIGRATION_3_4)
+                .addMigrations(DatabaseMigration.MIGRATION_4_5)
+                .addMigrations(DatabaseMigration.MIGRATION_5_6)
+                .addMigrations(DatabaseMigration.MIGRATION_6_7)
+                .addMigrations(DatabaseMigration.MIGRATION_7_8)
+                .addMigrations(DatabaseMigration.MIGRATION_8_9)
                 .build()
 
             DataManager.setIdCounterLoggable()
@@ -326,6 +328,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val navigationController = findNavController(R.id.nav_host_fragment_content_main)
 

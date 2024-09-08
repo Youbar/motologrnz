@@ -4,13 +4,21 @@ import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
 
-@Entity(tableName = "Insurance")
+@Entity(tableName = "Insurance",
+    foreignKeys =
+        [ForeignKey(entity = VehicleEntity::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("vehicleId"),
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE)])
 data class InsuranceEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "insurer") val insurer: String,
@@ -48,7 +56,20 @@ interface InsuranceDao {
     fun delete(repair: InsuranceEntity)
 }
 
-@Entity(tableName = "InsuranceBill")
+@Entity(tableName = "InsuranceBill",
+    foreignKeys =
+        [ForeignKey(entity = InsuranceEntity::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("insuranceId"),
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+    ),
+        ForeignKey(entity = VehicleEntity::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("vehicleId"),
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE)]
+)
 data class InsuranceBillEntity(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "billingDate") val billingDate: Date,

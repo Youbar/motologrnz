@@ -4,14 +4,23 @@ import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import com.motologr.data.logging.Loggable
+import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
 
-@Entity(tableName = "Loggable")
+@Entity(tableName = "Loggable",
+    foreignKeys = [ForeignKey(entity = VehicleEntity::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("vehicleId"),
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+    )]
+)
 data class LoggableEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "sortableDate") val sortableDate: Date,
