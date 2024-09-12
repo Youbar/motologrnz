@@ -6,6 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +37,7 @@ import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.objects.vehicle.Vehicle
+import com.motologr.ui.theme.AppTheme
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -120,6 +142,16 @@ class VehicleFragment : Fragment() {
             }
         }
 
+        val composeView = root.findViewById<ComposeView>(R.id.composeView_vehicle)
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                AppTheme {
+                    TopOutlinedCards()
+                }
+            }
+        }
+
         return root
     }
 
@@ -168,5 +200,198 @@ class VehicleFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+}
+
+@Preview
+@Composable
+fun TopOutlinedCards() {
+    Column {
+        Row(modifier = Modifier
+            .padding(8.dp)
+            .height(IntrinsicSize.Min)) {
+            val cardModifier = Modifier
+                .weight(0.5f)
+                .padding(4.dp)
+                .fillMaxHeight()
+
+            ComplianceCard(cardModifier = cardModifier)
+            InsuranceCard(cardModifier = cardModifier)
+        }
+
+        Row(modifier = Modifier
+            .padding(8.dp, 0.dp, 8.dp, 8.dp)
+            .height(IntrinsicSize.Min)) {
+            val cardModifier = Modifier
+                .weight(0.5f)
+                .padding(4.dp, 0.dp, 4.dp, 4.dp)
+                .fillMaxHeight()
+
+            ExpensesCard(cardModifier = cardModifier)
+        }
+    }
+}
+
+@Composable
+fun ComplianceCard(cardModifier: Modifier) {
+    OutlinedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(1.dp, Color.Black),
+        modifier = cardModifier
+    ) {
+        Text(
+            text = "Compliance",
+            modifier = Modifier
+                .padding(16.dp, 8.dp, 0.dp, 0.dp),
+            fontSize = 20.sp
+        )
+        Row {
+            Column {
+                Text(
+                    text = "WOF",
+                    modifier = Modifier
+                        .padding(16.dp, 8.dp, 0.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "REG",
+                    modifier = Modifier
+                        .padding(16.dp, 4.dp, 0.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "ODO",
+                    modifier = Modifier
+                        .padding(16.dp, 4.dp, 0.dp, 8.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "10/Sep/9999",
+                    modifier = Modifier
+                        .padding(0.dp, 8.dp, 16.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Right,
+                )
+                Text(
+                    text = "10/Sep/9999",
+                    modifier = Modifier
+                        .padding(0.dp, 4.dp, 16.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Right,
+                )
+                Text(
+                    text = "999999 km",
+                    modifier = Modifier
+                        .padding(0.dp, 4.dp, 16.dp, 8.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Right,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InsuranceCard(cardModifier: Modifier) {
+    OutlinedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(1.dp, Color.Black),
+        modifier = cardModifier
+    ) {
+        Text(
+            text = "Insurance",
+            modifier = Modifier
+                .padding(16.dp, 8.dp, 0.dp, 0.dp),
+            fontSize = 20.sp
+        )
+        Row {
+            Column {
+                Text(
+                    text = "State",
+                    modifier = Modifier
+                        .padding(16.dp, 8.dp, 0.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "$15.30",
+                    modifier = Modifier
+                        .padding(16.dp, 4.dp, 0.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "Next Bill",
+                    modifier = Modifier
+                        .padding(16.dp, 4.dp, 0.dp, 8.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Comp.",
+                    modifier = Modifier
+                        .padding(0.dp, 8.dp, 16.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Right,
+                )
+                Text(
+                    text = "Fortnightly",
+                    modifier = Modifier
+                        .padding(0.dp, 4.dp, 16.dp, 0.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Right,
+                )
+                Text(
+                    text = "365 days",
+                    modifier = Modifier
+                        .padding(0.dp, 4.dp, 16.dp, 8.dp),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Right,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ExpensesCard(cardModifier: Modifier) {
+    OutlinedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(1.dp, Color.Black),
+        modifier = cardModifier
+    ) {
+        Text(
+            text = "Expenses",
+            modifier = Modifier
+                .padding(16.dp, 8.dp, 0.dp, 0.dp),
+            fontSize = 20.sp
+        )
+        Text(
+            text = "$150 current",
+            modifier = Modifier
+                .padding(16.dp, 8.dp, 16.dp, 0.dp),
+            fontSize = 14.sp,
+            textAlign = TextAlign.Right,
+        )
+        Text(
+            text = "$250 projected",
+            modifier = Modifier
+                .padding(16.dp, 8.dp, 16.dp, 8.dp),
+            fontSize = 14.sp,
+            textAlign = TextAlign.Right,
+        )
     }
 }

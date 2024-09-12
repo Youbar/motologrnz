@@ -40,14 +40,13 @@ class AddonsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_addons, container, false)
-        addonsViewModel = ViewModelProvider(this)[AddonsViewModel::class.java]
+        val addonsViewModel = ViewModelProvider(this)[AddonsViewModel::class.java]
 
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                // In Compose world
-                ComposableView()
+                PurchasesLazyColumn(addonsViewModel)
             }
         }
 
@@ -55,38 +54,64 @@ class AddonsFragment : Fragment() {
     }
 }
 
-lateinit var addonsViewModel: AddonsViewModel
-
-@Preview
 @Composable
-fun ComposableView() {
+fun PurchasesLazyColumn(viewModel: AddonsViewModel) {
     AppTheme {
         LazyColumn {
             item {
-                Card(modifier = Modifier
-                    .padding(8.dp)
-                    .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
-                    .fillMaxWidth()) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Art Pack", fontSize = 5.em, modifier = Modifier.padding(PaddingValues(0.dp, 4.dp)))
-                        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 0.dp)))
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
-                            ArtPackSquare()
-                            Text("MotoLogr NZ is committed to an ad-free experience. Show your support by purchasing this art pack for your garage.",
-                                modifier = Modifier.weight(1.0f)
-                                    .padding(PaddingValues(6.dp, 0.dp)),
-                                fontSize = 2.5.em)
-                            Button(onClick = { addonsViewModel.purchaseArtPack() },
-                                enabled = addonsViewModel.isArtPackPurchaseEnabled, contentPadding = PaddingValues(8.dp)) {
-                                Text(addonsViewModel.artPackButtonText, fontSize = 3.em, textAlign = TextAlign.Center)
-                            }
-                        }
-                    }
+                ArtPackCard(viewModel.isArtPackPurchaseEnabled,
+                    viewModel.artPackButtonText
+                ) { viewModel.purchaseArtPack() }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewPurchasesLazyColumn(
+    isArtPackPurchaseEnabled: Boolean = true,
+    artPackButtonText: String = "$2.99"
+) {
+    AppTheme {
+        LazyColumn {
+            item {
+                ArtPackCard(isArtPackPurchaseEnabled,
+                    artPackButtonText
+                ) { }
+            }
+        }
+    }
+}
+
+@Composable
+fun ArtPackCard(
+    isArtPackPurchaseEnabled : Boolean,
+    artPackButtonText : String,
+    onClick: () -> Unit = { }
+) {
+    Card(modifier = Modifier
+        .padding(8.dp)
+        .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
+        .fillMaxWidth()) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("Art Pack", fontSize = 5.em, modifier = Modifier.padding(PaddingValues(0.dp, 4.dp)))
+            HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 0.dp)))
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+                ArtPackSquare()
+                Text("MotoLogr NZ is committed to an ad-free experience. Show your support by purchasing this art pack for your garage.",
+                    modifier = Modifier.weight(1.0f)
+                        .padding(PaddingValues(6.dp, 0.dp)),
+                    fontSize = 2.5.em)
+                Button(onClick = onClick,
+                    enabled = isArtPackPurchaseEnabled, contentPadding = PaddingValues(8.dp)) {
+                    Text(artPackButtonText, fontSize = 3.em, textAlign = TextAlign.Center)
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun ArtPackSquare() {

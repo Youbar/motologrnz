@@ -36,8 +36,15 @@ class AddonsViewModel : ViewModel() {
 
     var artPackButtonText by mutableStateOf("Unavailable")
 
+    private var isPurchaseRequestPending = false
+
     fun purchaseArtPack() {
-        BillingClientHelper.requestPurchase(_artPackProductDetails)
+        if (!isPurchaseRequestPending) {
+            isPurchaseRequestPending = true
+            BillingClientHelper.requestPurchase(_artPackProductDetails)
+        }
+
+        isPurchaseRequestPending = false
     }
 
     //endregion

@@ -19,7 +19,7 @@
             android:layout_marginTop="16dp"
             android:text="Price:"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/radioGroup_service_type"
+            app:layout_constraintStart_toStartOf="@+id/editText_service_provider"
             app:layout_constraintTop_toBottomOf="@+id/editText_service_provider" />
 
         <EditText
@@ -50,8 +50,8 @@
             android:layout_marginTop="16dp"
             android:text="Provider"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText_service_date"
-            app:layout_constraintTop_toBottomOf="@+id/editText_service_date" />
+            app:layout_constraintStart_toStartOf="@+id/radioGroup_service_type"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup_service_type" />
 
         <Button
             android:id="@+id/button_service_add"
@@ -135,11 +135,10 @@
             android:id="@+id/text_service_comment_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Comments (Optional)"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/editText_service_price"
             app:layout_constraintTop_toBottomOf="@+id/editText_service_price" />
 
         <DatePicker
@@ -157,12 +156,12 @@
             android:id="@+id/editText_service_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine"
-            app:layout_constraintStart_toStartOf="parent"
+            android:hint="This will be added to your data when you export it"
+            app:layout_constraintStart_toStartOf="@+id/text_service_comment_prompt"
             app:layout_constraintTop_toBottomOf="@+id/text_service_comment_prompt" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

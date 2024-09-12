@@ -26,11 +26,10 @@
             android:id="@+id/text_repair_price_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Price:"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/editText_repair_provider"
             app:layout_constraintTop_toBottomOf="@+id/editText_repair_provider" />
 
         <Button
@@ -113,11 +112,10 @@
             android:id="@+id/text_repair_comment_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Comments (Optional)"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/editText_repair_price"
             app:layout_constraintTop_toBottomOf="@+id/editText_repair_price" />
 
         <TextView
@@ -127,8 +125,8 @@
             android:layout_marginTop="16dp"
             android:text="Provider"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText_repair_date"
-            app:layout_constraintTop_toBottomOf="@+id/editText_repair_date" />
+            app:layout_constraintStart_toStartOf="@+id/radioGroup_repair_type"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup_repair_type" />
 
         <DatePicker
             android:id="@+id/editText_repair_date"
@@ -145,12 +143,12 @@
             android:id="@+id/editText_repair_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine"
-            app:layout_constraintStart_toStartOf="parent"
+            android:hint="This will be added to your data when you export it"
+            app:layout_constraintStart_toStartOf="@+id/text_repair_comment_prompt"
             app:layout_constraintTop_toBottomOf="@+id/text_repair_comment_prompt" />
 
         <EditText
