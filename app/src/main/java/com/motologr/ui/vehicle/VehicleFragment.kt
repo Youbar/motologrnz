@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -18,28 +17,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.ui.theme.AppTheme
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 class VehicleFragment : Fragment() {
 
@@ -54,92 +50,16 @@ class VehicleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val vehicleViewModel =
-            ViewModelProvider(this).get(VehicleViewModel::class.java)
-
         _binding = FragmentVehicleBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         if (!DataManager.isVehicles())
             findNavController().navigate(R.id.nav_plus)
 
-        val carName: TextView = binding.textCar
-        val WOFDue: TextView = binding.textWOFDue
-        val RegDue: TextView = binding.textRegDue
-        val Odometer: TextView = binding.textOdometer
-        val Insurer: TextView = binding.textInsurer
-        val InsurerDate: TextView = binding.textInsurerDate
-        val ApproxCostsTitle: TextView = binding.textApproxCostsTitle
-        val ApproxCosts: TextView = binding.textApproxCosts
+        val viewModel = ViewModelProvider(this)[VehicleViewModel::class.java]
 
-        val vehicle : Vehicle? = DataManager.returnActiveVehicle()
-
-        if (vehicle != null) {
-            DataManager.updateTitle(activity, vehicle.brandName + " " + vehicle.modelName)
-
-            val vehicleText = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
-
-            var expiryWOF: String = vehicle.returnWofExpiry()
-            expiryWOF = "Next WOF: $expiryWOF"
-
-            var regExpiry: String = vehicle.returnRegExpiry()
-            regExpiry = "Next Reg: $regExpiry"
-
-            val odometer: String = "Last Odometer Reading: " + vehicle.getLatestOdometerReading().toString() + " km"
-
-            var insurer: String
-            var insurerDate: String
-
-            val df = DecimalFormat("0.00")
-            df.roundingMode = RoundingMode.CEILING
-
-            if (vehicle.hasCurrentInsurance()) {
-                var insurance = vehicle.returnLatestInsurancePolicy()
-
-                insurer = insurance.insurer
-                insurer = "You are with $insurer insurance"
-
-                insurerDate = "and your next bill of $${df.format(insurance.billing)} is due "
-                insurerDate += insurance.getNextBillingDateString()
-            } else {
-                insurer = "You do not have a registered insurer"
-                insurerDate = ""
-            }
-
-            var odometerVisible = false
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
-
-            if (sharedPref != null) {
-                odometerVisible = sharedPref.getBoolean(getString(R.string.fuel_consumption_key), false)
-            }
-
-                val approxCosts : String = "$" + df.format(vehicle.returnExpensesWithinFinancialYear())
-
-            vehicleViewModel.textVehicle.observe(viewLifecycleOwner) {
-                carName.text = vehicleText
-            }
-            vehicleViewModel.textWOFDue.observe(viewLifecycleOwner) {
-                WOFDue.text = expiryWOF
-            }
-            vehicleViewModel.textRegDue.observe(viewLifecycleOwner) {
-                RegDue.text = regExpiry
-            }
-            vehicleViewModel.textOdometer.observe(viewLifecycleOwner) {
-                Odometer.text = odometer
-                Odometer.isVisible = odometerVisible
-            }
-            vehicleViewModel.textInsurer.observe(viewLifecycleOwner) {
-                Insurer.text = insurer
-            }
-            vehicleViewModel.textInsurerDate.observe(viewLifecycleOwner) {
-                InsurerDate.text = insurerDate
-            }
-            vehicleViewModel.textApproxCostsTitle.observe(viewLifecycleOwner) {
-                ApproxCostsTitle.text = it
-            }
-            vehicleViewModel.textApproxCosts.observe(viewLifecycleOwner) {
-                ApproxCosts.text = approxCosts
-            }
+        viewModel.textVehicle.observe(viewLifecycleOwner) {
+            binding.textCar.text = it
         }
 
         val composeView = root.findViewById<ComposeView>(R.id.composeView_vehicle)
@@ -147,7 +67,7 @@ class VehicleFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    TopOutlinedCards()
+                    OutlinedCards(viewModel)
                 }
             }
         }
@@ -203,9 +123,8 @@ class VehicleFragment : Fragment() {
     }
 }
 
-@Preview
 @Composable
-fun TopOutlinedCards() {
+fun OutlinedCards(viewModel : VehicleViewModel) {
     Column {
         Row(modifier = Modifier
             .padding(8.dp)
@@ -215,8 +134,20 @@ fun TopOutlinedCards() {
                 .padding(4.dp)
                 .fillMaxHeight()
 
-            ComplianceCard(cardModifier = cardModifier)
-            InsuranceCard(cardModifier = cardModifier)
+            val vehicleWofDt = viewModel.textWOFDue.observeAsState("")
+            val vehicleRegDt = viewModel.textRegDue.observeAsState("")
+            val trackingFuelConsumption = viewModel.isOdometerDisplayed.observeAsState(false)
+            val vehicleOdo = viewModel.textOdometer.observeAsState("")
+            ComplianceCard(cardModifier, vehicleWofDt, vehicleRegDt, trackingFuelConsumption, vehicleOdo)
+
+            val policyInsurer = viewModel.textInsurer.observeAsState("")
+            val policyCoverage = viewModel.textInsurerCoverage.observeAsState("")
+            val policyCost = viewModel.textInsurerCost.observeAsState("")
+            val policyCycle = viewModel.textInsurerCycle.observeAsState("")
+            val daysToNextCharge = viewModel.textInsurerDaysToNextCharge.observeAsState("")
+            val hasActivePolicy = viewModel.hasCurrentInsurance.observeAsState(false)
+            InsuranceCard(cardModifier, policyInsurer, policyCoverage,
+                policyCost, policyCycle, daysToNextCharge, hasActivePolicy)
         }
 
         Row(modifier = Modifier
@@ -227,13 +158,21 @@ fun TopOutlinedCards() {
                 .padding(4.dp, 0.dp, 4.dp, 4.dp)
                 .fillMaxHeight()
 
-            ExpensesCard(cardModifier = cardModifier)
+            val currentCosts = viewModel.textCurrentCosts.observeAsState("")
+            val projectedCosts = viewModel.textProjectedCosts.observeAsState("")
+            ExpensesCard(cardModifier, currentCosts, projectedCosts)
         }
     }
 }
 
 @Composable
-fun ComplianceCard(cardModifier: Modifier) {
+fun ComplianceCard(
+    cardModifier: Modifier,
+    wofDt : State<String>,
+    regDt :  State<String>,
+    isOdoReadingVisible : State<Boolean>,
+    odoReading : State<String>
+) {
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -263,43 +202,55 @@ fun ComplianceCard(cardModifier: Modifier) {
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                 )
-                Text(
-                    text = "ODO",
-                    modifier = Modifier
-                        .padding(16.dp, 4.dp, 0.dp, 8.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                )
+                if (isOdoReadingVisible.value) {
+                    Text(
+                        text = "ODO",
+                        modifier = Modifier
+                            .padding(16.dp, 4.dp, 0.dp, 8.dp),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
             Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "10/Sep/9999",
+                    text = wofDt.value,
                     modifier = Modifier
                         .padding(0.dp, 8.dp, 16.dp, 0.dp),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Right,
                 )
                 Text(
-                    text = "10/Sep/9999",
+                    text = regDt.value,
                     modifier = Modifier
                         .padding(0.dp, 4.dp, 16.dp, 0.dp),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Right,
                 )
-                Text(
-                    text = "999999 km",
-                    modifier = Modifier
-                        .padding(0.dp, 4.dp, 16.dp, 8.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Right,
-                )
+                if (isOdoReadingVisible.value) {
+                    Text(
+                        text = odoReading.value,
+                        modifier = Modifier
+                            .padding(0.dp, 4.dp, 16.dp, 8.dp),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Right,
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun InsuranceCard(cardModifier: Modifier) {
+fun InsuranceCard(
+    cardModifier: Modifier,
+    insurer : State<String>,
+    coverage : State<String>,
+    amount : State<String>,
+    cycle : State<String>,
+    nextCharge : State<String>,
+    hasActivePolicy : State<Boolean>
+) {
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -316,56 +267,64 @@ fun InsuranceCard(cardModifier: Modifier) {
         Row {
             Column {
                 Text(
-                    text = "State",
+                    text = insurer.value,
                     modifier = Modifier
                         .padding(16.dp, 8.dp, 0.dp, 0.dp),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                 )
-                Text(
-                    text = "$15.30",
-                    modifier = Modifier
-                        .padding(16.dp, 4.dp, 0.dp, 0.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = "Next Bill",
-                    modifier = Modifier
-                        .padding(16.dp, 4.dp, 0.dp, 8.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                )
+                if (hasActivePolicy.value) {
+                    Text(
+                        text = amount.value,
+                        modifier = Modifier
+                            .padding(16.dp, 4.dp, 0.dp, 0.dp),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = "Nxt Chrg",
+                        modifier = Modifier
+                            .padding(16.dp, 4.dp, 0.dp, 8.dp),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
             Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Comp.",
-                    modifier = Modifier
-                        .padding(0.dp, 8.dp, 16.dp, 0.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Right,
-                )
-                Text(
-                    text = "Fortnightly",
-                    modifier = Modifier
-                        .padding(0.dp, 4.dp, 16.dp, 0.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Right,
-                )
-                Text(
-                    text = "365 days",
-                    modifier = Modifier
-                        .padding(0.dp, 4.dp, 16.dp, 8.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Right,
-                )
+                if (hasActivePolicy.value) {
+                    Text(
+                        text = coverage.value,
+                        modifier = Modifier
+                            .padding(0.dp, 8.dp, 16.dp, 0.dp),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Right,
+                    )
+                    Text(
+                        text = cycle.value,
+                        modifier = Modifier
+                            .padding(0.dp, 4.dp, 16.dp, 0.dp),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Right,
+                    )
+                    Text(
+                        text = nextCharge.value,
+                        modifier = Modifier
+                            .padding(0.dp, 4.dp, 16.dp, 8.dp),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Right,
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun ExpensesCard(cardModifier: Modifier) {
+fun ExpensesCard(
+    cardModifier: Modifier,
+    currentAmount : State<String>,
+    projectedAmount : State<String>
+) {
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -380,14 +339,14 @@ fun ExpensesCard(cardModifier: Modifier) {
             fontSize = 20.sp
         )
         Text(
-            text = "$150 current",
+            text = currentAmount.value,
             modifier = Modifier
                 .padding(16.dp, 8.dp, 16.dp, 0.dp),
             fontSize = 14.sp,
             textAlign = TextAlign.Right,
         )
         Text(
-            text = "$250 projected",
+            text = projectedAmount.value,
             modifier = Modifier
                 .padding(16.dp, 8.dp, 16.dp, 8.dp),
             fontSize = 14.sp,

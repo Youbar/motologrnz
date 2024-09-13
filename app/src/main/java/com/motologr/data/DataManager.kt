@@ -1,8 +1,11 @@
 package com.motologr.data
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.widget.DatePicker
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
+import androidx.preference.PreferenceManager
 import com.motologr.MainActivity
 import com.motologr.R
 import com.motologr.data.objects.vehicle.Vehicle
@@ -27,11 +30,12 @@ object DataManager {
 
     private var isInitialised = false
 
-    fun initialiseDataManager() {
+    fun initialiseDataManager(context: Context) {
+        this.context = context
         isInitialised = true
     }
 
-    fun isInitialised() : Boolean {
+    fun isInitialised(): Boolean {
         return isInitialised
     }
 
@@ -48,8 +52,16 @@ object DataManager {
     }
 
     private var vehicleArray = ArrayList<Vehicle>()
-    fun createNewVehicle(brandName: String, modelName: String, year: Int, expiryWOF: Date, regExpiry: Date, odometer: Int) {
-        val newVehicle = Vehicle(fetchIdForVehicle(), brandName, modelName, year, expiryWOF, regExpiry, odometer)
+    fun createNewVehicle(
+        brandName: String,
+        modelName: String,
+        year: Int,
+        expiryWOF: Date,
+        regExpiry: Date,
+        odometer: Int
+    ) {
+        val newVehicle =
+            Vehicle(fetchIdForVehicle(), brandName, modelName, year, expiryWOF, regExpiry, odometer)
         vehicleArray.add(newVehicle)
 
         postVehicleToDb(newVehicle)
@@ -73,7 +85,7 @@ object DataManager {
         }.start()
     }
 
-    fun returnVehicle(index : Int): Vehicle? {
+    fun returnVehicle(index: Int): Vehicle? {
         if (vehicleArray.lastIndex >= index) {
             return vehicleArray[index]
         }
@@ -85,13 +97,13 @@ object DataManager {
         return vehicleArray.isNotEmpty()
     }
 
-    fun returnVehicleById(id : Int): Vehicle? {
+    fun returnVehicleById(id: Int): Vehicle? {
         val vehicle: Vehicle? = vehicleArray.find { v -> v.id == id }
 
         return vehicle
     }
 
-    private var activeVehicle : Int = -1
+    private var activeVehicle: Int = -1
 
     fun setActiveVehicle(int: Int) {
         activeVehicle = int
@@ -114,11 +126,11 @@ object DataManager {
         return null
     }
 
-    fun returnVehicleArrayLength() : Int {
+    fun returnVehicleArrayLength(): Int {
         return vehicleArray.size
     }
 
-    private fun changeActiveVehicleImage(newVehicleImageId : Int) {
+    private fun changeActiveVehicleImage(newVehicleImageId: Int) {
         val activeVehicle = this.returnActiveVehicle()!!
         activeVehicle.vehicleImage = newVehicleImageId
 
@@ -129,7 +141,7 @@ object DataManager {
         }.start()
     }
 
-    fun changeActiveVehicleImageId(isArtPackEnabled : Boolean) : Int{
+    fun changeActiveVehicleImageId(isArtPackEnabled: Boolean): Int {
         val currentVehicleImageId = this.returnActiveVehicle()?.vehicleImage ?: return 0
 
         var newVehicleImageId = 0
@@ -155,7 +167,7 @@ object DataManager {
             idCounterLoggable = maxId + 1
     }
 
-    fun fetchIdForLoggable() : Int {
+    fun fetchIdForLoggable(): Int {
         idCounterLoggable += 1
 
         return (idCounterLoggable - 1)
@@ -172,7 +184,7 @@ object DataManager {
             idCounterVehicle = maxId + 1
     }
 
-    fun fetchIdForVehicle() : Int {
+    fun fetchIdForVehicle(): Int {
         idCounterVehicle += 1
 
         return (idCounterVehicle - 1)
@@ -189,9 +201,23 @@ object DataManager {
             idCounterInsurance = maxId + 1
     }
 
-    fun fetchIdForInsurance() : Int {
+    fun fetchIdForInsurance(): Int {
         idCounterInsurance += 1
 
         return (idCounterInsurance - 1)
     }
+
+    lateinit var context: Context
+
+    val trackingFuelConsumption: Boolean
+        get() {
+            if (this::context.isInitialized) {
+                val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+                if (sharedPref != null) {
+                    return sharedPref.getBoolean(context.getString(R.string.fuel_consumption_key), false)
+                }
+            }
+
+            return false
+        }
 }

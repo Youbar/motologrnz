@@ -84,6 +84,18 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         return total
     }
 
+    fun returnCurrentExpensesWithinFinancialYear() : BigDecimal {
+        var total : BigDecimal = 0.0.toBigDecimal()
+
+        val calendar = Calendar.getInstance()
+        for (expenseLog in returnExpensesLogsWithinFinancialYear()) {
+            if (expenseLog.sortableDate <= calendar.time)
+                total += expenseLog.unitPrice;
+        }
+
+        return total
+    }
+
     private fun isWithinFinancialYear(loggableDate : Date) : Boolean {
         val calendar = Calendar.getInstance()
         val month = calendar.get(Calendar.MONTH)

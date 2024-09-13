@@ -14,7 +14,7 @@ class SampleData {
         val vehicle = Vehicle(DataManager.fetchIdForVehicle(), "Mazda", "323",
             1989,
             format.parse("10/09/2024"),
-            format.parse("08/08/2024"),
+            format.parse("24/08/2024"),
             125000)
 
         DataManager.createNewVehicle(vehicle)

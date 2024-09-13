@@ -4,9 +4,14 @@ import com.motologr.MainActivity
 import com.motologr.data.logging.Log
 import com.motologr.data.logging.Loggable
 import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Date
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 class Insurance (var id : Int,
                  var insurer: String,
@@ -132,10 +137,6 @@ class Insurance (var id : Int,
         return format.format(getNextBillingDate())
     }
 
-    fun returnIsActive() : Boolean {
-        return true
-    }
-
     // coverage 0 = comp, 1 = 3rd+, 2 = 3rd
     fun returnCoverageType() : String {
         return when (coverage) {
@@ -147,6 +148,24 @@ class Insurance (var id : Int,
             }
             2 -> {
                 "Third Party"
+            }
+            else -> {
+                "Invalid"
+            }
+        }
+    }
+
+    // coverage 0 = comp, 1 = 3rd+, 2 = 3rd
+    fun returnCoverageTypeShorthand() : String {
+        return when (coverage) {
+            0 -> {
+                "Comp."
+            }
+            1 -> {
+                "3rd+"
+            }
+            2 -> {
+                "3rd"
             }
             else -> {
                 "Invalid"
@@ -172,9 +191,48 @@ class Insurance (var id : Int,
         }
     }
 
+    // billingCycle 0 = fortnightly, 1 = monthly, 2 = annually
+    fun returnCycleTypeShorthand() : String {
+        return when (billingCycle) {
+            0 -> {
+                "Fortn."
+            }
+            1 -> {
+                "Mnthly"
+            }
+            2 -> {
+                "Yearly"
+            }
+            else -> {
+                "Invalid"
+            }
+        }
+    }
+
+    fun returnFormattedBilling() : String {
+        val df = DecimalFormat("0.00")
+        df.roundingMode = RoundingMode.HALF_EVEN
+
+        return "$" + df.format(billing)
+    }
+
     fun convertToInsuranceEntity(): InsuranceEntity {
         val fuelEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
         return fuelEntity
+    }
+
+    fun returnDaysToNextCharge(): String {
+        val calendar = Calendar.getInstance()
+        var currentDt = calendar.time
+        calendar.set(currentDt.year + 1900, currentDt.month, currentDt.date, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        currentDt = calendar.time
+        val nextBillingDt = getNextBillingDate()
+
+        val diff = (nextBillingDt.time - currentDt.time)
+        val days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+
+        return "$days days"
     }
 }
 
