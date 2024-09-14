@@ -78,18 +78,21 @@ class VehicleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val activeVehicle: Vehicle = DataManager.returnActiveVehicle() ?: return
+
         val fab: View = binding.fab
 
         fab.setOnClickListener { _ ->
-            findNavController().navigate(R.id.action_nav_vehicle_1_to_nav_add)
+            if (activeVehicle.isMeetingCompliance())
+                findNavController().navigate(R.id.action_nav_vehicle_1_to_nav_add)
+            else
+                findNavController().navigate(R.id.nav_compliance)
         }
 
         val car: ImageView = binding.imageCar
 
-        val activeVehicle: Vehicle? = DataManager.returnActiveVehicle()
-
-        if (activeVehicle != null)
-            setVehicleImage(activeVehicle.vehicleImage, car)
+        setVehicleImage(activeVehicle.vehicleImage, car)
+        DataManager.updateTitle(requireActivity(), activeVehicle.brandName + " " + activeVehicle.modelName)
 
         car.setOnClickListener { _ ->
             val newVehicleImageId = DataManager.changeActiveVehicleImageId(BillingClientHelper.isArtPackEnabled)
@@ -221,10 +224,14 @@ fun ComplianceCard(
                     fontSize = 14.sp,
                     textAlign = TextAlign.Right,
                 )
+                var regDtModifier = Modifier
+                    .padding(0.dp, 4.dp, 16.dp, 0.dp)
+                if (!isOdoReadingVisible.value)
+                    regDtModifier = Modifier
+                        .padding(0.dp, 4.dp, 16.dp, 8.dp)
                 Text(
                     text = regDt.value,
-                    modifier = Modifier
-                        .padding(0.dp, 4.dp, 16.dp, 0.dp),
+                    modifier = regDtModifier,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Right,
                 )

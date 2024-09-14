@@ -251,7 +251,8 @@ class MainActivity : AppCompatActivity() {
         val navigationController = findNavController(R.id.nav_host_fragment_content_main)
 
         if (optionName == "Overview") {
-            navigationController.navigate(R.id.nav_vehicle_1)
+            navigationController.navigate(R.id.nav_vehicle_1, null, NavOptions.Builder()
+                .setPopUpTo(R.id.nav_vehicle_1, true).build())
         }
         else if (optionName == "Insurance") {
             navigationController.navigate(R.id.nav_insurance_logging)

@@ -38,6 +38,9 @@ interface VehicleDao {
     @Query("UPDATE Vehicle SET vehicleImage = :newVehicleImageId WHERE id = :vehicleId")
     fun updateVehicleImage(newVehicleImageId: Int, vehicleId: Int)
 
+    @Query("UPDATE Vehicle SET expiryWOF = :expiryWOF, regExpiry = :regExpiry WHERE id = :vehicleId")
+    fun updateVehicleCompliance(expiryWOF: Date, regExpiry : Date, vehicleId: Int)
+
     @Insert
     fun insert(vararg vehicle: VehicleEntity)
 

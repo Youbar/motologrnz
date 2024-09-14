@@ -105,7 +105,10 @@ class VehicleViewModel : ViewModel() {
         _textRegDue.value = vehicle.returnRegExpiry()
 
         _isOdometerDisplayed.value = DataManager.trackingFuelConsumption
-        _textOdometer.value = vehicle.getLatestOdometerReading().toString() + " km"
+        if (vehicle.isMeetingCompliance())
+            _textOdometer.value = vehicle.getLatestOdometerReading().toString() + " km"
+        else
+            _textOdometer.value = "N/A"
 
         if (vehicle.hasCurrentInsurance()) {
             _hasCurrentInsurance.value = true

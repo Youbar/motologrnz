@@ -1,6 +1,8 @@
 package com.motologr.data.objects.vehicle
 
+import android.provider.ContactsContract.Data
 import com.motologr.MainActivity
+import com.motologr.data.DataManager
 import com.motologr.data.logging.Loggable
 import com.motologr.data.objects.reg.Reg
 import com.motologr.data.logging.reg.RegLog
@@ -19,7 +21,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int, private val expiryWOF: Date, private val regExpiry: Date, var odometer: Int) {
+class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int,
+               private var expiryWOF: Date, private var regExpiry: Date, private var odometer: Int) {
 
     var vehicleImage: Int = 0
 
@@ -29,6 +32,24 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     var repairLog: RepairLog = RepairLog()
     var wofLog: WofLog = WofLog()
     var regLog: RegLog = RegLog()
+
+    fun isMeetingCompliance() : Boolean {
+        if (DataManager.isMinDt(expiryWOF) || DataManager.isMinDt(regExpiry))
+            return false
+
+        return true
+    }
+
+    fun submitCompliance(expiryWOF: Date, expiryReg: Date) {
+        this.expiryWOF = expiryWOF
+        this.regExpiry = expiryReg
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.vehicleDao()
+                ?.updateVehicleCompliance(expiryWOF, expiryReg, this.id)
+        }.start()
+    }
 
     fun getLatestOdometerReading() : Int {
         var odometerReadings = fuelLog.returnFuelLog()
@@ -230,6 +251,9 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     private val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
     fun returnWofExpiry(): String {
+        if (!isMeetingCompliance())
+            return "N/A"
+
         val wofLogItems = wofLog.returnWofLog()
 
         if (wofLogItems.isEmpty())
@@ -240,6 +264,9 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     }
 
     fun returnRegExpiry(): String {
+        if (!isMeetingCompliance())
+            return "N/A"
+
         val regLogItems = regLog.returnRegLog()
 
         if (regLogItems.isEmpty())

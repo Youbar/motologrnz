@@ -8,11 +8,17 @@
     <fragment
         android:id="@+id/nav_vehicle_1"
         android:name="com.motologr.ui.vehicle.VehicleFragment"
-        android:label="@string/menu_car"
         tools:layout="@layout/fragment_vehicle" >
         <action
             android:id="@+id/action_nav_vehicle_1_to_nav_add"
             app:destination="@id/nav_add" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_compliance"
+        android:name="com.motologr.ui.plus.ComplianceFragment"
+        android:label="@string/action_compliance"
+        tools:layout="@layout/fragment_compliance" >
     </fragment>
 
     <fragment
