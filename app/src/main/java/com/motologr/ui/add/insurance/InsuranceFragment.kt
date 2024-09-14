@@ -81,8 +81,6 @@ class InsuranceFragment : Fragment() {
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
         val insurance = Insurance(DataManager.fetchIdForInsurance(), insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)
-        insurance.generateInsuranceBills()
-
         DataManager.returnActiveVehicle()?.logInsurance(insurance)
 
         findNavController().navigate(R.id.action_nav_insurance_to_nav_vehicle_1, null, NavOptions.Builder()

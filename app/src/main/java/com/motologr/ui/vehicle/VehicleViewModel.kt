@@ -68,6 +68,12 @@ class VehicleViewModel : ViewModel() {
 
     val textInsurerCycle: LiveData<String> = _textInsurerCycle
 
+    private val _textNextCharge = MutableLiveData<String>().apply {
+        value = ""
+    }
+
+    val textNextCharge: LiveData<String> = _textNextCharge
+
 
     private val _textInsurerDaysToNextCharge = MutableLiveData<String>().apply {
         value = ""
@@ -109,6 +115,11 @@ class VehicleViewModel : ViewModel() {
             _textInsurerCoverage.value = insurancePolicy.returnCoverageTypeShorthand()
             _textInsurerCost.value = insurancePolicy.returnFormattedBilling()
             _textInsurerCycle.value = insurancePolicy.returnCycleTypeShorthand()
+
+            if (insurancePolicy.billingCycle == 2)
+                _textNextCharge.value = "Expires"
+            else
+                _textNextCharge.value = "Nxt Chrg"
             _textInsurerDaysToNextCharge.value = insurancePolicy.returnDaysToNextCharge()
         } else {
             _hasCurrentInsurance.value = false

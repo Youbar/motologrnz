@@ -144,10 +144,11 @@ fun OutlinedCards(viewModel : VehicleViewModel) {
             val policyCoverage = viewModel.textInsurerCoverage.observeAsState("")
             val policyCost = viewModel.textInsurerCost.observeAsState("")
             val policyCycle = viewModel.textInsurerCycle.observeAsState("")
+            val nextChargeText = viewModel.textNextCharge.observeAsState("")
             val daysToNextCharge = viewModel.textInsurerDaysToNextCharge.observeAsState("")
             val hasActivePolicy = viewModel.hasCurrentInsurance.observeAsState(false)
             InsuranceCard(cardModifier, policyInsurer, policyCoverage,
-                policyCost, policyCycle, daysToNextCharge, hasActivePolicy)
+                policyCost, policyCycle, nextChargeText, daysToNextCharge, hasActivePolicy)
         }
 
         Row(modifier = Modifier
@@ -248,6 +249,7 @@ fun InsuranceCard(
     coverage : State<String>,
     amount : State<String>,
     cycle : State<String>,
+    nextChargeText : State<String>,
     nextCharge : State<String>,
     hasActivePolicy : State<Boolean>
 ) {
@@ -282,7 +284,7 @@ fun InsuranceCard(
                         textAlign = TextAlign.Center,
                     )
                     Text(
-                        text = "Nxt Chrg",
+                        text = nextChargeText.value,
                         modifier = Modifier
                             .padding(16.dp, 4.dp, 0.dp, 8.dp),
                         fontSize = 14.sp,

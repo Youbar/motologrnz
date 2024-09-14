@@ -17,6 +17,7 @@ import java.util.Date
 fun DatePicker.getDate(): Date {
     val calendar = Calendar.getInstance()
     calendar.set(year, month, dayOfMonth, 0, 0, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
     return calendar.time
 }
 

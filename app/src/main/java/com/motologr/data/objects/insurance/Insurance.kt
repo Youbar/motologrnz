@@ -126,15 +126,13 @@ class Insurance (var id : Int,
             }
         }
 
+        if (billingCycle == 2) {
+            return endDt
+        }
+
         val calendar : Calendar = Calendar.getInstance()
 
         return calendar.time
-    }
-
-    fun getNextBillingDateString() : String {
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yy")
-
-        return format.format(getNextBillingDate())
     }
 
     // coverage 0 = comp, 1 = 3rd+, 2 = 3rd
