@@ -70,6 +70,8 @@ class MainActivity : AppCompatActivity() {
                 .addMigrations(DatabaseMigration.MIGRATION_10_11)
                 .addMigrations(DatabaseMigration.MIGRATION_11_12)
                 .addMigrations(DatabaseMigration.MIGRATION_12_13)
+                .addMigrations(DatabaseMigration.MIGRATION_13_14)
+                .addMigrations(DatabaseMigration.MIGRATION_14_15)
                 .build()
 
             DataManager.setIdCounterLoggable()

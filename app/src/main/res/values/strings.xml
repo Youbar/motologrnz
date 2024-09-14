@@ -29,6 +29,4 @@
     <string name="fuel_consumption_key">track_fuel_consumption</string>
     <string name="fuel_consumption_summary_on">You will need to record your odometer and litres purchased when logging fuel</string>
     <string name="fuel_consumption_summary_off">You will only need to record the price of your petrol when logging fuel</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

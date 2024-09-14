@@ -51,6 +51,20 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         }.start()
     }
 
+    var isUseRoadUserCharges : Boolean = false
+    var roadUserChargesHeld : Int = -1
+
+    fun submitRUCs(isUseRoadUserCharges: Boolean, roadUserChargesHeld : Int) {
+        this.isUseRoadUserCharges = isUseRoadUserCharges
+        this.roadUserChargesHeld = roadUserChargesHeld
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.vehicleDao()
+                ?.updateVehicleRUCs(isUseRoadUserCharges, roadUserChargesHeld, this.id)
+        }.start()
+    }
+
     fun getLatestOdometerReading() : Int {
         var odometerReadings = fuelLog.returnFuelLog()
         odometerReadings = ArrayList(odometerReadings.filter { log -> log.odometerReading > 0 })
@@ -277,7 +291,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     }
 
     fun convertToVehicleEntity() : VehicleEntity {
-        val vehicleEntity = VehicleEntity(id, brandName, modelName, year, expiryWOF, regExpiry, odometer, vehicleImage)
+        val vehicleEntity = VehicleEntity(id, brandName, modelName, year, expiryWOF, regExpiry, odometer, vehicleImage, isUseRoadUserCharges, roadUserChargesHeld)
         return vehicleEntity
     }
 

@@ -238,4 +238,16 @@ object DatabaseMigration {
             db.execSQL("ALTER TABLE Temp_Wof RENAME TO Wof")
         }
     }
+
+    val MIGRATION_13_14 = object : Migration(13, 14) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE Vehicle ADD COLUMN isUseRoadUserCharges INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
+    val MIGRATION_14_15 = object : Migration(14, 15) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE Vehicle ADD COLUMN roadUserChargesHeld INTEGER NOT NULL DEFAULT -1")
+        }
+    }
 }

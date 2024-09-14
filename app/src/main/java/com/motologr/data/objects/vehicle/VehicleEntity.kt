@@ -18,10 +18,14 @@ data class VehicleEntity(
     @ColumnInfo(name = "expiryWOF") val expiryWOF: Date,
     @ColumnInfo(name = "regExpiry") val regExpiry: Date,
     @ColumnInfo(name = "odometer") val odometer: Int,
-    @ColumnInfo(name = "vehicleImage") val vehicleImage: Int)
+    @ColumnInfo(name = "vehicleImage") val vehicleImage: Int,
+    @ColumnInfo(name = "isUseRoadUserCharges") val isUseRoadUserCharges: Boolean,
+    @ColumnInfo(name = "roadUserChargesHeld") val roadUserChargesHeld: Int)
 {
     fun convertToVehicleObject() : Vehicle {
         val vehicle = Vehicle(id, brandName, modelName, year, expiryWOF, regExpiry, odometer)
+        vehicle.isUseRoadUserCharges = isUseRoadUserCharges
+        vehicle.roadUserChargesHeld = roadUserChargesHeld
         vehicle.vehicleImage = vehicleImage
         return vehicle
     }
@@ -40,6 +44,10 @@ interface VehicleDao {
 
     @Query("UPDATE Vehicle SET expiryWOF = :expiryWOF, regExpiry = :regExpiry WHERE id = :vehicleId")
     fun updateVehicleCompliance(expiryWOF: Date, regExpiry : Date, vehicleId: Int)
+
+    @Query("UPDATE Vehicle SET isUseRoadUserCharges = :isUseRoadUserCharges, roadUserChargesHeld = :roadUserChargesHeld WHERE id = :vehicleId")
+    fun updateVehicleRUCs(isUseRoadUserCharges: Boolean, roadUserChargesHeld : Int, vehicleId: Int)
+
 
     @Insert
     fun insert(vararg vehicle: VehicleEntity)

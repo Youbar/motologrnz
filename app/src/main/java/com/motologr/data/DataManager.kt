@@ -60,7 +60,7 @@ object DataManager {
         year: Int,
         expiryWOF: Date,
         regExpiry: Date,
-        odometer: Int
+        odometer: Int,
     ) {
         val newVehicle =
             Vehicle(fetchIdForVehicle(), brandName, modelName, year, expiryWOF, regExpiry, odometer)
