@@ -17,8 +17,15 @@
     <fragment
         android:id="@+id/nav_compliance"
         android:name="com.motologr.ui.plus.ComplianceFragment"
-        android:label="@string/action_compliance"
+        android:label="@string/nav_compliance_fragment"
         tools:layout="@layout/fragment_compliance" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_rucs"
+        android:name="com.motologr.ui.add.ruc.RucFragment"
+        android:label="@string/nav_rucs_fragment"
+        tools:layout="@layout/fragment_ruc" >
     </fragment>
 
     <fragment

@@ -60,6 +60,17 @@ class ExpensesViewModel : ViewModel() {
 
     val textExpensesRegValue: LiveData<String> = _textExpensesRegValue
 
+    private val _textExpensesRuc = "RUC:"
+
+    val textExpensesRuc: String = _textExpensesRuc
+
+    private val _textExpensesRucValue = MutableLiveData<String>().apply {
+        value = formatExpense(rucCost)
+    }
+
+    val textExpensesRucValue: LiveData<String> = _textExpensesRucValue
+
+
     private val _textExpensesWOF = "WOF:"
 
     val textExpensesWOF: String = _textExpensesWOF
@@ -114,6 +125,7 @@ class ExpensesViewModel : ViewModel() {
     private lateinit var serviceLogs : List<Loggable>
     private lateinit var wofLogs : List<Loggable>
     private lateinit var regLogs : List<Loggable>
+    private lateinit var rucLogs : List<Loggable>
     private lateinit var fuelLogs : List<Loggable>
     private lateinit var insuranceLogs : List<Loggable>
 
@@ -149,6 +161,14 @@ class ExpensesViewModel : ViewModel() {
                 BigDecimal(0)
         }
 
+    private val rucCost : BigDecimal
+        get() {
+            return if (this::rucLogs.isInitialized)
+                calculateTotalExpenseForLoggables(rucLogs)
+            else
+                BigDecimal(0)
+        }
+
     private val fuelCost : BigDecimal
         get() {
             return if (this::fuelLogs.isInitialized)
@@ -180,11 +200,12 @@ class ExpensesViewModel : ViewModel() {
     private fun calculateExpensesForFinancialYear(){
         expensesLogs = DataManager.returnActiveVehicle()!!.returnExpensesLogsWithinFinancialYear()
 
-        // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100, BillLog = 201
+        // Repair = 0, Service = 1, WOF = 2, Reg = 3, Ruc = 4, Fuel = 100, BillLog = 201
         repairLogs = expensesLogs.filter { loggable -> loggable.classId == 0 }
         serviceLogs = expensesLogs.filter { loggable -> loggable.classId == 1 }
         wofLogs = expensesLogs.filter { loggable -> loggable.classId == 2 }
         regLogs = expensesLogs.filter { loggable -> loggable.classId == 3 }
+        rucLogs = expensesLogs.filter { loggable -> loggable.classId == 4 }
         fuelLogs = expensesLogs.filter { loggable -> loggable.classId == 100 }
         insuranceLogs = expensesLogs.filter { loggable -> loggable.classId == 201}
 
@@ -192,6 +213,7 @@ class ExpensesViewModel : ViewModel() {
         _textExpensesServicesValue.value = formatExpense(serviceCost)
         _textExpensesWOFValue.value = formatExpense(wofCost)
         _textExpensesRegValue.value = formatExpense(regCost)
+        _textExpensesRucValue.value = formatExpense(rucCost)
         _textExpensesFuelValue.value = formatExpense(fuelCost)
         _textExpensesInsuranceValue.value = formatExpense(insuranceCost)
         _textExpensesTotalValue.value = formatExpense(totalCost)

@@ -16,16 +16,11 @@ import com.motologr.data.getDate
 import com.motologr.databinding.FragmentComplianceBinding
 
 class ComplianceFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     private var _binding: FragmentComplianceBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

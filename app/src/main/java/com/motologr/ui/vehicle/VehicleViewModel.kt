@@ -121,7 +121,7 @@ class VehicleViewModel : ViewModel() {
         _isRoadUserChargesDisplayed.value = vehicle.isUseRoadUserCharges
 
         if (_isRoadUserChargesDisplayed.value == true)
-            _textRoadUserCharges.value = vehicle.roadUserChargesHeld.toString()
+            _textRoadUserCharges.value = vehicle.returnLatestRucUnits() + " km"
 
         if (vehicle.hasCurrentInsurance()) {
             _hasCurrentInsurance.value = true

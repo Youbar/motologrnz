@@ -22,6 +22,8 @@ import com.motologr.data.objects.maint.WofDao
 import com.motologr.data.objects.maint.WofEntity
 import com.motologr.data.objects.reg.RegDao
 import com.motologr.data.objects.reg.RegEntity
+import com.motologr.data.objects.ruc.RucDao
+import com.motologr.data.objects.ruc.RucEntity
 import com.motologr.data.objects.vehicle.VehicleDao
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
@@ -64,8 +66,9 @@ class Converters {
     WofEntity::class,
     RepairEntity::class,
     ServiceEntity::class,
-    AddonEntity::class],
-    version = 15)
+    AddonEntity::class,
+    RucEntity::class],
+    version = 16)
 
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -79,4 +82,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun regDao(): RegDao
     abstract fun wofDao(): WofDao
     abstract fun addonDao(): AddonDao
+    abstract fun rucDao(): RucDao
 }

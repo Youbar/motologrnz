@@ -16,6 +16,9 @@ import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.objects.fuel.Fuel
 import com.motologr.data.objects.insurance.Insurance
+import com.motologr.data.objects.reg.RegEntity
+import com.motologr.data.objects.ruc.Ruc
+import com.motologr.data.objects.ruc.RucEntity
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -32,6 +35,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     var repairLog: RepairLog = RepairLog()
     var wofLog: WofLog = WofLog()
     var regLog: RegLog = RegLog()
+    var rucLog : ArrayList<Ruc> = arrayListOf()
 
     fun isMeetingCompliance() : Boolean {
         if (DataManager.isMinDt(expiryWOF) || DataManager.isMinDt(regExpiry))
@@ -99,6 +103,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         logs.addAll(fuelLog.returnFuelLog())
         logs.addAll(wofLog.returnWofLog())
         logs.addAll(regLog.returnRegLog())
+        logs.addAll(rucLog)
         logs.addAll(insuranceLog.returnInsuranceBillLogs())
         logs.sortByDescending { loggable -> loggable.sortableDate.time }
 
@@ -244,6 +249,19 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         }.start()
     }
 
+    fun logRuc(ruc : Ruc) {
+        rucLog.add(ruc)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.rucDao()
+                ?.insert(ruc.convertToRucEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(ruc.convertToLoggableEntity())
+        }.start()
+    }
+
     fun hasCurrentInsurance() : Boolean {
         val calendar = Calendar.getInstance()
 
@@ -290,6 +308,17 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         return format.format(regLogItems.first().newRegExpiryDate)
     }
 
+    fun returnLatestRucUnits(): String {
+        if (!isMeetingCompliance())
+            return "N/A"
+
+        if (rucLog.isEmpty())
+            return roadUserChargesHeld.toString()
+
+        rucLog.sortByDescending { ruc -> ruc.unitsHeldAfterTransaction }
+        return rucLog.first().unitsHeldAfterTransaction.toString()
+    }
+
     fun convertToVehicleEntity() : VehicleEntity {
         val vehicleEntity = VehicleEntity(id, brandName, modelName, year, expiryWOF, regExpiry, odometer, vehicleImage, isUseRoadUserCharges, roadUserChargesHeld)
         return vehicleEntity
@@ -307,6 +336,19 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
             }
 
             return vehicleList
+        }
+
+        fun castRucLoggableEntities(rucEntities : List<RucEntity>?) : ArrayList<Ruc> {
+            val rucLog = ArrayList<Ruc>()
+
+            if (rucEntities == null)
+                return rucLog
+
+            for (rucEntity in rucEntities){
+                rucLog.add(rucEntity.convertToRucObject())
+            }
+
+            return rucLog
         }
     }
 }

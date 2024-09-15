@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                 .addMigrations(DatabaseMigration.MIGRATION_12_13)
                 .addMigrations(DatabaseMigration.MIGRATION_13_14)
                 .addMigrations(DatabaseMigration.MIGRATION_14_15)
+                .addMigrations(DatabaseMigration.MIGRATION_15_16)
                 .build()
 
             DataManager.setIdCounterLoggable()
@@ -154,6 +155,7 @@ class MainActivity : AppCompatActivity() {
                         vehicle.repairLog = RepairLog.castRepairLoggableEntities(db?.repairDao()?.getAllByVehicleId(vehicle.id))
                         vehicle.serviceLog = ServiceLog.castServiceLoggableEntities(db?.serviceDao()?.getAllByVehicleId(vehicle.id))
                         vehicle.regLog = RegLog.castRegLoggableEntities(db?.regDao()?.getAllByVehicleId(vehicle.id))
+                        vehicle.rucLog = Vehicle.castRucLoggableEntities(db?.rucDao()?.getAllByVehicleId(vehicle.id))
                         vehicle.wofLog = WofLog.castWofLoggableEntities(db?.wofDao()?.getAllByVehicleId(vehicle.id))
                         vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelDao()?.getAllByVehicleId(vehicle.id))
                         vehicle.insuranceLog = InsuranceLog.castInsuranceLoggableEntities(db?.insuranceDao()?.getAllByVehicleId(vehicle.id), db?.insuranceBillDao()?.getAll())
@@ -176,6 +178,7 @@ class MainActivity : AppCompatActivity() {
                     vehicle.repairLog = RepairLog.castRepairLoggableEntities(db?.repairDao()?.getAllByVehicleId(vehicle.id))
                     vehicle.serviceLog = ServiceLog.castServiceLoggableEntities(db?.serviceDao()?.getAllByVehicleId(vehicle.id))
                     vehicle.regLog = RegLog.castRegLoggableEntities(db?.regDao()?.getAllByVehicleId(vehicle.id))
+                    vehicle.rucLog = Vehicle.castRucLoggableEntities(db?.rucDao()?.getAllByVehicleId(vehicle.id))
                     vehicle.wofLog = WofLog.castWofLoggableEntities(db?.wofDao()?.getAllByVehicleId(vehicle.id))
                     vehicle.fuelLog = FuelLog.castFuelLoggableEntities(db?.fuelDao()?.getAllByVehicleId(vehicle.id))
                     vehicle.insuranceLog = InsuranceLog.castInsuranceLoggableEntities(db?.insuranceDao()?.getAllByVehicleId(vehicle.id), db?.insuranceBillDao()?.getAll())

@@ -1,7 +1,6 @@
 package com.motologr.data.logging.reg
 
 import com.motologr.data.logging.Log
-import com.motologr.data.logging.maint.WofLog
 import com.motologr.data.objects.reg.Reg
 import com.motologr.data.objects.reg.RegEntity
 
@@ -28,7 +27,7 @@ class RegLog : Log() {
                 return regLog
 
             for (regEntity in regEntities){
-                regLog.addRegToRegLog(regEntity.convertToWofObject())
+                regLog.addRegToRegLog(regEntity.convertToRegObject())
             }
 
             return regLog

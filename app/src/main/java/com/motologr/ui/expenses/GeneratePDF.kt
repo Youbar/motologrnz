@@ -21,7 +21,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Calendar
 
 class GeneratePDF (val context: Context, private val expensesLogs : List<Loggable>) {
@@ -40,6 +39,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
     private var serviceLogs : List<Loggable> = expensesLogs.filter { loggable -> loggable.classId == 1 }
     private var wofLogs : List<Loggable> = expensesLogs.filter { loggable -> loggable.classId == 2 }
     private var regLogs : List<Loggable> = expensesLogs.filter { loggable -> loggable.classId == 3 }
+    private var rucLogs : List<Loggable> = expensesLogs.filter { loggable -> loggable.classId == 4 }
     private var fuelLogs : List<Loggable> = expensesLogs.filter { loggable -> loggable.classId == 100 }
     private var insuranceLogs : List<Loggable> = expensesLogs.filter { loggable -> loggable.classId == 201}
 
@@ -48,6 +48,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         serviceLogs.sortedByDescending { loggable -> loggable.sortableDate }
         wofLogs.sortedByDescending { loggable -> loggable.sortableDate }
         regLogs.sortedByDescending { loggable -> loggable.sortableDate }
+        rucLogs.sortedByDescending { loggable -> loggable.sortableDate }
         fuelLogs.sortedByDescending { loggable -> loggable.sortableDate }
         insuranceLogs.sortedByDescending { loggable -> loggable.sortableDate }
 
@@ -59,6 +60,13 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
             .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_EVEN))
     }
 
+    private fun returnExcGst(amount : BigDecimal) : String {
+        val gst = amount.multiply(3.0.toBigDecimal())
+            .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_EVEN)
+
+        return decimalFormat.format(amount.subtract(gst))
+    }
+
     private fun checkIfNeedNewPage(titleOffset: Float) {
         if (titleOffset + 20 > 820) {
             canvas = startNewPage(paint, expensesReportTitle)
@@ -68,7 +76,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
     private fun writeLoggablesToCanvas(paint: Paint, logGroup: String, logs : List<Loggable>) : Float {
         checkIfNeedNewPage(titleOffset)
 
-        val logGroupTile = "$logGroup - Date | Price | GST"
+        val logGroupTile = "$logGroup - Date | Inc. GST | Exc. GST | GST"
 
         canvas.drawText(logGroupTile, 78F, titleOffset, paint)
         titleOffset += 20
@@ -77,9 +85,10 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
             val date = dateFormat.format(log.sortableDate)
             val unitPrice = "$" + decimalFormat.format(log.unitPrice)
             val gstComponent = "$" + returnGSTComponent(log.unitPrice)
+            val lessGst = "$" + returnExcGst(log.unitPrice)
             val isProjected = log.sortableDate > initTime
 
-            var text = "$date | $unitPrice | $gstComponent"
+            var text = "$date | $unitPrice | $lessGst | $gstComponent"
             if (isProjected)
                 text += " | PROJECTED"
 
@@ -108,7 +117,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
     private var pageNumber = 1
     private var titleOffset = 140F
     private var paint = Paint()
-    private lateinit var currentpage : Page
+    private lateinit var currentPage : Page
     private lateinit var canvas : Canvas
 
     private val pdfDocument = PdfDocument()
@@ -131,11 +140,11 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
 
     private fun startNewPage(paint : Paint, expensesReportTitle : String) : Canvas {
         if (pageNumber > 1)
-            pdfDocument.finishPage(currentpage)
+            pdfDocument.finishPage(currentPage)
 
         val myPageInfo = PdfDocument.PageInfo.Builder(A4_PAGE_WIDTH, A4_PAGE_HEIGHT, pageNumber).create()
-        currentpage = pdfDocument.startPage(myPageInfo)
-        val canvas = currentpage.canvas
+        currentPage = pdfDocument.startPage(myPageInfo)
+        val canvas = currentPage.canvas
 
         // Draw header of page
         getBoldTypeface(paint)
@@ -158,7 +167,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         this.expensesReportTitle = expensesReportTitle
 
         // two variables for paint "paint" is used for drawing shapes and we will use "title" for adding text in our PDF file.
-        var paint = Paint()
+        val paint = Paint()
 
         canvas = startNewPage(paint, expensesReportTitle)
 
@@ -166,6 +175,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         titleOffset = writeLoggablesToCanvas(paint, "Services", serviceLogs)
         titleOffset = writeLoggablesToCanvas(paint, "Fuel", fuelLogs)
         titleOffset = writeLoggablesToCanvas(paint, "Reg", regLogs)
+        titleOffset = writeLoggablesToCanvas(paint, "RUC", rucLogs)
         titleOffset = writeLoggablesToCanvas(paint, "WOF", wofLogs)
         titleOffset = writeLoggablesToCanvas(paint, "Insurance", insuranceLogs)
 
@@ -177,7 +187,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         // 596 w 842 h @ 140f height / 15f = 47 lines
 
         // finishing our page.
-        pdfDocument.finishPage(currentpage)
+        pdfDocument.finishPage(currentPage)
 
         // setting the name of our PDF file and its path.
         val currentTime = System.currentTimeMillis()

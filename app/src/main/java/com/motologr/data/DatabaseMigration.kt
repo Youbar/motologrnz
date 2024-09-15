@@ -250,4 +250,18 @@ object DatabaseMigration {
             db.execSQL("ALTER TABLE Vehicle ADD COLUMN roadUserChargesHeld INTEGER NOT NULL DEFAULT -1")
         }
     }
+
+    val MIGRATION_15_16 = object : Migration(15, 16) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("""CREATE TABLE Ruc (
+                            id INTEGER PRIMARY KEY NOT NULL,
+                            transactionDate INTEGER NOT NULL,
+                            unitsPurchased INTEGER NOT NULL,
+                            unitsHeldAfterTransaction INTEGER NOT NULL,
+                            price TEXT NOT NULL,
+                            vehicleId INTEGER NOT NULL,
+                            FOREIGN KEY (vehicleId) REFERENCES Vehicle(id) ON UPDATE CASCADE ON DELETE CASCADE)
+                            """.trimIndent())
+        }
+    }
 }

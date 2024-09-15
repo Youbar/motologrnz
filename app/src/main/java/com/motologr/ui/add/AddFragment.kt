@@ -71,7 +71,7 @@ class AddFragment : Fragment() {
             binding.textWofReg.text = "Update registration:"
         } else {
             buttonRUC.setOnClickListener {
-                //TODO nav
+                findNavController().navigate(R.id.nav_rucs)
             }
         }
 

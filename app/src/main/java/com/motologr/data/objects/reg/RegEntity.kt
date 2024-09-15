@@ -27,7 +27,7 @@ data class RegEntity(
     @ColumnInfo(name = "price") val price: BigDecimal,
     @ColumnInfo(name = "vehicleId") val vehicleId: Int)
 {
-    fun convertToWofObject() : Reg {
+    fun convertToRegObject() : Reg {
         val reg = Reg(newRegExpiryDate, regExpiryDate, monthsExtended, price, vehicleId)
         reg.id = id
         return reg

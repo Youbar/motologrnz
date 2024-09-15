@@ -111,6 +111,12 @@ class ExpensesFragment : Fragment() {
             binding.textExpensesRegValue.text = it
         }
 
+        binding.textExpensesRuc.text = expensesViewModel.textExpensesRuc
+
+        expensesViewModel.textExpensesRucValue.observe(viewLifecycleOwner) {
+            binding.textExpensesRucValue.text = it
+        }
+
         binding.textExpensesWof.text = expensesViewModel.textExpensesWOF
 
         expensesViewModel.textExpensesWOFValue.observe(viewLifecycleOwner) {
