@@ -32,8 +32,7 @@ object DataManager {
 
     private var isInitialised = false
 
-    fun initialiseDataManager(context: Context) {
-        this.context = context
+    fun initialiseDataManager() {
         isInitialised = true
     }
 
@@ -225,18 +224,4 @@ object DataManager {
 
         return false
     }
-
-    lateinit var context: Context
-
-    val trackingFuelConsumption: Boolean
-        get() {
-            if (this::context.isInitialized) {
-                val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-                if (sharedPref != null) {
-                    return sharedPref.getBoolean(context.getString(R.string.fuel_consumption_key), false)
-                }
-            }
-
-            return false
-        }
 }

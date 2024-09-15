@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
@@ -56,7 +57,14 @@ class VehicleFragment : Fragment() {
         if (!DataManager.isVehicles())
             findNavController().navigate(R.id.nav_plus)
 
+        var trackingFuelConsumption = false
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
+
+        if (sharedPref != null)
+            trackingFuelConsumption = sharedPref.getBoolean(getString(R.string.fuel_consumption_key), false)
+
         val viewModel = ViewModelProvider(this)[VehicleViewModel::class.java]
+        viewModel.updateOdometerView(trackingFuelConsumption)
 
         viewModel.textVehicle.observe(viewLifecycleOwner) {
             binding.textCar.text = it
@@ -141,7 +149,10 @@ fun OutlinedCards(viewModel : VehicleViewModel) {
             val vehicleRegDt = viewModel.textRegDue.observeAsState("")
             val trackingFuelConsumption = viewModel.isOdometerDisplayed.observeAsState(false)
             val vehicleOdo = viewModel.textOdometer.observeAsState("")
-            ComplianceCard(cardModifier, vehicleWofDt, vehicleRegDt, trackingFuelConsumption, vehicleOdo)
+            val isRoadUserChargesDisplayed = viewModel.isRoadUserChargesDisplayed.observeAsState(false)
+            val roadUserCharges = viewModel.textRoadUserCharges.observeAsState("")
+            ComplianceCard(cardModifier, vehicleWofDt, vehicleRegDt, trackingFuelConsumption,
+                vehicleOdo, isRoadUserChargesDisplayed, roadUserCharges)
 
             val policyInsurer = viewModel.textInsurer.observeAsState("")
             val policyCoverage = viewModel.textInsurerCoverage.observeAsState("")
@@ -175,7 +186,9 @@ fun ComplianceCard(
     wofDt : State<String>,
     regDt :  State<String>,
     isOdoReadingVisible : State<Boolean>,
-    odoReading : State<String>
+    odoReading : State<String>,
+    isRoadUserChargesDisplayed: State<Boolean>,
+    roadUserChargesHeld : State<String>
 ) {
     OutlinedCard(
         colors = CardDefaults.cardColors(
@@ -192,57 +205,23 @@ fun ComplianceCard(
         )
         Row {
             Column {
-                Text(
-                    text = "WOF",
-                    modifier = Modifier
-                        .padding(16.dp, 8.dp, 0.dp, 0.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = "REG",
-                    modifier = Modifier
-                        .padding(16.dp, 4.dp, 0.dp, 0.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                )
+                TopTwoColumnText("WOF", TextAlign.Center)
+                TopTwoColumnText("REG", TextAlign.Center)
                 if (isOdoReadingVisible.value) {
-                    Text(
-                        text = "ODO",
-                        modifier = Modifier
-                            .padding(16.dp, 4.dp, 0.dp, 8.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                    )
+                    TopTwoColumnText("ODO", TextAlign.Center)
+                }
+                if (isRoadUserChargesDisplayed.value) {
+                    TopTwoColumnText("RUC", TextAlign.Center)
                 }
             }
             Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
-                Text(
-                    text = wofDt.value,
-                    modifier = Modifier
-                        .padding(0.dp, 8.dp, 16.dp, 0.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Right,
-                )
-                var regDtModifier = Modifier
-                    .padding(0.dp, 4.dp, 16.dp, 0.dp)
-                if (!isOdoReadingVisible.value)
-                    regDtModifier = Modifier
-                        .padding(0.dp, 4.dp, 16.dp, 8.dp)
-                Text(
-                    text = regDt.value,
-                    modifier = regDtModifier,
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Right,
-                )
+                TopTwoColumnText(wofDt.value, TextAlign.Right)
+                TopTwoColumnText(regDt.value, TextAlign.Right)
                 if (isOdoReadingVisible.value) {
-                    Text(
-                        text = odoReading.value,
-                        modifier = Modifier
-                            .padding(0.dp, 4.dp, 16.dp, 8.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Right,
-                    )
+                    TopTwoColumnText(odoReading.value, TextAlign.Right)
+                }
+                if (isRoadUserChargesDisplayed.value) {
+                    TopTwoColumnText(roadUserChargesHeld.value, TextAlign.Right)
                 }
             }
         }
@@ -275,57 +254,38 @@ fun InsuranceCard(
         )
         Row {
             Column {
-                Text(
-                    text = insurer.value,
-                    modifier = Modifier
-                        .padding(16.dp, 8.dp, 0.dp, 0.dp),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                )
+                TopTwoColumnText(insurer.value, TextAlign.Center)
                 if (hasActivePolicy.value) {
-                    Text(
-                        text = amount.value,
-                        modifier = Modifier
-                            .padding(16.dp, 4.dp, 0.dp, 0.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        text = nextChargeText.value,
-                        modifier = Modifier
-                            .padding(16.dp, 4.dp, 0.dp, 8.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                    )
+                    TopTwoColumnText(amount.value, TextAlign.Center)
+                    TopTwoColumnText(nextChargeText.value, TextAlign.Center)
                 }
             }
             Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
                 if (hasActivePolicy.value) {
-                    Text(
-                        text = coverage.value,
-                        modifier = Modifier
-                            .padding(0.dp, 8.dp, 16.dp, 0.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Right,
-                    )
-                    Text(
-                        text = cycle.value,
-                        modifier = Modifier
-                            .padding(0.dp, 4.dp, 16.dp, 0.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Right,
-                    )
-                    Text(
-                        text = nextCharge.value,
-                        modifier = Modifier
-                            .padding(0.dp, 4.dp, 16.dp, 8.dp),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Right,
-                    )
+                    TopTwoColumnText(coverage.value, TextAlign.Right)
+                    TopTwoColumnText(cycle.value, TextAlign.Right)
+                    TopTwoColumnText(nextCharge.value, TextAlign.Right)
                 }
             }
         }
     }
+}
+
+@Composable
+fun TopTwoColumnText(text : String, textAlign : TextAlign) {
+    var modifer = Modifier
+        .padding(16.dp, 0.dp, 0.dp, 0.dp)
+
+    if (textAlign == TextAlign.Right)
+        modifer = Modifier
+            .padding(0.dp, 0.dp, 16.dp, 0.dp)
+
+    Text(
+        text = text,
+        modifier = modifer,
+        fontSize = 14.sp,
+        textAlign = textAlign,
+    )
 }
 
 @Composable
@@ -350,14 +310,14 @@ fun ExpensesCard(
         Text(
             text = currentAmount.value,
             modifier = Modifier
-                .padding(16.dp, 8.dp, 16.dp, 0.dp),
+                .padding(start = 16.dp),
             fontSize = 14.sp,
             textAlign = TextAlign.Right,
         )
         Text(
             text = projectedAmount.value,
             modifier = Modifier
-                .padding(16.dp, 8.dp, 16.dp, 8.dp),
+                .padding(start = 16.dp),
             fontSize = 14.sp,
             textAlign = TextAlign.Right,
         )

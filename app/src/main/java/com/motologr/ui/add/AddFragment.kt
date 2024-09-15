@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentAddBinding
@@ -61,6 +62,17 @@ class AddFragment : Fragment() {
         val buttonReg: View = binding.buttonReg
         buttonReg.setOnClickListener() {
             findNavController().navigate(R.id.action_nav_add_to_nav_reg)
+        }
+
+        val buttonRUC : View = binding.buttonRuc
+        val isDisplayRUC = DataManager.returnActiveVehicle()?.isUseRoadUserCharges
+        if (isDisplayRUC == null || !isDisplayRUC) {
+            buttonRUC.isVisible = false
+            binding.textWofReg.text = "Update registration:"
+        } else {
+            buttonRUC.setOnClickListener {
+                //TODO nav
+            }
         }
 
         return root

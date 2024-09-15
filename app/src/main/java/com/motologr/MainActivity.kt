@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                 if (DataManager.isInitialised())
                     return@Thread
 
-                DataManager.initialiseDataManager(this)
+                DataManager.initialiseDataManager()
                 val vehicles : List<Vehicle> = Vehicle.castVehicleEntities(db?.vehicleDao()?.getAll())
 
                 if (vehicles.isEmpty())
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                 if (DataManager.isInitialised())
                     return@Thread
 
-                DataManager.initialiseDataManager(this)
+                DataManager.initialiseDataManager()
                 val vehicles : List<Vehicle> = Vehicle.castVehicleEntities(db?.vehicleDao()?.getAll())
 
                 for(vehicle in vehicles) {

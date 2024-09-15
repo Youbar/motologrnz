@@ -62,7 +62,7 @@
             android:id="@+id/button_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Service"
             android:textSize="24sp"
@@ -91,6 +91,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_wof_reg" />
 
+        <Button
+            android:id="@+id/button_ruc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="RUC"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@+id/button_reg"
+            app:layout_constraintTop_toBottomOf="@+id/text_wof_reg" />
+
         <TextView
             android:id="@+id/text_fuel"
             android:layout_width="wrap_content"
@@ -108,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Update registration:"
+            android:text="Update registration/RUCs:"
             android:textSize="28sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_fuel" />

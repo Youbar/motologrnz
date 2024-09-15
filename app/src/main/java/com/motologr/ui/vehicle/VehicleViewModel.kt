@@ -1,5 +1,6 @@
 package com.motologr.ui.vehicle
 
+import android.content.SharedPreferences
 import android.provider.ContactsContract.Data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -43,6 +44,20 @@ class VehicleViewModel : ViewModel() {
     }
 
     val textOdometer: LiveData<String> = _textOdometer
+
+    private val _isRoadUserChargesDisplayed = MutableLiveData<Boolean>().apply {
+        value = false
+    }
+
+    val isRoadUserChargesDisplayed : LiveData<Boolean> = _isRoadUserChargesDisplayed
+
+
+    private val _textRoadUserCharges = MutableLiveData<String>().apply {
+        value = ""
+    }
+
+    val textRoadUserCharges: LiveData<String> = _textRoadUserCharges
+
 
     private val _textInsurer = MutableLiveData<String>().apply {
         value = ""
@@ -103,12 +118,10 @@ class VehicleViewModel : ViewModel() {
         _textVehicle.value = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
         _textWOFDue.value = vehicle.returnWofExpiry()
         _textRegDue.value = vehicle.returnRegExpiry()
+        _isRoadUserChargesDisplayed.value = vehicle.isUseRoadUserCharges
 
-        _isOdometerDisplayed.value = DataManager.trackingFuelConsumption
-        if (vehicle.isMeetingCompliance())
-            _textOdometer.value = vehicle.getLatestOdometerReading().toString() + " km"
-        else
-            _textOdometer.value = "N/A"
+        if (_isRoadUserChargesDisplayed.value == true)
+            _textRoadUserCharges.value = vehicle.roadUserChargesHeld.toString()
 
         if (vehicle.hasCurrentInsurance()) {
             _hasCurrentInsurance.value = true
@@ -140,11 +153,25 @@ class VehicleViewModel : ViewModel() {
         _textProjectedCosts.value = "$$projectedExpenses projected"
     }
 
+    private var activeVehicle : Vehicle? = null
+
     init {
-        val activeVehicle = DataManager.returnActiveVehicle()
+        activeVehicle = DataManager.returnActiveVehicle()
 
         if (activeVehicle != null) {
-            updateFieldsForVehicle(activeVehicle)
+            updateFieldsForVehicle(activeVehicle!!)
         }
+    }
+
+    fun updateOdometerView(isTrackingFuelConsumption : Boolean) {
+        if (activeVehicle == null)
+            return
+
+        _isOdometerDisplayed.value = isTrackingFuelConsumption
+        if (activeVehicle!!.isMeetingCompliance() && activeVehicle!!.getLatestOdometerReading() >= 0)
+            _textOdometer.value = activeVehicle!!.getLatestOdometerReading().toString() + " km"
+        else
+            _textOdometer.value = "N/A"
+
     }
 }
