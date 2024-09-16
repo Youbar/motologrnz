@@ -6,11 +6,37 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults.shape
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentAddBinding
 import com.motologr.data.DataManager
+import com.motologr.ui.ellipsis.addons.ArtPackSquare
+import com.motologr.ui.ellipsis.addons.PurchasesLazyColumn
+import com.motologr.ui.theme.AppTheme
 
 class AddFragment : Fragment() {
 
@@ -75,11 +101,41 @@ class AddFragment : Fragment() {
             }
         }
 
+        val composeView = root.findViewById<ComposeView>(R.id.compose_view_add)
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+
+            }
+        }
+
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+}
+
+@Preview
+@Composable
+fun FuelCard() {
+    AppTheme {
+        Card(modifier = Modifier
+            .padding(8.dp)
+            .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
+            .fillMaxWidth()
+            .height(intrinsicSize = IntrinsicSize.Min)) {
+            Text("Fuel", fontSize = 5.em,
+                modifier = Modifier.padding(PaddingValues(0.dp, 4.dp))
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center)
+            Text("Record the purchase of fuel. If you have 'Track Fuel Consumption' enabled in Settings, " +
+                    "you will be able to use this monitor fuel efficiency.", fontSize = 4.em,
+                modifier = Modifier.padding(PaddingValues(0.dp, 4.dp))
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center)
+        }
     }
 }

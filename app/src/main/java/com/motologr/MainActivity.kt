@@ -75,10 +75,6 @@ class MainActivity : AppCompatActivity() {
                 .addMigrations(DatabaseMigration.MIGRATION_15_16)
                 .build()
 
-            DataManager.setIdCounterLoggable()
-            DataManager.setIdCounterVehicle()
-            DataManager.setIdCounterInsurance()
-
             BillingClientHelper.initBillingHelper(this)
         }
     }
@@ -161,8 +157,13 @@ class MainActivity : AppCompatActivity() {
                         vehicle.insuranceLog = InsuranceLog.castInsuranceLoggableEntities(db?.insuranceDao()?.getAllByVehicleId(vehicle.id), db?.insuranceBillDao()?.getAll())
 
                         DataManager.pullVehicleFromDb(vehicle)
+
                     }
                 }
+
+                DataManager.setIdCounterLoggable()
+                DataManager.setIdCounterVehicle()
+                DataManager.setIdCounterInsurance()
 
                 DataManager.setFirstVehicleActive()
             }
@@ -185,6 +186,10 @@ class MainActivity : AppCompatActivity() {
 
                     DataManager.pullVehicleFromDb(vehicle)
                 }
+
+                DataManager.setIdCounterLoggable()
+                DataManager.setIdCounterVehicle()
+                DataManager.setIdCounterInsurance()
 
                 DataManager.setFirstVehicleActive()
             }

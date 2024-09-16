@@ -37,7 +37,7 @@ data class LoggableEntity(
 
 @Dao
 interface LoggableDao {
-    @Query("SELECT * FROM Loggable WHERE id = (SELECT MAX(id) FROM Loggable)")
+    @Query("SELECT id FROM Loggable WHERE id = (SELECT MAX(id) FROM Loggable)")
     fun getMaxId(): Int
 
     @Query("SELECT * FROM Loggable")

@@ -9,11 +9,11 @@ import java.util.Date
 open class Loggable(var sortableDate: Date,
                     var classId: Int,
                     var unitPrice: BigDecimal,
-                    open var vehicleId: Int) {
-    var id : Int = -1
-
+                    open var vehicleId: Int,
+                    open var id : Int = -1) {
     init {
-        id = DataManager.fetchIdForLoggable()
+        if (id == -1)
+            id = DataManager.fetchIdForLoggable()
     }
 
     fun convertToLoggableEntity() : LoggableEntity {
