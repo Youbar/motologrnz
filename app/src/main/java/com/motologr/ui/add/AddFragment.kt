@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.shape
@@ -105,7 +106,7 @@ class AddFragment : Fragment() {
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-
+                AddOrUpdateList()
             }
         }
 
@@ -118,24 +119,62 @@ class AddFragment : Fragment() {
     }
 }
 
+object AddFragmentComposableConsts {
+    // Fuel
+    val fuelCardTitle = "Fuel"
+    val fuelCardText = "Record the purchase of fuel."
+    // Compliance
+    val complianceCardTitle = "Compliance"
+    val complianceCardText = "Update your vehicle's warrant of fitness, registration, or road user charges."
+    // Mechanical
+    val mechanicalCardTitle = "Mechanical"
+    val mechanicalCardText = "Record a service or repair on your vehicle."
+    // Insurance
+    val insuranceCardTitle = "Insurance"
+    val insuranceCardText = "Add an insurance policy for your vehicle."
+
+}
+
 @Preview
 @Composable
-fun FuelCard() {
-    AppTheme {
-        Card(modifier = Modifier
-            .padding(8.dp)
-            .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
-            .fillMaxWidth()
-            .height(intrinsicSize = IntrinsicSize.Min)) {
-            Text("Fuel", fontSize = 5.em,
-                modifier = Modifier.padding(PaddingValues(0.dp, 4.dp))
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center)
-            Text("Record the purchase of fuel. If you have 'Track Fuel Consumption' enabled in Settings, " +
-                    "you will be able to use this monitor fuel efficiency.", fontSize = 4.em,
-                modifier = Modifier.padding(PaddingValues(0.dp, 4.dp))
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center)
+fun AddOrUpdateList() {
+    LazyColumn {
+        item {
+            AddFragmentCard(AddFragmentComposableConsts.fuelCardTitle,
+                AddFragmentComposableConsts.fuelCardText)
         }
+        item {
+            AddFragmentCard(AddFragmentComposableConsts.complianceCardTitle,
+                AddFragmentComposableConsts.complianceCardText)
+        }
+        item {
+            AddFragmentCard(AddFragmentComposableConsts.mechanicalCardTitle,
+                AddFragmentComposableConsts.mechanicalCardText)
+        }
+        item {
+            AddFragmentCard(AddFragmentComposableConsts.insuranceCardTitle,
+                AddFragmentComposableConsts.insuranceCardText)
+        }
+    }
+}
+
+@Composable
+fun AddFragmentCard(titleText : String, contentText : String, onClick: () -> Unit = {}) {
+    Card(modifier = Modifier
+        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .border(1.dp, MaterialTheme.colorScheme.secondary, shape),
+        onClick = onClick) {
+        Text(titleText, fontSize = 5.em,
+            modifier = Modifier
+                .padding(PaddingValues(0.dp, 0.dp))
+                .fillMaxWidth(),
+            lineHeight = 1.em,
+            textAlign = TextAlign.Center)
+        Text(contentText, fontSize = 2.5.em,
+            modifier = Modifier
+                .padding(PaddingValues(8.dp, 4.dp))
+                .fillMaxWidth(),
+            lineHeight = 1.em,
+            textAlign = TextAlign.Center)
     }
 }
