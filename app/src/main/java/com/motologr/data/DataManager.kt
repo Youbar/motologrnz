@@ -127,6 +127,11 @@ object DataManager {
         return null
     }
 
+    fun isActiveVehicleUsingRucs() : Boolean {
+        val vehicle = returnActiveVehicle() ?: return false
+        return vehicle.isUseRoadUserCharges
+    }
+
     fun returnVehicleArrayLength(): Int {
         return vehicleArray.size
     }

@@ -6,37 +6,35 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.shape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentAddBinding
 import com.motologr.data.DataManager
-import com.motologr.ui.ellipsis.addons.ArtPackSquare
-import com.motologr.ui.ellipsis.addons.PurchasesLazyColumn
 import com.motologr.ui.theme.AppTheme
 
 class AddFragment : Fragment() {
@@ -53,7 +51,7 @@ class AddFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val addViewModel =
-            ViewModelProvider(this).get(AddViewModel::class.java)
+            ViewModelProvider(this)[AddViewModel::class.java]
 
         _binding = FragmentAddBinding.inflate(inflater, container, false)
 
@@ -61,52 +59,27 @@ class AddFragment : Fragment() {
 
         DataManager.updateTitle(activity, "Record/Update Details")
 
-        val buttonFuel: View = binding.buttonFuel
-        buttonFuel.setOnClickListener() {
-            findNavController().navigate(R.id.action_nav_add_to_nav_fuel)
-        }
-
-        val buttonInsurance: View = binding.buttonInsurance
-        buttonInsurance.setOnClickListener() {
-            findNavController().navigate(R.id.action_nav_add_to_nav_insurance)
-        }
-
-        val buttonRepair: View = binding.buttonRepair
-        buttonRepair.setOnClickListener() {
-            findNavController().navigate(R.id.action_nav_add_to_nav_repair)
-        }
-
-        val buttonService: View = binding.buttonService
-        buttonService.setOnClickListener() {
-            findNavController().navigate(R.id.action_nav_add_to_nav_service)
-        }
-
-        val buttonWof: View = binding.buttonWOF
-        buttonWof.setOnClickListener() {
-            findNavController().navigate(R.id.action_nav_add_to_nav_wof)
-        }
-
-        val buttonReg: View = binding.buttonReg
-        buttonReg.setOnClickListener() {
-            findNavController().navigate(R.id.action_nav_add_to_nav_reg)
-        }
-
-        val buttonRUC : View = binding.buttonRuc
-        val isDisplayRUC = DataManager.returnActiveVehicle()?.isUseRoadUserCharges
-        if (isDisplayRUC == null || !isDisplayRUC) {
-            buttonRUC.isVisible = false
-            binding.textWofReg.text = "Update registration:"
-        } else {
-            buttonRUC.setOnClickListener {
-                findNavController().navigate(R.id.nav_rucs)
-            }
-        }
+        val fuelNav = { findNavController().navigate(R.id.action_nav_add_to_nav_fuel) }
+        val wofNav = { findNavController().navigate(R.id.action_nav_add_to_nav_wof) }
+        val regNav = { findNavController().navigate(R.id.action_nav_add_to_nav_reg) }
+        val rucNav = { findNavController().navigate(R.id.nav_rucs) }
+        val repairNav = { findNavController().navigate(R.id.action_nav_add_to_nav_repair) }
+        val serviceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_service) }
+        val insuranceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_insurance) }
 
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_add)
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                AddOrUpdateList()
+                AppTheme {
+                    if (addViewModel.isDefaultListVisible)
+                        AddOrUpdateList(fuelNav, addViewModel.onComplianceCardClicked,
+                            addViewModel.onMechanicalCardClicked, insuranceNav)
+                    if (addViewModel.isComplianceListVisible)
+                        AddOrUpdateCompliance(addViewModel.onBackCardClicked, wofNav, regNav, rucNav, addViewModel.isRucsVisible)
+                    if (addViewModel.isMechanicalListVisible)
+                        AddOrUpdateMechanical(addViewModel.onBackCardClicked, repairNav, serviceNav)
+                }
             }
         }
 
@@ -119,41 +92,118 @@ class AddFragment : Fragment() {
     }
 }
 
-object AddFragmentComposableConsts {
+object AddFragmentComposableConstants {
     // Fuel
-    val fuelCardTitle = "Fuel"
-    val fuelCardText = "Record the purchase of fuel."
-    // Compliance
-    val complianceCardTitle = "Compliance"
-    val complianceCardText = "Update your vehicle's warrant of fitness, registration, or road user charges."
-    // Mechanical
-    val mechanicalCardTitle = "Mechanical"
-    val mechanicalCardText = "Record a service or repair on your vehicle."
-    // Insurance
-    val insuranceCardTitle = "Insurance"
-    val insuranceCardText = "Add an insurance policy for your vehicle."
+    const val fuelCardTitle = "Fuel"
+    const val fuelCardText = "Record the purchase of fuel."
 
+    // Compliance
+    const val complianceCardTitle = "Compliance"
+    const val complianceCardText = "Update your vehicle's warrant of fitness, registration, or road user charges."
+
+    const val wofCardTitle = "Warrant of Fitness"
+    const val wofCardText = "Update your vehicle's warrant of fitness."
+
+    const val regCardTitle = "Registration"
+    const val regCardText = "Update your vehicle's registration."
+
+    const val rucCardTitle = "Road User Charges"
+    const val rucCardText = "Update your vehicle's road user charges."
+
+    // Mechanical
+    const val mechanicalCardTitle = "Mechanical"
+    const val mechanicalCardText = "Record a service or repair on your vehicle."
+
+    const val repairCardTitle = "Repair"
+    const val repairCardText = "Record a repair on your vehicle."
+
+    const val serviceCardTitle = "Service"
+    const val serviceCardText = "Record a service on your vehicle."
+
+    // Insurance
+    const val insuranceCardTitle = "Insurance"
+    const val insuranceCardText = "Add an insurance policy for your vehicle."
 }
 
 @Preview
 @Composable
-fun AddOrUpdateList() {
+fun AddOrUpdateList(fuelNav : () -> Unit = {},
+                    onComplianceCardClicked : () -> Unit = {},
+                    onMechanicalCardClicked : () -> Unit = {},
+                    insuranceNav : () -> Unit = {}) {
     LazyColumn {
         item {
-            AddFragmentCard(AddFragmentComposableConsts.fuelCardTitle,
-                AddFragmentComposableConsts.fuelCardText)
+            AddFragmentCard(AddFragmentComposableConstants.fuelCardTitle,
+                AddFragmentComposableConstants.fuelCardText,
+                fuelNav)
         }
         item {
-            AddFragmentCard(AddFragmentComposableConsts.complianceCardTitle,
-                AddFragmentComposableConsts.complianceCardText)
+            AddFragmentCard(AddFragmentComposableConstants.complianceCardTitle,
+                AddFragmentComposableConstants.complianceCardText,
+                onComplianceCardClicked)
         }
         item {
-            AddFragmentCard(AddFragmentComposableConsts.mechanicalCardTitle,
-                AddFragmentComposableConsts.mechanicalCardText)
+            AddFragmentCard(AddFragmentComposableConstants.mechanicalCardTitle,
+                AddFragmentComposableConstants.mechanicalCardText,
+                onMechanicalCardClicked)
         }
         item {
-            AddFragmentCard(AddFragmentComposableConsts.insuranceCardTitle,
-                AddFragmentComposableConsts.insuranceCardText)
+            AddFragmentCard(AddFragmentComposableConstants.insuranceCardTitle,
+                AddFragmentComposableConstants.insuranceCardText,
+                insuranceNav)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AddOrUpdateCompliance(backButtonOnClick : () -> Unit = {},
+                          wofNav : () -> Unit = {},
+                          regNav : () -> Unit = {},
+                          rucNav : () -> Unit = {},
+                          isRucsVisible : Boolean = true) {
+    LazyColumn {
+        item {
+            BackButtonCard(backButtonOnClick)
+        }
+        item {
+            AddFragmentCard(AddFragmentComposableConstants.wofCardTitle,
+                AddFragmentComposableConstants.wofCardText,
+                wofNav)
+        }
+        item {
+            AddFragmentCard(AddFragmentComposableConstants.regCardTitle,
+                AddFragmentComposableConstants.regCardText,
+                regNav)
+        }
+        if (isRucsVisible) {
+            item {
+                AddFragmentCard(AddFragmentComposableConstants.rucCardTitle,
+                    AddFragmentComposableConstants.rucCardText,
+                    rucNav)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AddOrUpdateMechanical(backButtonOnClick : () -> Unit = {},
+                          repairNav : () -> Unit = {},
+                          serviceNav : () -> Unit = {}) {
+    LazyColumn {
+        item {
+            BackButtonCard(backButtonOnClick)
+        }
+        item {
+            AddFragmentCard(AddFragmentComposableConstants.repairCardTitle,
+                AddFragmentComposableConstants.repairCardText,
+                repairNav)
+        }
+        item {
+            AddFragmentCard(AddFragmentComposableConstants.serviceCardTitle,
+                AddFragmentComposableConstants.serviceCardText,
+                serviceNav)
         }
     }
 }
@@ -176,5 +226,28 @@ fun AddFragmentCard(titleText : String, contentText : String, onClick: () -> Uni
                 .fillMaxWidth(),
             lineHeight = 1.em,
             textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+fun BackButtonCard(onClick: () -> Unit = {}) {
+    Card(modifier = Modifier
+        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .border(1.dp, MaterialTheme.colorScheme.secondary, shape),
+        onClick = onClick) {
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp, 8.dp, 16.dp, 8.dp),
+            horizontalArrangement = Arrangement.Center) {
+            Image(painter = painterResource(R.drawable.ic_add_back_32), null,
+                modifier = Modifier
+                    .scale(scaleX = -1f, scaleY = 1f))
+            Text("Back", fontSize = 5.em,
+                modifier = Modifier
+                    .height(32.dp)
+                    .wrapContentHeight(),
+                lineHeight = 1.em,
+                textAlign = TextAlign.Center)
+        }
     }
 }
