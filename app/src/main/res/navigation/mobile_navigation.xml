@@ -29,6 +29,27 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_historical_rucs"
+        android:name="com.motologr.ui.add.historical.ruc.HistoricalRucFragment"
+        android:label="@string/nav_historical_rucs_fragment"
+        tools:layout="@layout/fragment_historical_ruc" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_historical_reg"
+        android:name="com.motologr.ui.add.historical.reg.HistoricalRegFragment"
+        android:label="@string/nav_historical_reg_fragment"
+        tools:layout="@layout/fragment_historical_reg" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_historical_wof"
+        android:name="com.motologr.ui.add.historical.wof.HistoricalWofFragment"
+        android:label="@string/nav_historical_wof_fragment"
+        tools:layout="@layout/fragment_historical_wof" >
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_plus"
         android:name="com.motologr.ui.plus.PlusFragment"
         android:label="@string/menu_plus"

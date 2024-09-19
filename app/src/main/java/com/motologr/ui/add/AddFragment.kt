@@ -17,9 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.databinding.FragmentAddBinding
@@ -66,6 +67,9 @@ class AddFragment : Fragment() {
         val repairNav = { findNavController().navigate(R.id.action_nav_add_to_nav_repair) }
         val serviceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_service) }
         val insuranceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_insurance) }
+        val historicalWofNav = { findNavController().navigate(R.id.nav_historical_wof) }
+        val historicalRegNav = { findNavController().navigate(R.id.nav_historical_reg) }
+        val historicalRucNav = { findNavController().navigate(R.id.nav_historical_rucs) }
 
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_add)
         composeView.apply {
@@ -74,11 +78,16 @@ class AddFragment : Fragment() {
                 AppTheme {
                     if (addViewModel.isDefaultListVisible)
                         AddOrUpdateList(fuelNav, addViewModel.onComplianceCardClicked,
-                            addViewModel.onMechanicalCardClicked, insuranceNav)
+                            addViewModel.onMechanicalCardClicked, addViewModel.onHistoricalCardClicked,
+                            insuranceNav)
                     if (addViewModel.isComplianceListVisible)
-                        AddOrUpdateCompliance(addViewModel.onBackCardClicked, wofNav, regNav, rucNav, addViewModel.isRucsVisible)
+                        AddOrUpdateCompliance(addViewModel.onBackCardClicked, wofNav, regNav, rucNav,
+                            addViewModel.isRucsVisible)
                     if (addViewModel.isMechanicalListVisible)
                         AddOrUpdateMechanical(addViewModel.onBackCardClicked, repairNav, serviceNav)
+                    if (addViewModel.isHistoricalListVisible)
+                        AddOrUpdateHistorical(addViewModel.onBackCardClicked, historicalWofNav, historicalRegNav,
+                            historicalRucNav, addViewModel.isRucsVisible)
                 }
             }
         }
@@ -123,6 +132,19 @@ object AddFragmentComposableConstants {
     // Insurance
     const val insuranceCardTitle = "Insurance"
     const val insuranceCardText = "Add an insurance policy for your vehicle."
+
+    // Historical
+    const val historicalCardTitle = "Historical"
+    const val historicalCardText = "Record past instances of your vehicle's warrant of fitness, registration, or road user charges. This will not update your existing compliances."
+
+    const val historicalWofCardTitle = "Warrant of Fitness"
+    const val historicalWofCardText = "Record a previous warrant of fitness."
+
+    const val historicalRegCardTitle = "Registration"
+    const val historicalRegCardText = "Record a previous registration."
+
+    const val historicalRucCardTitle = "Road User Charges"
+    const val historicalRucCardText = "Record a previous purchase of road user charges."
 }
 
 @Preview
@@ -130,6 +152,7 @@ object AddFragmentComposableConstants {
 fun AddOrUpdateList(fuelNav : () -> Unit = {},
                     onComplianceCardClicked : () -> Unit = {},
                     onMechanicalCardClicked : () -> Unit = {},
+                    onHistoricalCardClicked : () -> Unit = {},
                     insuranceNav : () -> Unit = {}) {
     LazyColumn {
         item {
@@ -152,10 +175,14 @@ fun AddOrUpdateList(fuelNav : () -> Unit = {},
                 AddFragmentComposableConstants.insuranceCardText,
                 insuranceNav)
         }
+        item {
+            AddFragmentHistoricalCard(AddFragmentComposableConstants.historicalCardTitle,
+                AddFragmentComposableConstants.historicalCardText,
+                onHistoricalCardClicked)
+        }
     }
 }
 
-@Preview
 @Composable
 fun AddOrUpdateCompliance(backButtonOnClick : () -> Unit = {},
                           wofNav : () -> Unit = {},
@@ -186,7 +213,36 @@ fun AddOrUpdateCompliance(backButtonOnClick : () -> Unit = {},
     }
 }
 
-@Preview
+@Composable
+fun AddOrUpdateHistorical(backButtonOnClick : () -> Unit = {},
+                          wofNav : () -> Unit = {},
+                          regNav : () -> Unit = {},
+                          rucNav : () -> Unit = {},
+                          isRucsVisible : Boolean = true) {
+    LazyColumn {
+        item {
+            BackButtonCard(backButtonOnClick)
+        }
+        item {
+            AddFragmentHistoricalCard(AddFragmentComposableConstants.historicalWofCardTitle,
+                AddFragmentComposableConstants.historicalWofCardText,
+                wofNav)
+        }
+        item {
+            AddFragmentHistoricalCard(AddFragmentComposableConstants.historicalRegCardTitle,
+                AddFragmentComposableConstants.historicalRegCardText,
+                regNav)
+        }
+        if (isRucsVisible) {
+            item {
+                AddFragmentHistoricalCard(AddFragmentComposableConstants.historicalRucCardTitle,
+                    AddFragmentComposableConstants.historicalRucCardText,
+                    rucNav)
+            }
+        }
+    }
+}
+
 @Composable
 fun AddOrUpdateMechanical(backButtonOnClick : () -> Unit = {},
                           repairNav : () -> Unit = {},
@@ -214,18 +270,46 @@ fun AddFragmentCard(titleText : String, contentText : String, onClick: () -> Uni
         .padding(16.dp, 8.dp, 16.dp, 8.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape),
         onClick = onClick) {
-        Text(titleText, fontSize = 5.em,
+        Text(titleText, fontSize = 24.sp,
             modifier = Modifier
                 .padding(PaddingValues(0.dp, 0.dp))
                 .fillMaxWidth(),
             lineHeight = 1.em,
             textAlign = TextAlign.Center)
-        Text(contentText, fontSize = 2.5.em,
+        Text(contentText, fontSize = 14.sp,
             modifier = Modifier
                 .padding(PaddingValues(8.dp, 4.dp))
                 .fillMaxWidth(),
             lineHeight = 1.em,
             textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+fun AddFragmentHistoricalCard(titleText : String, contentText : String, onClick: () -> Unit = {}) {
+    Card(
+        modifier = Modifier
+            .padding(16.dp, 8.dp, 16.dp, 8.dp)
+            .border(1.dp, MaterialTheme.colorScheme.secondary, shape),
+        colors = CardDefaults.outlinedCardColors(),
+        onClick = onClick
+    ) {
+        Text(
+            titleText, fontSize = 24.sp,
+            modifier = Modifier
+                .padding(PaddingValues(0.dp, 0.dp))
+                .fillMaxWidth(),
+            lineHeight = 1.em,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            contentText, fontSize = 14.sp,
+            modifier = Modifier
+                .padding(PaddingValues(8.dp, 4.dp))
+                .fillMaxWidth(),
+            lineHeight = 1.em,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -242,7 +326,7 @@ fun BackButtonCard(onClick: () -> Unit = {}) {
             Image(painter = painterResource(R.drawable.ic_add_back_32), null,
                 modifier = Modifier
                     .scale(scaleX = -1f, scaleY = 1f))
-            Text("Back", fontSize = 5.em,
+            Text("Back", fontSize = 24.sp,
                 modifier = Modifier
                     .height(32.dp)
                     .wrapContentHeight(),
