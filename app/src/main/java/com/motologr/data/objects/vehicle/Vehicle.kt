@@ -2,6 +2,7 @@ package com.motologr.data.objects.vehicle
 
 import android.provider.ContactsContract.Data
 import com.motologr.MainActivity
+import com.motologr.data.DataHelper
 import com.motologr.data.DataManager
 import com.motologr.data.logging.Loggable
 import com.motologr.data.objects.reg.Reg
@@ -38,10 +39,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     var rucLog : ArrayList<Ruc> = arrayListOf()
 
     fun isMeetingCompliance() : Boolean {
-        if (DataManager.isMinDt(expiryWOF) || DataManager.isMinDt(regExpiry))
-            return false
-
-        return true
+        return !(DataHelper.isMinDt(expiryWOF) || DataHelper.isMinDt(regExpiry))
     }
 
     fun submitCompliance(expiryWOF: Date, expiryReg: Date) {

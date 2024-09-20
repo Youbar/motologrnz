@@ -150,13 +150,13 @@ class FuelFragment : Fragment() {
         val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
         val fuelType: Int = parseFuelTypeRadioGroup()
         val price: BigDecimal = binding.editTextFuelPrice.text.toString()
-            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val purchaseDate: Date = binding.editTextFuelDate.getDate()
 
         var fuel: Fuel
         if (trackingFuelConsumption) {
             val litres: BigDecimal = binding.editTextFuelLitres.text.toString()
-                .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+                .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
             val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
 
             fuel = Fuel(fuelType, price, litres, purchaseDate, odometer, vehicleId)

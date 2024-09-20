@@ -230,7 +230,7 @@ class ExpensesViewModel : ViewModel() {
 
     private fun formatExpense(expense: BigDecimal) : String {
         val df = DecimalFormat("0.00")
-        df.roundingMode = RoundingMode.HALF_EVEN
+        df.roundingMode = RoundingMode.HALF_UP
 
         return "$" + df.format(expense).toString()
     }

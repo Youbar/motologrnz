@@ -83,7 +83,7 @@ class ServiceFragment : Fragment() {
         val serviceDate: Date = binding.editTextServiceDate.getDate()
         val serviceProvider: String = binding.editTextServiceProvider.text.toString()
         val servicePrice: BigDecimal = binding.editTextServicePrice.text.toString()
-            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val serviceComment: String = binding.editTextServiceComment.text.toString()
 
         val service: Service = Service(serviceType, servicePrice, serviceDate, serviceProvider, serviceComment, vehicleId)

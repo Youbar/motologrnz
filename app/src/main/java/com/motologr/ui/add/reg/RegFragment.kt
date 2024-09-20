@@ -112,23 +112,8 @@ class RegFragment : Fragment() {
     private fun setRegistrationEstimate(months : Int) {
         val df = DecimalFormat("0.00")
         df.roundingMode = RoundingMode.HALF_UP
-        val registrationEstimate = calculateRegistration(months)
+        val registrationEstimate = Reg.calculateRegistration(months)
         binding.editTextRegPrice.setText(df.format(registrationEstimate))
-    }
-
-    private fun calculateRegistration(months : Int) : Double {
-        val licenceFee = 43.50 / 12
-        val accFee = 41.27 / 12
-        val adminFee = 7.53
-        val gstMultiplier = 1.15
-        val registrationEstimate = ((licenceFee + accFee) * months + adminFee) * gstMultiplier
-
-        return when (months) {
-            3 -> 33.05
-            6 -> 57.41
-            12 -> 106.15
-            else -> registrationEstimate
-        }
     }
 
     private fun getMonthsExtended() : Int {
@@ -167,7 +152,7 @@ class RegFragment : Fragment() {
         val newRegExpiryDate = binding.editTextRegNextDate.getDate()
         val monthsExtended = getMonthsExtended()
         val price = binding.editTextRegPrice.text.toString()
-            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 

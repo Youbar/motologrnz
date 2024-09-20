@@ -19,7 +19,7 @@
     <string name="menu_plus">Add New Vehicle</string>
 
     <string name="nav_historical_rucs_fragment">Record RUCs</string>
-    <string name="nav_historical_reg_fragment">Record Reg</string>
+    <string name="nav_historical_reg_fragment">Record Registration</string>
     <string name="nav_historical_wof_fragment">Record WOF</string>
 
 

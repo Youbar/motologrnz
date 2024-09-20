@@ -83,7 +83,7 @@ class RepairFragment : Fragment() {
         val repairDate: Date = binding.editTextRepairDate.getDate()
         val repairProvider: String = binding.editTextRepairProvider.text.toString()
         val repairPrice: BigDecimal = binding.editTextRepairPrice.text.toString()
-            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val repairComment: String = binding.editTextRepairComment.text.toString()
 
         val repair: Repair = Repair(repairType, repairPrice, repairDate, repairProvider, repairComment, vehicleId)

@@ -108,7 +108,7 @@ class WofFragment : Fragment() {
         UpdateDatePicker(wof.wofDate)
 
         binding.editTextWofProvider.isEnabled = false
-        binding.editTextWofProvider.setText(format.format(wof.wofProvider))
+        binding.editTextWofProvider.setText(wof.wofProvider)
 
         binding.editTextWofPrice.isEnabled = false
         binding.editTextWofPrice.setText(wof.price.toString())
@@ -136,7 +136,7 @@ class WofFragment : Fragment() {
         val oldDate = binding.editTextWofCurrDate.text.toString()
         val newDate = binding.editTextWofNextDate.getDate()
         val price = binding.editTextWofPrice.text.toString()
-            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val wofProvider = binding.editTextWofProvider.text.toString()
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")

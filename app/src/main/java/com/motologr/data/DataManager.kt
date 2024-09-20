@@ -212,21 +212,4 @@ object DataManager {
 
         return (idCounterInsurance - 1)
     }
-
-    fun getMinDt(): Date {
-        val format = SimpleDateFormat("dd/MM/yyyy")
-        val minDt = format.parse("01/01/1900")
-
-        return minDt
-    }
-
-    fun isMinDt(date : Date) : Boolean {
-        val format = SimpleDateFormat("dd/MM/yyyy")
-        val compareDt = format.format(date)
-
-        if (compareDt == "01/01/1900")
-            return true
-
-        return false
-    }
 }

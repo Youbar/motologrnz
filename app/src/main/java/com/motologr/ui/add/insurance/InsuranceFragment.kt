@@ -77,7 +77,7 @@ class InsuranceFragment : Fragment() {
         val insuranceType: Int = parseCoverageRadioGroup()
         val insuranceCycle: Int = parseBillingRadioGroup()
         val insuranceValue: BigDecimal = binding.editTextInsuranceBill.text.toString()
-            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val insuranceDate: Date = binding.editTextInsuranceDate.getDate()
 
         val insurance = Insurance(DataManager.fetchIdForInsurance(), insurerName, insurancePolicyStartDate, insuranceType, insuranceCycle, insuranceValue, insuranceDate, vehicleId)

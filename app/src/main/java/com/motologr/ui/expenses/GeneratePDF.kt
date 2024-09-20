@@ -52,17 +52,17 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         fuelLogs.sortedByDescending { loggable -> loggable.sortableDate }
         insuranceLogs.sortedByDescending { loggable -> loggable.sortableDate }
 
-        decimalFormat.roundingMode = RoundingMode.HALF_EVEN
+        decimalFormat.roundingMode = RoundingMode.HALF_UP
     }
 
     private fun returnGSTComponent(amount : BigDecimal) : String {
         return decimalFormat.format(amount.multiply(3.0.toBigDecimal())
-            .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_EVEN))
+            .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_UP))
     }
 
     private fun returnExcGst(amount : BigDecimal) : String {
         val gst = amount.multiply(3.0.toBigDecimal())
-            .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_EVEN)
+            .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_UP)
 
         return decimalFormat.format(amount.subtract(gst))
     }

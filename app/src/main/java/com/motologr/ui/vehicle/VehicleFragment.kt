@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
@@ -88,7 +89,12 @@ class VehicleFragment : Fragment() {
 
         val activeVehicle: Vehicle = DataManager.returnActiveVehicle() ?: return
 
-        val fab: View = binding.fab
+        val fab: FloatingActionButton = binding.fab
+
+        if (activeVehicle.isMeetingCompliance())
+            fab.setImageResource(android.R.drawable.ic_input_add)
+        else
+            fab.setImageResource(R.drawable.ic_input_question_mark)
 
         fab.setOnClickListener { _ ->
             if (activeVehicle.isMeetingCompliance())

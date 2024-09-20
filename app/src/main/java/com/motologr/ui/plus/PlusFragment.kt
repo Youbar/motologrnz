@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
+import com.motologr.data.DataHelper
 import com.motologr.databinding.FragmentPlusBinding
 import com.motologr.data.DataManager
 import com.motologr.data.objects.vehicle.Vehicle
@@ -77,7 +78,7 @@ class PlusFragment : Fragment() {
         val modelName: String = binding.editTextModelInput.text.toString()
         val modelYear: Int = Integer.valueOf(binding.editTextYearInput.text.toString())
 
-        val minDt = DataManager.getMinDt()
+        val minDt = DataHelper.getMinDt()
 
         val vehicle = Vehicle(DataManager.fetchIdForVehicle(), brandName, modelName, modelYear, minDt, minDt, -1)
 
