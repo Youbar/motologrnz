@@ -19,16 +19,20 @@ object DataHelper {
         return df.format(bigDecimal)
     }
 
+    private val numericalDateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+    fun convertStringToNumericalDate(dateString : String) : Date {
+        return numericalDateFormat.parse(dateString)
+    }
+
     fun getMinDt(): Date {
-        val format = SimpleDateFormat("dd/MM/yyyy")
-        val minDt = format.parse("01/01/1900")
+        val minDt = numericalDateFormat.parse("01/01/1900")
 
         return minDt
     }
 
     fun isMinDt(date : Date) : Boolean {
-        val format = SimpleDateFormat("dd/MM/yyyy")
-        val compareDt = format.format(date)
+        val compareDt = numericalDateFormat.format(date)
 
         if (compareDt == "01/01/1900")
             return true

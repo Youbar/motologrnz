@@ -253,7 +253,8 @@ object DatabaseMigration {
 
     val MIGRATION_15_16 = object : Migration(15, 16) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL("""CREATE TABLE Ruc (
+            db.execSQL(
+                """CREATE TABLE Ruc (
                             id INTEGER PRIMARY KEY NOT NULL,
                             transactionDate INTEGER NOT NULL,
                             unitsPurchased INTEGER NOT NULL,
@@ -261,7 +262,30 @@ object DatabaseMigration {
                             price TEXT NOT NULL,
                             vehicleId INTEGER NOT NULL,
                             FOREIGN KEY (vehicleId) REFERENCES Vehicle(id) ON UPDATE CASCADE ON DELETE CASCADE)
-                            """.trimIndent())
+                            """.trimIndent()
+            )
+        }
+    }
+
+    val MIGRATION_16_17 = object : Migration(16, 17) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE Ruc ADD COLUMN isHistorical INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
+    val MIGRATION_17_18 = object : Migration(17, 18) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE Wof ADD COLUMN purchaseDate INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("UPDATE Wof SET purchaseDate = wofCompletedDate")
+            db.execSQL("ALTER TABLE Wof ADD COLUMN isHistorical INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
+    val MIGRATION_18_19 = object : Migration(18, 19) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE Reg ADD COLUMN purchaseDate INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("UPDATE Reg SET purchaseDate = regExpiryDate")
+            db.execSQL("ALTER TABLE Reg ADD COLUMN isHistorical INTEGER NOT NULL DEFAULT 0")
         }
     }
 }

@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.background
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -26,6 +25,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,6 +36,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -43,20 +45,16 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.data.DataHelper
 import com.motologr.data.objects.reg.Reg
@@ -64,6 +62,7 @@ import com.motologr.databinding.FragmentHistoricalRegBinding
 import com.motologr.ui.theme.AppTheme
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class HistoricalRegFragment : Fragment() {
@@ -79,6 +78,13 @@ class HistoricalRegFragment : Fragment() {
     ): View {
         val historicalRegViewModel =
             ViewModelProvider(this)[HistoricalRegViewModel::class.java]
+
+        historicalRegViewModel.displayToastMessage = { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
+                .show()
+        }
+
+        historicalRegViewModel.navigateToVehicle = { findNavController().navigate(R.id.nav_vehicle_1) }
 
         _binding = FragmentHistoricalRegBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -104,7 +110,8 @@ fun HistoricalRegCard(registrationPrice: MutableState<String>, sliderPosition: M
     Card(modifier = Modifier
         .padding(16.dp, 8.dp, 16.dp, 8.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
-        Column(modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 8.dp)
+        Column(modifier = Modifier
+            .padding(16.dp, 8.dp, 16.dp, 8.dp)
             .height(IntrinsicSize.Min)){
             Text("Historical Registration", fontSize = 24.sp,
                 modifier = Modifier
@@ -115,7 +122,8 @@ fun HistoricalRegCard(registrationPrice: MutableState<String>, sliderPosition: M
             DatePickerDocked(selectedDate)
             HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 8.dp, 16.dp, 0.dp)))
             HistoricalRegSlider(registrationPrice, sliderPosition)
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.padding(0.dp, 32.dp, 0.dp, 0.dp)
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                .padding(0.dp, 32.dp, 0.dp, 0.dp)
                 .fillMaxWidth()) {
                 Button(onClick = onButtonClick, contentPadding = PaddingValues(8.dp)) {
                     Text("Save", fontSize = 3.em, textAlign = TextAlign.Center)
@@ -132,7 +140,7 @@ fun HistoricalRegSlider(registrationPrice: MutableState<String> = mutableStateOf
     var sliderPositionObserver by remember { sliderPosition }
     Slider(
         value = sliderPositionObserver,
-        onValueChange = { sliderPositionObserver = it;
+        onValueChange = { sliderPositionObserver = it
             registrationPriceObserver = DataHelper.roundToTwoDecimalPlaces(Reg.calculateRegistration(sliderPositionObserver.roundToInt())) },
         colors = SliderDefaults.colors(
             thumbColor = MaterialTheme.colorScheme.secondary,
@@ -181,31 +189,44 @@ fun DatePickerDocked(selectedDate: MutableState<String> = mutableStateOf("")) {
                 .fillMaxWidth()
         )
 
+        val onDateSelected = { selectedDateMillis : Long? ->
+            datePickerState.selectedDateMillis = selectedDateMillis
+        }
+
         if (showDatePicker) {
-            Popup(
-                onDismissRequest = { showDatePicker = false },
-                alignment = Alignment.TopStart,
-                properties = PopupProperties(focusable = true, dismissOnBackPress = true)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = 64.dp)
-                        .shadow(elevation = 4.dp)
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(16.dp, 16.dp, 16.dp, 64.dp)
-                ) {
-                    DatePicker(
-                        state = datePickerState,
-                        showModeToggle = false
-                    )
-                }
-            }
+            DatePickerModalInput(onDateSelected) { showDatePicker = false }
         }
     }
 }
 
+@Composable
+fun DatePickerModalInput(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                onDateSelected(datePickerState.selectedDateMillis)
+                onDismiss()
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState, showModeToggle = false)
+    }
+}
+
 fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy")
+    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
 }

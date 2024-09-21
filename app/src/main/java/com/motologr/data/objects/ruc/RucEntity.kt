@@ -8,7 +8,6 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import com.motologr.data.objects.reg.Reg
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -26,10 +25,12 @@ data class RucEntity(
     @ColumnInfo(name = "unitsPurchased") val unitsPurchased: Int,
     @ColumnInfo(name = "unitsHeldAfterTransaction") val unitsHeldAfterTransaction: Int,
     @ColumnInfo(name = "price") val price: BigDecimal,
-    @ColumnInfo(name = "vehicleId") val vehicleId: Int)
+    @ColumnInfo(name = "vehicleId") val vehicleId: Int,
+    @ColumnInfo(name = "isHistorical") val isHistorical: Boolean)
 {
     fun convertToRucObject() : Ruc {
-        val ruc = Ruc(transactionDate, unitsPurchased, unitsHeldAfterTransaction, price,vehicleId)
+        val ruc = Ruc(transactionDate, unitsPurchased, unitsHeldAfterTransaction, price,
+            vehicleId, isHistorical)
         ruc.id = id
         return ruc
     }

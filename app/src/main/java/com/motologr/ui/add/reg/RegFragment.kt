@@ -156,7 +156,7 @@ class RegFragment : Fragment() {
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-        val reg = Reg(newRegExpiryDate, format.parse(regExpiryDate), monthsExtended, price, vehicleId)
+        val reg = Reg(newRegExpiryDate, format.parse(regExpiryDate), monthsExtended, price, vehicleId, format.parse(regExpiryDate))
 
         vehicle.logReg(reg)
         findNavController().navigate(R.id.action_nav_reg_to_nav_vehicle_1, null, NavOptions.Builder()

@@ -25,10 +25,12 @@ data class RegEntity(
     @ColumnInfo(name = "regExpiryDate") val regExpiryDate: Date,
     @ColumnInfo(name = "monthsExtended") val monthsExtended: Int,
     @ColumnInfo(name = "price") val price: BigDecimal,
-    @ColumnInfo(name = "vehicleId") val vehicleId: Int)
+    @ColumnInfo(name = "vehicleId") val vehicleId: Int,
+    @ColumnInfo(name = "purchaseDate") val purchaseDate: Date,
+    @ColumnInfo(name = "isHistorical") val isHistorical: Boolean)
 {
     fun convertToRegObject() : Reg {
-        val reg = Reg(newRegExpiryDate, regExpiryDate, monthsExtended, price, vehicleId)
+        val reg = Reg(newRegExpiryDate, regExpiryDate, monthsExtended, price, vehicleId, purchaseDate, isHistorical)
         reg.id = id
         return reg
     }

@@ -10,10 +10,12 @@ class Reg(var newRegExpiryDate: Date,
           var regExpiryDate: Date,
           var monthsExtended: Int,
           var price: BigDecimal,
-          override var vehicleId: Int) : Loggable(regExpiryDate, 3, price, vehicleId) {
+          override var vehicleId: Int,
+          var purchaseDate : Date,
+          var isHistorical : Boolean = false) : Loggable(regExpiryDate, 3, price, vehicleId) {
 
     fun convertToRegEntity() : RegEntity {
-        val regEntity = RegEntity(id, newRegExpiryDate, regExpiryDate,monthsExtended, price, vehicleId)
+        val regEntity = RegEntity(id, newRegExpiryDate, regExpiryDate, monthsExtended, price, vehicleId, purchaseDate, isHistorical)
         return regEntity
     }
 
@@ -31,6 +33,7 @@ class Reg(var newRegExpiryDate: Date,
                 .multiply(gstMultiplier)
 
             return when (months) {
+                0 -> 0.0.toBigDecimal()
                 3 -> 33.05.toBigDecimal()
                 6 -> 57.41.toBigDecimal()
                 12 -> 106.15.toBigDecimal()

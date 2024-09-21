@@ -141,7 +141,7 @@ class WofFragment : Fragment() {
 
         val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
-        val wof = Wof(newDate, format.parse(oldDate), price, vehicleId, wofProvider)
+        val wof = Wof(newDate, format.parse(oldDate), price, vehicleId, wofProvider, format.parse(oldDate))
         vehicle.logWof(wof)
 
         findNavController().navigate(R.id.action_nav_wof_to_nav_vehicle_1, null, NavOptions.Builder()

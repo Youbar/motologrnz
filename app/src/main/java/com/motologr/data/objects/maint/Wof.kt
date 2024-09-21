@@ -8,10 +8,11 @@ class Wof(var wofDate: Date,
           var wofCompletedDate: Date,
           var price: BigDecimal,
           override var vehicleId: Int,
-          var wofProvider: String) : Loggable(wofCompletedDate, 2, price, vehicleId) {
-
+          var wofProvider: String,
+          var purchaseDate : Date,
+          var isHistorical : Boolean = false) : Loggable(wofCompletedDate, 2, price, vehicleId) {
     fun convertToWofEntity() : WofEntity {
-        val wofEntity = WofEntity(id, wofDate, wofCompletedDate, price, vehicleId, wofProvider)
+        val wofEntity = WofEntity(id, wofDate, wofCompletedDate, price, vehicleId, wofProvider, purchaseDate, isHistorical)
         return wofEntity
     }
 }
