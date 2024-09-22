@@ -284,12 +284,12 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         if (!isMeetingCompliance())
             return "N/A"
 
-        val wofLogItems = wofLog.returnWofLog()
+        val wofLogItems = wofLog.returnWofLog().filter { wof -> !wof.isHistorical }
 
         if (wofLogItems.isEmpty())
             return format.format(expiryWOF)
 
-        wofLogItems.sortByDescending { wof -> wof.wofDate.time }
+        wofLogItems.sortedByDescending { wof -> wof.wofDate.time }
         return format.format(wofLogItems.first().wofDate)
     }
 
@@ -297,12 +297,12 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         if (!isMeetingCompliance())
             return "N/A"
 
-        val regLogItems = regLog.returnRegLog()
+        val regLogItems = regLog.returnRegLog().filter { reg -> !reg.isHistorical}
 
         if (regLogItems.isEmpty())
             return format.format(regExpiry)
 
-        regLogItems.sortByDescending { reg -> reg.newRegExpiryDate.time }
+        regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
         return format.format(regLogItems.first().newRegExpiryDate)
     }
 
@@ -310,11 +310,13 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
         if (!isMeetingCompliance())
             return "N/A"
 
-        if (rucLog.isEmpty())
+        var rucLogItems = rucLog.filter { ruc -> !ruc.isHistorical }
+
+        if (rucLogItems.isEmpty())
             return roadUserChargesHeld.toString()
 
-        rucLog.sortByDescending { ruc -> ruc.unitsHeldAfterTransaction }
-        return rucLog.first().unitsHeldAfterTransaction.toString()
+        rucLogItems.sortedByDescending { ruc -> ruc.unitsHeldAfterTransaction }
+        return rucLogItems.first().unitsHeldAfterTransaction.toString()
     }
 
     fun convertToVehicleEntity() : VehicleEntity {

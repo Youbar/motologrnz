@@ -40,8 +40,12 @@ class RucFragment : Fragment() {
         binding.editTextRucCurrMiles.setText(latestRucUnits)
 
         binding.editTextRucUnits.doAfterTextChanged {
-            binding.editTextRucPrice.setText(calculateRucPrice())
-            binding.editTextRucNewMiles.setText(calculateNewRucMiles(latestRucUnits))
+            val numberOfUnitsInput = binding.editTextRucUnits.text.toString()
+
+            if (numberOfUnitsInput.isNotEmpty() && !numberOfUnitsInput.contains('.') && !numberOfUnitsInput.contains(',')) {
+                binding.editTextRucPrice.setText(Ruc.calculateRucPrice(binding.editTextRucUnits.text.toString().toInt()).toString())
+                binding.editTextRucNewMiles.setText(calculateNewRucMiles(latestRucUnits))
+            }
         }
 
         binding.buttonRucSave.setOnClickListener {
@@ -67,20 +71,6 @@ class RucFragment : Fragment() {
             .setPopUpTo(R.id.nav_vehicle_1, true).build())
     }
 
-    private fun calculateRucPrice() : String {
-        val numberOfUnitsInput = binding.editTextRucUnits.text.toString()
-
-        if (numberOfUnitsInput.isEmpty())
-            return "0"
-
-        val numberOfUnits = numberOfUnitsInput.toBigDecimal()
-        // 38 for EV
-        val unitPrice = 76.0.toBigDecimal()
-        val adminFee = 12.44.toBigDecimal()
-
-        return numberOfUnits.multiply(unitPrice).add(adminFee).toString()
-    }
-
     private fun calculateNewRucMiles(latestRucUnits : String) : String {
         val numberOfUnitsInput = binding.editTextRucUnits.text.toString()
 
@@ -93,11 +83,15 @@ class RucFragment : Fragment() {
     }
 
     private fun isValidRucInputs() : Boolean {
-
         val unitsPurchased = binding.editTextRucUnits.text.toString()
 
         if (unitsPurchased.isEmpty()) {
             displayValidationError("Please input number of units purchased")
+            return false
+        }
+
+        if (unitsPurchased.contains('.') || unitsPurchased.contains(',')) {
+            displayValidationError("Units purchased must be whole numbers")
             return false
         }
 

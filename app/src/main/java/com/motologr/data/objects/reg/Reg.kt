@@ -12,7 +12,7 @@ class Reg(var newRegExpiryDate: Date,
           var price: BigDecimal,
           override var vehicleId: Int,
           var purchaseDate : Date,
-          var isHistorical : Boolean = false) : Loggable(regExpiryDate, 3, price, vehicleId) {
+          var isHistorical : Boolean = false) : Loggable(purchaseDate, 3, price, vehicleId) {
 
     fun convertToRegEntity() : RegEntity {
         val regEntity = RegEntity(id, newRegExpiryDate, regExpiryDate, monthsExtended, price, vehicleId, purchaseDate, isHistorical)
@@ -20,6 +20,8 @@ class Reg(var newRegExpiryDate: Date,
     }
 
     companion object {
+        var calculateRegistrationLambda : (Int) -> BigDecimal = { x -> calculateRegistration(x) }
+
         fun calculateRegistration(months : Int) : BigDecimal {
             val df = DecimalFormat("0.00")
             df.roundingMode = RoundingMode.HALF_UP
