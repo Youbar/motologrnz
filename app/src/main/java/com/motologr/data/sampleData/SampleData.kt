@@ -27,7 +27,6 @@ class SampleData {
         var repair2: Repair = Repair(0, 104.24.toBigDecimal(), format.parse("1/04/2025"), "Av", "", vehicleId)
 
         val insurance = Insurance(DataManager.fetchIdForInsurance(), "AA", format.parse("23/10/2023"), 0, 1, 15.30.toBigDecimal(), format.parse("25/07/2024"), vehicleId)
-        insurance.generateInsuranceBills()
 
         DataManager.returnVehicle(0)?.logService(service)
         DataManager.returnVehicle(0)?.logService(service2)

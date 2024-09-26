@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel
 class PlusViewModel : ViewModel() {
 
     private val _textBrand = MutableLiveData<String>().apply {
-        value = "Brand/Manufacturer"
+        value = "Make/Manufacturer"
     }
 
     val textBrand: LiveData<String> = _textBrand
 
     private val _editTextBrand = MutableLiveData<String>().apply {
-        value = "Brand name"
+        value = ""
     }
 
     val editTextBrand: LiveData<String> = _editTextBrand
@@ -25,7 +25,7 @@ class PlusViewModel : ViewModel() {
     val textModel: LiveData<String> = _textModel
 
     private val _editTextModel = MutableLiveData<String>().apply {
-        value = "Model name"
+        value = ""
     }
 
     val editTextModel: LiveData<String> = _editTextModel
@@ -37,7 +37,7 @@ class PlusViewModel : ViewModel() {
     val textYear: LiveData<String> = _textYear
 
     private val _editTextYear = MutableLiveData<String>().apply {
-        value = "Model year"
+        value = ""
     }
 
     val editTextYear: LiveData<String> = _editTextYear

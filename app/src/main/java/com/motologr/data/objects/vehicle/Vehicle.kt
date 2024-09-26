@@ -274,7 +274,8 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     }
 
     fun returnLatestInsurancePolicy() : Insurance {
-        insuranceLog.returnInsuranceLog().sortByDescending {x -> x.insurancePolicyStartDate.time }
+        insuranceLog.returnInsuranceLog()
+            .sortByDescending {x -> x.insurancePolicyStartDate.time }
         return insuranceLog.returnInsuranceLog().first()
     }
 

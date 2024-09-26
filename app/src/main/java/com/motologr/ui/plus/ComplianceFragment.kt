@@ -34,6 +34,7 @@ class ComplianceFragment : Fragment() {
         binding.textRegExpirePrompt.text = "When does your current registration expire?"
         binding.textRoadUserChargesPrompt.text = "Does your vehicle use Road User Charges (RUCs)?"
 
+        setRoadUserChargesRadioGroupVisibility(false)
         binding.radioButtonRucNo.setOnClickListener {
             setRoadUserChargesRadioGroupVisibility(false)
         }

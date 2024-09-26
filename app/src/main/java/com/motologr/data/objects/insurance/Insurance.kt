@@ -116,9 +116,8 @@ class Insurance (var id : Int,
     }
 
     fun getNextBillingDate() : Date {
-
         val insuranceBills = insuranceBillLog.returnInsuranceBillLog()
-        insuranceBills.sortBy{ x -> x.billingDate.time }
+        insuranceBills.sortBy { x -> x.billingDate.time }
 
         for (insuranceBilling in insuranceBills) {
             if (insuranceBilling.billingDate > Calendar.getInstance().time) {
@@ -229,6 +228,10 @@ class Insurance (var id : Int,
 
         val diff = (nextBillingDt.time - currentDt.time)
         val days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+
+        if (days.toInt() == 0) {
+            return "N/A"
+        }
 
         return "$days days"
     }

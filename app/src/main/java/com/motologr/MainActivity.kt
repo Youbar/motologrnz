@@ -247,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                     vehicleOptions.add("Fuel")
                     vehicleOptions.add("Maintenance")
                     vehicleOptions.add("Insurance")
-                    vehicleOptions.add("Expenses")
+                    vehicleOptions.add("Settings")
 
                     val vehicleId = vehicle?.id!!
 
@@ -276,7 +276,7 @@ class MainActivity : AppCompatActivity() {
         else if (optionName == "Fuel") {
             navigationController.navigate(R.id.nav_fuel_logging)
         }
-        else if (optionName == "Expenses") {
+        else if (optionName == "Settings") {
             navigationController.navigate(R.id.nav_expenses)
         }
     }

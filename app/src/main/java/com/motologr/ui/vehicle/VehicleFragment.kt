@@ -38,6 +38,7 @@ import com.motologr.data.DataManager
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.ui.theme.AppTheme
+import kotlin.math.exp
 
 class VehicleFragment : Fragment() {
 
@@ -71,12 +72,15 @@ class VehicleFragment : Fragment() {
             binding.textCar.text = it
         }
 
+        val expensesNavigate = {
+            findNavController().navigate(R.id.nav_expenses)
+        }
         val composeView = root.findViewById<ComposeView>(R.id.composeView_vehicle)
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    OutlinedCards(viewModel)
+                    OutlinedCards(viewModel, expensesNavigate)
                 }
             }
         }
@@ -141,7 +145,7 @@ class VehicleFragment : Fragment() {
 }
 
 @Composable
-fun OutlinedCards(viewModel : VehicleViewModel) {
+fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit) {
     Column {
         Row(modifier = Modifier
             .padding(8.dp)
@@ -181,7 +185,7 @@ fun OutlinedCards(viewModel : VehicleViewModel) {
 
             val currentCosts = viewModel.textCurrentCosts.observeAsState("")
             val projectedCosts = viewModel.textProjectedCosts.observeAsState("")
-            ExpensesCard(cardModifier, currentCosts, projectedCosts)
+            ExpensesCard(cardModifier, currentCosts, projectedCosts, expensesNavigate)
         }
     }
 }
@@ -298,14 +302,16 @@ fun TopTwoColumnText(text : String, textAlign : TextAlign) {
 fun ExpensesCard(
     cardModifier: Modifier,
     currentAmount : State<String>,
-    projectedAmount : State<String>
+    projectedAmount : State<String>,
+    onClick : () -> Unit = {}
 ) {
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
         border = BorderStroke(1.dp, Color.Black),
-        modifier = cardModifier
+        modifier = cardModifier,
+        onClick = onClick
     ) {
         Text(
             text = "Expenses",
