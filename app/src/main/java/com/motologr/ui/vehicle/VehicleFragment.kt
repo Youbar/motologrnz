@@ -204,7 +204,6 @@ fun ComplianceCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        border = BorderStroke(1.dp, Color.Black),
         modifier = cardModifier
     ) {
         Text(
@@ -253,7 +252,6 @@ fun InsuranceCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        border = BorderStroke(1.dp, Color.Black),
         modifier = cardModifier
     ) {
         Text(
@@ -303,7 +301,7 @@ fun ExpensesCard(
     cardModifier: Modifier,
     currentAmount : State<String>,
     projectedAmount : State<String>,
-    onClick : () -> Unit = {}
+    onClick : () -> Unit
 ) {
     OutlinedCard(
         colors = CardDefaults.cardColors(

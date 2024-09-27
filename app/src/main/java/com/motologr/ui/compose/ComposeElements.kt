@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.motologr.data.DataHelper
-import com.motologr.data.objects.reg.Reg
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -141,11 +140,11 @@ fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modi
 
 @Composable
 fun StringInput(stringMutable : MutableState<String>, stringLabel : String, modifier: Modifier = Modifier) {
-    var priceObserver by remember { stringMutable }
+    var stringObserver by remember { stringMutable }
     OutlinedTextField(
-        value = priceObserver,
+        value = stringObserver,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-        onValueChange = { priceObserver = it },
+        onValueChange = { stringObserver = it },
         label = { Text(stringLabel) },
         modifier = modifier.fillMaxWidth()
     )

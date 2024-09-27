@@ -50,6 +50,13 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_vehicle_settings"
+        android:name="com.motologr.ui.vehicle.settings.VehicleSettingsFragment"
+        android:label="@string/nav_vehicle_settings_fragment"
+        tools:layout="@layout/fragment_vehicle_settings" >
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_plus"
         android:name="com.motologr.ui.plus.PlusFragment"
         android:label="@string/menu_plus"

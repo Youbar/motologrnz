@@ -277,7 +277,7 @@ class MainActivity : AppCompatActivity() {
             navigationController.navigate(R.id.nav_fuel_logging)
         }
         else if (optionName == "Settings") {
-            navigationController.navigate(R.id.nav_expenses)
+            navigationController.navigate(R.id.nav_vehicle_settings)
         }
     }
 

@@ -73,7 +73,7 @@ class WofFragment : Fragment() {
 
         var monthsToAdd = 12
 
-        if (vehicle.year < 2000) {
+        if (vehicle.modelYear < 2000) {
             monthsToAdd = 6
         }
 

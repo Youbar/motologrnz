@@ -18,10 +18,11 @@
     <string name="drawer_close">Close Drawer</string>
     <string name="menu_plus">Add New Vehicle</string>
 
+    <!-- Navigation Labels -->
     <string name="nav_historical_rucs_fragment">Record RUCs</string>
     <string name="nav_historical_reg_fragment">Record Registration</string>
     <string name="nav_historical_wof_fragment">Record WOF</string>
-
+    <string name="nav_vehicle_settings_fragment">Vehicle Settings</string>
 
     <!-- Preference Titles -->
     <string name="maintenance_header">Maintenance</string>

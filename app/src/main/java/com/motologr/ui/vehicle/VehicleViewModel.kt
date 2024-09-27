@@ -1,12 +1,8 @@
 package com.motologr.ui.vehicle
 
-import android.content.SharedPreferences
-import android.provider.ContactsContract.Data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.preference.PreferenceManager
-import com.motologr.R
 import com.motologr.data.DataManager
 import com.motologr.data.objects.vehicle.Vehicle
 import java.math.RoundingMode
@@ -115,7 +111,7 @@ class VehicleViewModel : ViewModel() {
     val textProjectedCosts: LiveData<String> = _textProjectedCosts
 
     private fun updateFieldsForVehicle(vehicle: Vehicle) {
-        _textVehicle.value = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.year.toString()
+        _textVehicle.value = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.modelYear.toString()
         _textWOFDue.value = vehicle.returnWofExpiry()
         _textRegDue.value = vehicle.returnRegExpiry()
         _isRoadUserChargesDisplayed.value = vehicle.isUseRoadUserCharges

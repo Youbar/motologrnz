@@ -1,9 +1,7 @@
 package com.motologr.data.objects.vehicle
 
-import android.provider.ContactsContract.Data
 import com.motologr.MainActivity
 import com.motologr.data.DataHelper
-import com.motologr.data.DataManager
 import com.motologr.data.logging.Loggable
 import com.motologr.data.objects.reg.Reg
 import com.motologr.data.logging.reg.RegLog
@@ -17,7 +15,6 @@ import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.objects.fuel.Fuel
 import com.motologr.data.objects.insurance.Insurance
-import com.motologr.data.objects.reg.RegEntity
 import com.motologr.data.objects.ruc.Ruc
 import com.motologr.data.objects.ruc.RucEntity
 import java.math.BigDecimal
@@ -25,8 +22,10 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-class Vehicle (val id: Int, var brandName: String, var modelName: String, var year: Int,
+class Vehicle (val id: Int, var brandName: String, var modelName: String, var modelYear: Int,
                private var expiryWOF: Date, private var regExpiry: Date, private var odometer: Int) {
+
+    val vehicleSettings : VehicleSettings = VehicleSettings(brandName, modelName, modelYear)
 
     var vehicleImage: Int = 0
 
@@ -54,6 +53,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     }
 
     var isUseRoadUserCharges : Boolean = false
+    // Road User Charges Held at creation of vehicle
     var roadUserChargesHeld : Int = -1
 
     fun submitRUCs(isUseRoadUserCharges: Boolean, roadUserChargesHeld : Int) {
@@ -321,7 +321,7 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var ye
     }
 
     fun convertToVehicleEntity() : VehicleEntity {
-        val vehicleEntity = VehicleEntity(id, brandName, modelName, year, expiryWOF, regExpiry, odometer, vehicleImage, isUseRoadUserCharges, roadUserChargesHeld)
+        val vehicleEntity = VehicleEntity(id, brandName, modelName, modelYear, expiryWOF, regExpiry, odometer, vehicleImage, isUseRoadUserCharges, roadUserChargesHeld)
         return vehicleEntity
     }
 
