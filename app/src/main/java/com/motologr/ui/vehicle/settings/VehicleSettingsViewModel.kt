@@ -88,7 +88,12 @@ class VehicleSettingsViewModel : ViewModel() {
 
         isUseRucsBoolean.value = activeVehicle.isUseRoadUserCharges
         isUseRucsText.value = getRucsInput(activeVehicle.isUseRoadUserCharges)
-        isUseRucsInput.value = activeVehicle.roadUserChargesHeld.toString()
+
+        val roadUserChargesHeld = activeVehicle.roadUserChargesHeld
+        if (roadUserChargesHeld == -1)
+            isUseRucsInput.value = ""
+        else
+            isUseRucsInput.value = roadUserChargesHeld.toString()
     }
 
     var displayToastMessage: (String) -> Unit = { message : String -> }

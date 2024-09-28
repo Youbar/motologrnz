@@ -125,7 +125,7 @@
             android:ems="6"
             android:inputType="number"
             android:textAlignment="center"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/black"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

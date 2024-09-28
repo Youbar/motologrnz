@@ -53,8 +53,13 @@ object DataHelper {
             return false
         }
 
-        if (input.toIntOrNull() == 0) {
+        if (input.toInt() == 0) {
             Toast.makeText(context, "${inputName} cannot be 0.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if (input.toInt() < 0) {
+            Toast.makeText(context, "${inputName} cannot be less than 0.", Toast.LENGTH_LONG).show()
             return false
         }
 
