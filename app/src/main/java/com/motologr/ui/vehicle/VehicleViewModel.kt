@@ -3,7 +3,6 @@ package com.motologr.ui.vehicle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.motologr.data.DataManager
 import com.motologr.data.objects.vehicle.Vehicle
 import java.math.RoundingMode
 import java.text.DecimalFormat

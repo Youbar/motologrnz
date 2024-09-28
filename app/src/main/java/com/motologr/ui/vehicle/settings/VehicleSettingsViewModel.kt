@@ -1,10 +1,14 @@
 package com.motologr.ui.vehicle.settings
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.motologr.data.DataHelper
 import com.motologr.data.objects.vehicle.Vehicle
 
 class VehicleSettingsViewModel : ViewModel() {
+    lateinit var applicationContext : Context
+
     var makeInput = mutableStateOf("")
         private set
 
@@ -14,12 +18,15 @@ class VehicleSettingsViewModel : ViewModel() {
     var modelYearInput = mutableStateOf("")
         private set
 
-    private fun validateGeneralInputs() {
-
+    private fun validateGeneralInputs() : Boolean {
+        return DataHelper.isValidIntegerInput(modelYearInput.value, "Year", applicationContext)
     }
 
     var onUpdateClick = {
-        activeVehicle.updateVehicleName(makeInput.value, modelInput.value, modelYearInput.value.toInt())
+        if (validateGeneralInputs()) {
+            activeVehicle.updateVehicleName(makeInput.value, modelInput.value, modelYearInput.value.toInt())
+            displayToastMessage("General settings updated")
+        }
     }
 
     var isUseRucsBoolean = mutableStateOf(false)
@@ -44,12 +51,22 @@ class VehicleSettingsViewModel : ViewModel() {
 
     }
 
-    private fun validateComplianceInputs() {
-
+    private fun validateComplianceInputs() : Boolean {
+        if (isUseRucsBoolean.value)
+            return DataHelper.isValidIntegerInput(isUseRucsInput.value, "Current RUCs", applicationContext)
+        else
+            return true
     }
 
     var onSaveClick = {
-        activeVehicle.updateRucs(isUseRucsBoolean.value, isUseRucsInput.value.toInt())
+        if (validateComplianceInputs()) {
+            var rucsHeld : Int = -1
+            if (isUseRucsBoolean.value)
+                rucsHeld = isUseRucsInput.value.toInt()
+
+            activeVehicle.updateRucs(isUseRucsBoolean.value, rucsHeld)
+            displayToastMessage("Compliance settings updated")
+        }
     }
 
     lateinit var activeVehicle : Vehicle

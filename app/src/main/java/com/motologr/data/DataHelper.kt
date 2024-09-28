@@ -1,5 +1,7 @@
 package com.motologr.data
 
+import android.content.Context
+import android.widget.Toast
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -38,5 +40,24 @@ object DataHelper {
             return true
 
         return false
+    }
+
+    fun isValidIntegerInput(input : String, inputName : String, context : Context) : Boolean {
+        if (input.isEmpty()) {
+            Toast.makeText(context, "You must enter a value for ${inputName}.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if (input.toIntOrNull() == null) {
+            Toast.makeText(context, "${inputName} is too large or not a number.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if (input.toIntOrNull() == 0) {
+            Toast.makeText(context, "${inputName} cannot be 0.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        return true
     }
 }

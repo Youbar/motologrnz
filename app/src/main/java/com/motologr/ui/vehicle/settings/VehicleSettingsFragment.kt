@@ -62,6 +62,7 @@ class VehicleSettingsFragment : Fragment() {
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
                 .show()
         }
+        viewModel.applicationContext = requireContext().applicationContext
     }
 
     override fun onCreateView(
