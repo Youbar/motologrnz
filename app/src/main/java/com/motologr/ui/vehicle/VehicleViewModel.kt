@@ -151,11 +151,11 @@ class VehicleViewModel : ViewModel() {
 
     private var activeVehicle : Vehicle? = null
 
-    init {
-        activeVehicle = DataManager.returnActiveVehicle()
+    fun updateActiveVehicle(activeVehicle : Vehicle?) {
+        this.activeVehicle = activeVehicle
 
         if (activeVehicle != null) {
-            updateFieldsForVehicle(activeVehicle!!)
+            updateFieldsForVehicle(activeVehicle)
         }
     }
 

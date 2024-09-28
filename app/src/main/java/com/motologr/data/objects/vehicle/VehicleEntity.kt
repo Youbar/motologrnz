@@ -24,8 +24,7 @@ data class VehicleEntity(
 {
     fun convertToVehicleObject() : Vehicle {
         val vehicle = Vehicle(id, brandName, modelName, year, expiryWOF, regExpiry, odometer)
-        vehicle.isUseRoadUserCharges = isUseRoadUserCharges
-        vehicle.roadUserChargesHeld = roadUserChargesHeld
+        vehicle.convertVehicleEntityToVehicleSettings(this)
         vehicle.vehicleImage = vehicleImage
         return vehicle
     }
@@ -48,6 +47,8 @@ interface VehicleDao {
     @Query("UPDATE Vehicle SET isUseRoadUserCharges = :isUseRoadUserCharges, roadUserChargesHeld = :roadUserChargesHeld WHERE id = :vehicleId")
     fun updateVehicleRUCs(isUseRoadUserCharges: Boolean, roadUserChargesHeld : Int, vehicleId: Int)
 
+    @Query("UPDATE Vehicle SET brandName = :brandName, modelName = :modelName, year = :modelYear WHERE id = :vehicleId")
+    fun updateVehicleName(brandName: String, modelName : String, modelYear : Int, vehicleId: Int)
 
     @Insert
     fun insert(vararg vehicle: VehicleEntity)

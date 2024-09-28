@@ -66,6 +66,7 @@ class VehicleFragment : Fragment() {
             trackingFuelConsumption = sharedPref.getBoolean(getString(R.string.fuel_consumption_key), false)
 
         val viewModel = ViewModelProvider(this)[VehicleViewModel::class.java]
+        viewModel.updateActiveVehicle(DataManager.returnActiveVehicle())
         viewModel.updateOdometerView(trackingFuelConsumption)
 
         viewModel.textVehicle.observe(viewLifecycleOwner) {

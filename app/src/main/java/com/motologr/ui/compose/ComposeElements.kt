@@ -139,6 +139,18 @@ fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modi
 }
 
 @Composable
+fun NumberInput(numberMutable : MutableState<String>, numberLabel : String, modifier: Modifier = Modifier) {
+    var stringObserver by remember { numberMutable }
+    OutlinedTextField(
+        value = stringObserver,
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+        onValueChange = { stringObserver = it },
+        label = { Text(numberLabel) },
+        modifier = modifier.fillMaxWidth()
+    )
+}
+
+@Composable
 fun StringInput(stringMutable : MutableState<String>, stringLabel : String, modifier: Modifier = Modifier) {
     var stringObserver by remember { stringMutable }
     OutlinedTextField(

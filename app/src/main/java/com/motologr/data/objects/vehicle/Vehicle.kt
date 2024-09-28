@@ -22,10 +22,63 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-class Vehicle (val id: Int, var brandName: String, var modelName: String, var modelYear: Int,
+class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int,
                private var expiryWOF: Date, private var regExpiry: Date, private var odometer: Int) {
 
-    val vehicleSettings : VehicleSettings = VehicleSettings(brandName, modelName, modelYear)
+    private val vehicleSettings : VehicleSettings = VehicleSettings(brandName, modelName, modelYear, id)
+
+    val brandName : String
+        get() {
+            return vehicleSettings.brandName
+        }
+
+    val modelName : String
+        get() {
+            return vehicleSettings.modelName
+        }
+
+    val modelYear : Int
+        get() {
+            return vehicleSettings.modelYear
+        }
+
+    val isUseRoadUserCharges : Boolean
+        get() {
+            return vehicleSettings.isUseRoadUserCharges
+        }
+
+    val roadUserChargesHeld : Int
+        get() {
+            return vehicleSettings.roadUserChargesHeld
+        }
+
+    fun convertVehicleEntityToVehicleSettings(vehicleEntity: VehicleEntity) {
+        vehicleSettings.isUseRoadUserCharges = vehicleEntity.isUseRoadUserCharges
+        vehicleSettings.roadUserChargesHeld = vehicleEntity.roadUserChargesHeld
+    }
+
+    fun updateVehicleName(brandName: String, modelName : String, modelYear : Int) {
+        vehicleSettings.brandName = brandName
+        vehicleSettings.modelName = modelName
+        vehicleSettings.modelYear = modelYear
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.vehicleDao()
+                ?.updateVehicleName(brandName, modelName, modelYear, this.id)
+        }.start()
+    }
+
+    fun updateRucs(isUseRoadUserCharges: Boolean, roadUserChargesHeld : Int) {
+        vehicleSettings.isUseRoadUserCharges = isUseRoadUserCharges
+        vehicleSettings.roadUserChargesHeld = roadUserChargesHeld
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.vehicleDao()
+                ?.updateVehicleRUCs(isUseRoadUserCharges, roadUserChargesHeld, this.id)
+        }.start()
+    }
 
     var vehicleImage: Int = 0
 
@@ -49,21 +102,6 @@ class Vehicle (val id: Int, var brandName: String, var modelName: String, var mo
             MainActivity.getDatabase()
                 ?.vehicleDao()
                 ?.updateVehicleCompliance(expiryWOF, expiryReg, this.id)
-        }.start()
-    }
-
-    var isUseRoadUserCharges : Boolean = false
-    // Road User Charges Held at creation of vehicle
-    var roadUserChargesHeld : Int = -1
-
-    fun submitRUCs(isUseRoadUserCharges: Boolean, roadUserChargesHeld : Int) {
-        this.isUseRoadUserCharges = isUseRoadUserCharges
-        this.roadUserChargesHeld = roadUserChargesHeld
-
-        Thread {
-            MainActivity.getDatabase()
-                ?.vehicleDao()
-                ?.updateVehicleRUCs(isUseRoadUserCharges, roadUserChargesHeld, this.id)
         }.start()
     }
 

@@ -36,7 +36,7 @@ class VehicleExpensesTests : UnitTestBase() {
         vehicle.serviceLog.addServiceToServiceLog(service)
 
         val newWofDate = returnDate(2025, 3, 31)
-        val wof = Wof(wofDate, newWofDate, 45.0.toBigDecimal(), vehicle.id, "Avonhead Automotive")
+        val wof = Wof(wofDate, newWofDate, 45.0.toBigDecimal(), vehicle.id, "Avonhead Automotive", newWofDate)
         vehicle.wofLog.addWofToWofLog(wof)
 
         val total = vehicle.returnExpensesWithinFinancialYear()

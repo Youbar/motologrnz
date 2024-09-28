@@ -57,7 +57,7 @@ class ComplianceFragment : Fragment() {
                 }
 
                 DataManager.returnActiveVehicle()?.submitCompliance(wofExpiry, regExpiry)
-                DataManager.returnActiveVehicle()?.submitRUCs(isRoadUserCharges, roadUserChargesHeld)
+                DataManager.returnActiveVehicle()?.updateRucs(isRoadUserCharges, roadUserChargesHeld)
                 findNavController().navigate(R.id.nav_vehicle_1, null, NavOptions.Builder()
                     .setPopUpTo(R.id.nav_vehicle_1, true).build())
             }

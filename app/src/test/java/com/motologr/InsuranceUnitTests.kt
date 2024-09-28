@@ -6,6 +6,8 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class InsuranceUnitTests : UnitTestBase() {
     @Test
@@ -15,8 +17,9 @@ class InsuranceUnitTests : UnitTestBase() {
 
         val vehicle = returnDefaultVehicle()
         val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
-        insurance.generateInsuranceBills()
         vehicle.logInsurance(insurance)
+        val countDownLatch = CountDownLatch(1)
+        countDownLatch.await(100, TimeUnit.MILLISECONDS)
 
         assert(!vehicle.hasCurrentInsurance())
     }
@@ -28,8 +31,9 @@ class InsuranceUnitTests : UnitTestBase() {
 
         val vehicle = returnDefaultVehicle()
         val insurance = Insurance(0, "AA", calendar.time, 0, 0, 15.30.toBigDecimal(), calendar.time, 0)
-        insurance.generateInsuranceBills()
         vehicle.logInsurance(insurance)
+        val countDownLatch = CountDownLatch(1)
+        countDownLatch.await(100, TimeUnit.MILLISECONDS)
 
         assert(vehicle.hasCurrentInsurance())
     }
@@ -40,8 +44,9 @@ class InsuranceUnitTests : UnitTestBase() {
 
         val vehicle = returnDefaultVehicle()
         val insurance = Insurance(0, "AA", calendar.time, 0, 0, 15.30.toBigDecimal(), calendar.time, 0)
-        insurance.generateInsuranceBills()
         vehicle.logInsurance(insurance)
+        val countDownLatch = CountDownLatch(1)
+        countDownLatch.await(100, TimeUnit.MILLISECONDS)
 
         assert(vehicle.hasCurrentInsurance())
     }
