@@ -42,24 +42,35 @@ object DataHelper {
         return false
     }
 
-    fun isValidIntegerInput(input : String, inputName : String, context : Context) : Boolean {
+    private fun makeToast(toastText : String, context: Context?) {
+        if (context != null) {
+            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun isValidIntegerInput(input : String, inputName : String, context : Context?) : Boolean {
         if (input.isEmpty()) {
-            Toast.makeText(context, "You must enter a value for ${inputName}.", Toast.LENGTH_LONG).show()
+            makeToast("You must enter a value for $inputName.", context)
             return false
         }
 
         if (input.toIntOrNull() == null) {
-            Toast.makeText(context, "${inputName} is too large or not a number.", Toast.LENGTH_LONG).show()
+            makeToast("$inputName is too large or not a number.", context)
             return false
         }
 
         if (input.toInt() == 0) {
-            Toast.makeText(context, "${inputName} cannot be 0.", Toast.LENGTH_LONG).show()
+            makeToast("$inputName cannot be 0.", context)
             return false
         }
 
         if (input.toInt() < 0) {
-            Toast.makeText(context, "${inputName} cannot be less than 0.", Toast.LENGTH_LONG).show()
+            makeToast("$inputName cannot be less than 0.", context)
+            return false
+        }
+
+        if (input.contains(',') || input.contains('.')) {
+            makeToast("$inputName cannot contain decimal points.", context)
             return false
         }
 

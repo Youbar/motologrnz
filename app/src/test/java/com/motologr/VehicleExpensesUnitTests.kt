@@ -7,9 +7,9 @@ import com.motologr.data.objects.vehicle.Vehicle
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class VehicleExpensesTests : UnitTestBase() {
+class VehicleExpensesUnitTests : UnitTestBase() {
     @Test
-    fun vehicleExpensesTests_FinancialYear_NoInsurance() {
+    fun vehicleExpensesUnitTests_FinancialYear_NoInsurance() {
         // Create vehicle
         val wofDate = returnDate(2024, 7, 5)
         val regDate = returnDate(2024, 5, 14)

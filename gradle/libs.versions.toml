@@ -1,14 +1,24 @@
 [versions]
+core = "1.6.1"
+coreVersion = "1.6.1"
+junit = "4.13.2"
 kotlin = '2.0.0'
 legacySupportV4 = "1.0.0"
-lifecycleLivedataKtx = "2.8.5"
-lifecycleViewmodelKtx = "2.8.5"
-fragmentKtx = "1.5.6"
+lifecycleLivedataKtx = "2.8.6"
+lifecycleViewmodelKtx = "2.8.6"
+fragmentKtx = "1.8.3"
+coreKtx = "1.6.1"
+mockitoCore = "4.1.0"
 [libraries]
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
+androidx-core-v121 = { module = "androidx.test:core", version.ref = "coreVersion" }
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+androidx-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtx" }
+junit = { module = "junit:junit", version.ref = "junit" }
+mockito-core = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoCore" }
 
 [plugins]
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 'kotlin' }
