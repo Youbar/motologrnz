@@ -1,6 +1,7 @@
 package com.motologr.data.objects.fuel
 
 import com.motologr.data.DataManager
+import com.motologr.data.EnumConstants
 import com.motologr.data.logging.Loggable
 import java.math.BigDecimal
 import java.util.Date
@@ -15,16 +16,16 @@ class Fuel(var fuelType: Int,
     // type 0 = 91, 1 = 95, 2 = 98, 3 = diesel
     fun returnFuelType() : String {
         return when (fuelType) {
-            0 -> {
+            EnumConstants.FuelType.Unleaded91.ordinal -> {
                 "91 Unleaded"
             }
-            1 -> {
+            EnumConstants.FuelType.Unleaded95.ordinal -> {
                 "95 Unleaded"
             }
-            2 -> {
+            EnumConstants.FuelType.Unleaded98.ordinal -> {
                 "98 Unleaded"
             }
-            3 -> {
+            EnumConstants.FuelType.Diesel.ordinal -> {
                 "Diesel"
             }
             else -> {

@@ -6,6 +6,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults.shape
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -19,6 +49,10 @@ import com.motologr.data.DataManager
 import com.motologr.data.objects.fuel.Fuel
 import com.motologr.data.getDate
 import com.motologr.data.toCalendar
+import com.motologr.ui.compose.CurrencyInput
+import com.motologr.ui.compose.DatePickerModal
+import com.motologr.ui.compose.NumberInput
+import com.motologr.ui.theme.AppTheme
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.Calendar
@@ -38,102 +72,44 @@ class FuelFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val addViewModel =
-            ViewModelProvider(this).get(FuelViewModel::class.java)
+        val fuelViewModel =
+            ViewModelProvider(this)[FuelViewModel::class.java]
 
         _binding = FragmentFuelBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
 
+        val composeView = root.findViewById<ComposeView>(R.id.compose_view_fuel)
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                AppTheme {
+                    FuelLoggingInterface(fuelViewModel)
+                }
+            }
+        }
+
 
         val bundle: Bundle? = arguments
-        val logPos: Int? = arguments?.getInt("position");
+        val logPos: Int? = arguments?.getInt("position")
 
         var trackingFuelConsumption = false
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
 
         if (sharedPref != null) {
             trackingFuelConsumption = sharedPref.getBoolean(getString(R.string.fuel_consumption_key), false)
-            binding.textFuelOdoPrompt.isVisible = trackingFuelConsumption
-            binding.editTextFuelOdo.isVisible = trackingFuelConsumption
-            binding.textFuelLitresPrompt.isVisible = trackingFuelConsumption
-            binding.editTextFuelLitres.isVisible = trackingFuelConsumption
-            binding.textFuelEstimate.isVisible = trackingFuelConsumption
-            binding.textFuelEstimateField.isVisible = trackingFuelConsumption
+            // View model input here
         }
-
-        addEventListeners(trackingFuelConsumption)
 
         if (logPos != null) {
             DataManager.updateTitle(activity, "View Fuel Record")
-            var fuel: Fuel = DataManager.returnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
-            setInterfaceToReadOnly(fuel)
+            val fuel: Fuel = DataManager.returnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
+            //setInterfaceToReadOnly(fuel)
         } else {
             DataManager.updateTitle(activity, "Record Fuel Purchase")
         }
 
         return root
-    }
-
-    private fun UpdateDatePicker(date: Date) {
-        val calendar: Calendar = Calendar.getInstance().toCalendar(date)
-        val day =  calendar.get(Calendar.DAY_OF_MONTH)
-        val month =  calendar.get(Calendar.MONTH)
-        val year = calendar.get(Calendar.YEAR)
-        binding.editTextFuelDate.updateDate(year, month, day)
-    }
-
-    private fun setInterfaceToReadOnly(fuel: Fuel) {
-        binding.radioGroupFuelType.check(binding.radioGroupFuelType.getChildAt(fuel.fuelType).id)
-        binding.radioButtonFuel91.isClickable = false
-        binding.radioButtonFuel91.isEnabled = false
-        binding.radioButtonFuel95.isClickable = false
-        binding.radioButtonFuel95.isEnabled = false
-        binding.radioButtonFuel98.isClickable = false
-        binding.radioButtonFuel98.isEnabled = false
-        binding.radioButtonFuelDiesel.isClickable = false
-        binding.radioButtonFuelDiesel.isEnabled = false
-
-        binding.editTextFuelPrice.isEnabled = false
-        binding.editTextFuelPrice.setText(fuel.price.toString())
-
-        binding.editTextFuelLitres.isEnabled = false
-        binding.editTextFuelLitres.setText(fuel.litres.toString())
-
-        binding.editTextFuelDate.isEnabled = false
-        UpdateDatePicker(fuel.purchaseDate)
-
-        binding.editTextFuelOdo.isEnabled = false
-        binding.editTextFuelOdo.setText(fuel.odometerReading.toString())
-
-        binding.buttonFuelAdd.isVisible = false
-        binding.buttonFuelAdd.isEnabled = false
-    }
-
-    private fun addEventListeners(trackingFuelConsumption: Boolean) {
-
-        binding.buttonFuelAdd.setOnClickListener {
-            convertFragmentToFuelObject(trackingFuelConsumption)
-        }
-
-        binding.editTextFuelPrice.doAfterTextChanged {
-            fuelPriceOrVolumeModified()
-        }
-
-        binding.editTextFuelLitres.doAfterTextChanged {
-            fuelPriceOrVolumeModified()
-        }
-    }
-
-    private fun fuelPriceOrVolumeModified() {
-        val price: String = binding.editTextFuelPrice.text.toString()
-        val litres: String = binding.editTextFuelLitres.text.toString()
-
-        if (price.isNotEmpty() && litres.isNotEmpty()) {
-            binding.textFuelEstimateField.text = "$" + DataManager.roundOffDecimal(price.toDouble() / litres.toDouble())
-        } else {
-            binding.textFuelEstimateField.text = ""
-        }
     }
 
     override fun onDestroyView() {
@@ -153,7 +129,7 @@ class FuelFragment : Fragment() {
             .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val purchaseDate: Date = binding.editTextFuelDate.getDate()
 
-        var fuel: Fuel
+        val fuel: Fuel
         if (trackingFuelConsumption) {
             val litres: BigDecimal = binding.editTextFuelLitres.text.toString()
                 .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
@@ -161,30 +137,12 @@ class FuelFragment : Fragment() {
 
             fuel = Fuel(fuelType, price, litres, purchaseDate, odometer, vehicleId)
         } else {
-            fuel = Fuel(fuelType, price, -1.0.toBigDecimal(), purchaseDate, -1, vehicleId);
+            fuel = Fuel(fuelType, price, (-1.0).toBigDecimal(), purchaseDate, -1, vehicleId)
         }
 
         DataManager.returnActiveVehicle()?.logFuel(fuel)
         findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1, null, NavOptions.Builder()
             .setPopUpTo(R.id.nav_vehicle_1, true).build())
-    }
-
-    private fun parseFuelTypeRadioGroup() : Int {
-        val radioButtonId = binding.radioGroupFuelType.checkedRadioButtonId
-        val checkedRadioButton = view?.findViewById<RadioButton>(radioButtonId)
-        val radioButtonText = checkedRadioButton?.text
-
-        if (radioButtonText == "91 Unleaded") {
-            return 0
-        } else if (radioButtonText == "95 Unleaded") {
-            return 1
-        } else if (radioButtonText == "98 Unleaded") {
-            return 2
-        } else if (radioButtonText == "Diesel") {
-            return 3
-        }
-
-        return -1
     }
 
     private fun displayValidationError(toastText : String) {
@@ -220,5 +178,73 @@ class FuelFragment : Fragment() {
         }
 
         return true
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FuelLoggingInterface(viewModel: FuelViewModel) {
+    OutlinedCard(modifier = Modifier
+        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
+        Column(modifier = Modifier
+            .padding(16.dp, 8.dp, 16.dp, 8.dp)
+            .height(IntrinsicSize.Min)){
+            Text("Record Fuel Purchase", fontSize = 24.sp,
+                modifier = Modifier
+                    .padding(PaddingValues(0.dp, 0.dp))
+                    .fillMaxWidth(),
+                lineHeight = 1.em,
+                textAlign = TextAlign.Center)
+            DatePickerModal(viewModel.fuelDate, "Purchase Date")
+            CurrencyInput(viewModel.fuelPrice, "Purchase Price")
+            RowOfFuelTypes(viewModel.is91Checked, viewModel.is95Checked, viewModel.is98Checked, viewModel.isDieselChecked,
+                viewModel.onBoxChecked)
+            HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp)))
+            Text("Fuel Consumption Data", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 20.sp)
+            NumberInput(viewModel.fuelOdometer, "Odometer")
+            CurrencyInput(viewModel.fuelLitres, "Litres")
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                .fillMaxWidth()) {
+                Button(onClick = {}, contentPadding = PaddingValues(8.dp)) {
+                    Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RowOfFuelTypes(is91Checked : MutableState<Boolean>, is95Checked : MutableState<Boolean>,
+                   is98Checked : MutableState<Boolean>, isDieselChecked : MutableState<Boolean>,
+                   onBoxChecked: (Int) -> Unit) {
+    Row {
+        Column {
+            FuelTypeCheckbox(is91Checked, "91 Unleaded", onBoxChecked, 0)
+            FuelTypeCheckbox(is95Checked, "95 Unleaded", onBoxChecked, 1)
+        }
+        Column (horizontalAlignment = Alignment.End) {
+            FuelTypeCheckbox(is98Checked, "98 Unleaded", onBoxChecked, 2)
+            FuelTypeCheckbox(isDieselChecked, "Diesel", onBoxChecked, 3)
+        }
+    }
+}
+
+@Composable
+fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : String, onBoxChecked : (Int) -> Unit, fuelTypeId : Int) {
+    var boxChecked by remember { checkboxBoolean }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            checkboxText
+        )
+        Checkbox(
+            checked = boxChecked,
+            onCheckedChange = { boxChecked = it;
+                onBoxChecked(fuelTypeId)
+            }
+        )
     }
 }

@@ -38,7 +38,6 @@ import com.motologr.data.DataManager
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.ui.theme.AppTheme
-import kotlin.math.exp
 
 class VehicleFragment : Fragment() {
 
@@ -76,7 +75,7 @@ class VehicleFragment : Fragment() {
         val expensesNavigate = {
             findNavController().navigate(R.id.nav_expenses)
         }
-        val composeView = root.findViewById<ComposeView>(R.id.composeView_vehicle)
+        val composeView = root.findViewById<ComposeView>(R.id.compose_view_vehicle)
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -282,16 +281,16 @@ fun InsuranceCard(
 
 @Composable
 fun TopTwoColumnText(text : String, textAlign : TextAlign) {
-    var modifer = Modifier
+    var modifier = Modifier
         .padding(16.dp, 0.dp, 0.dp, 0.dp)
 
     if (textAlign == TextAlign.Right)
-        modifer = Modifier
+        modifier = Modifier
             .padding(0.dp, 0.dp, 16.dp, 0.dp)
 
     Text(
         text = text,
-        modifier = modifer,
+        modifier = modifier,
         fontSize = 14.sp,
         textAlign = textAlign,
     )

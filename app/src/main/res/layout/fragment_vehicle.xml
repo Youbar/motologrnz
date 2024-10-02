@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_car" />
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/composeView_vehicle"
+        android:id="@+id/compose_view_vehicle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
