@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -36,8 +35,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
@@ -47,16 +44,10 @@ import com.motologr.R
 import com.motologr.databinding.FragmentFuelBinding
 import com.motologr.data.DataManager
 import com.motologr.data.objects.fuel.Fuel
-import com.motologr.data.getDate
-import com.motologr.data.toCalendar
 import com.motologr.ui.compose.CurrencyInput
 import com.motologr.ui.compose.DatePickerModal
 import com.motologr.ui.compose.NumberInput
 import com.motologr.ui.theme.AppTheme
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.util.Calendar
-import java.util.Date
 
 
 class FuelFragment : Fragment() {
@@ -76,8 +67,35 @@ class FuelFragment : Fragment() {
             ViewModelProvider(this)[FuelViewModel::class.java]
 
         _binding = FragmentFuelBinding.inflate(inflater, container, false)
-
         val root: View = binding.root
+
+        val bundle: Bundle? = arguments
+        val logPos: Int? = arguments?.getInt("position")
+
+        var isTrackingFuelConsumption = false
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
+        if (sharedPref != null) {
+            isTrackingFuelConsumption =
+                sharedPref.getBoolean(getString(R.string.fuel_consumption_key), false)
+        }
+
+        fuelViewModel.displayToastMessage = { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
+                .show()
+        }
+        fuelViewModel.initFuelViewModel(isTrackingFuelConsumption)
+        fuelViewModel.navigateToVehicle = {
+            findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1, null, NavOptions.Builder()
+                .setPopUpTo(R.id.nav_vehicle_1, true).build())
+        }
+
+        if (logPos != null) {
+            DataManager.updateTitle(activity, "View Fuel Record")
+            val fuel: Fuel = DataManager.returnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
+            //setInterfaceToReadOnly(fuel)
+        } else {
+            DataManager.updateTitle(activity, "Record Fuel Purchase")
+        }
 
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_fuel)
         composeView.apply {
@@ -89,95 +107,12 @@ class FuelFragment : Fragment() {
             }
         }
 
-
-        val bundle: Bundle? = arguments
-        val logPos: Int? = arguments?.getInt("position")
-
-        var trackingFuelConsumption = false
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
-
-        if (sharedPref != null) {
-            trackingFuelConsumption = sharedPref.getBoolean(getString(R.string.fuel_consumption_key), false)
-            // View model input here
-        }
-
-        if (logPos != null) {
-            DataManager.updateTitle(activity, "View Fuel Record")
-            val fuel: Fuel = DataManager.returnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
-            //setInterfaceToReadOnly(fuel)
-        } else {
-            DataManager.updateTitle(activity, "Record Fuel Purchase")
-        }
-
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun convertFragmentToFuelObject(trackingFuelConsumption: Boolean) {
-
-        if (!isValidFuelInputs(trackingFuelConsumption)) {
-            return
-        }
-
-        val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
-        val fuelType: Int = parseFuelTypeRadioGroup()
-        val price: BigDecimal = binding.editTextFuelPrice.text.toString()
-            .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-        val purchaseDate: Date = binding.editTextFuelDate.getDate()
-
-        val fuel: Fuel
-        if (trackingFuelConsumption) {
-            val litres: BigDecimal = binding.editTextFuelLitres.text.toString()
-                .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-            val odometer: Int = binding.editTextFuelOdo.text.toString().toInt()
-
-            fuel = Fuel(fuelType, price, litres, purchaseDate, odometer, vehicleId)
-        } else {
-            fuel = Fuel(fuelType, price, (-1.0).toBigDecimal(), purchaseDate, -1, vehicleId)
-        }
-
-        DataManager.returnActiveVehicle()?.logFuel(fuel)
-        findNavController().navigate(R.id.action_nav_fuel_to_nav_vehicle_1, null, NavOptions.Builder()
-            .setPopUpTo(R.id.nav_vehicle_1, true).build())
-    }
-
-    private fun displayValidationError(toastText : String) {
-        Toast.makeText(activity, toastText, Toast.LENGTH_LONG).show()
-    }
-
-    private fun isValidFuelInputs(trackingFuelConsumption: Boolean) : Boolean {
-        if (parseFuelTypeRadioGroup() == -1) {
-            displayValidationError("Please select a fuel type")
-            return false
-        }
-
-        if (binding.editTextFuelPrice.text.toString().isEmpty()) {
-            displayValidationError("Please input a fuel price")
-            return false
-        }
-
-        if (trackingFuelConsumption && binding.editTextFuelLitres.text.toString().isEmpty()) {
-            displayValidationError("Please input a fuel quantity")
-            return false
-        }
-
-        if (trackingFuelConsumption && binding.editTextFuelLitres.text.toString() == "0") {
-            displayValidationError("You cannot record a value of 0 litres purchased")
-            return false
-        }
-
-        // DatePicker does not need validation
-
-        if (trackingFuelConsumption && binding.editTextFuelOdo.text.toString().isEmpty()) {
-            displayValidationError("Please input odometer reading")
-            return false
-        }
-
-        return true
     }
 }
 
@@ -196,18 +131,22 @@ fun FuelLoggingInterface(viewModel: FuelViewModel) {
                     .fillMaxWidth(),
                 lineHeight = 1.em,
                 textAlign = TextAlign.Center)
-            DatePickerModal(viewModel.fuelDate, "Purchase Date")
+            DatePickerModal(viewModel.fuelDate, "Purchase Date", true)
             CurrencyInput(viewModel.fuelPrice, "Purchase Price")
             RowOfFuelTypes(viewModel.is91Checked, viewModel.is95Checked, viewModel.is98Checked, viewModel.isDieselChecked,
                 viewModel.onBoxChecked)
-            HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp)))
-            Text("Fuel Consumption Data", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 20.sp)
-            NumberInput(viewModel.fuelOdometer, "Odometer")
-            CurrencyInput(viewModel.fuelLitres, "Litres")
+
+            if (viewModel.isTrackingFuelConsumption.value) {
+                HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp)))
+                Text("Fuel Consumption Data", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 20.sp)
+                NumberInput(viewModel.fuelOdometer, "Odometer")
+                CurrencyInput(viewModel.fuelLitres, "Litres")
+            }
+            
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier
                 .padding(0.dp, 32.dp, 0.dp, 0.dp)
                 .fillMaxWidth()) {
-                Button(onClick = {}, contentPadding = PaddingValues(8.dp)) {
+                Button(onClick = viewModel.onClick, contentPadding = PaddingValues(8.dp)) {
                     Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
                 }
             }

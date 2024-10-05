@@ -6,6 +6,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 object DataHelper {
@@ -23,8 +24,18 @@ object DataHelper {
 
     private val numericalDateFormat = SimpleDateFormat("dd/MM/yyyy")
 
+    fun parseNumericalDateFormat(dateString : String): Date {
+        return numericalDateFormat.parse(dateString)
+    }
+
     fun convertStringToNumericalDate(dateString : String) : Date {
         return numericalDateFormat.parse(dateString)
+    }
+
+    fun getCurrentDateString() : String {
+        val currentDt = Calendar.getInstance().time
+
+        return numericalDateFormat.format(currentDt.time)
     }
 
     fun getMinDt(): Date {
@@ -42,35 +53,67 @@ object DataHelper {
         return false
     }
 
-    private fun makeToast(toastText : String, context: Context?) {
-        if (context != null) {
-            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+    fun isValidStringInput(input : String, inputName : String, makeToast : (String) -> Unit) : Boolean {
+        if (input.isEmpty()) {
+            makeToast("You must enter a value for $inputName.")
+            return false
         }
+
+        return true
     }
 
-    fun isValidIntegerInput(input : String, inputName : String, context : Context?) : Boolean {
+    fun isValidIntegerInput(input : String, inputName : String, makeToast : (String) -> Unit) : Boolean {
         if (input.isEmpty()) {
-            makeToast("You must enter a value for $inputName.", context)
+            makeToast("You must enter a value for $inputName.")
             return false
         }
 
         if (input.toIntOrNull() == null) {
-            makeToast("$inputName is too large or not a number.", context)
+            makeToast("$inputName is too large or not a number.")
             return false
         }
 
         if (input.toInt() == 0) {
-            makeToast("$inputName cannot be 0.", context)
+            makeToast("$inputName cannot be 0.")
             return false
         }
 
         if (input.toInt() < 0) {
-            makeToast("$inputName cannot be less than 0.", context)
+            makeToast("$inputName cannot be less than 0.")
             return false
         }
 
         if (input.contains(',') || input.contains('.')) {
-            makeToast("$inputName cannot contain decimal points.", context)
+            makeToast("$inputName cannot contain decimal points.")
+            return false
+        }
+
+        return true
+    }
+
+    fun isValidCurrencyInput(input : String, inputName : String, makeToast : (String) -> Unit) : Boolean {
+        if (input.isEmpty()) {
+            makeToast("You must enter a value for $inputName.")
+            return false
+        }
+
+        if (input.toBigDecimalOrNull() == null) {
+            makeToast("$inputName is too large or not a valid number.")
+            return false
+        }
+
+        if (input.toDouble() < 0) {
+            makeToast("$inputName cannot be less than 0.")
+            return false
+        }
+
+        if (input.contains(',')) {
+            makeToast("$inputName cannot contain parse ',' as a decimal.")
+            return false
+        }
+
+        if (input.count { char -> char == '.'} > 1) {
+            makeToast("$inputName contains too many decimal points.")
             return false
         }
 

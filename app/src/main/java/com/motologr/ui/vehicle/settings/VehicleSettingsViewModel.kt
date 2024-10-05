@@ -19,7 +19,7 @@ class VehicleSettingsViewModel : ViewModel() {
         private set
 
     private fun validateGeneralInputs() : Boolean {
-        return DataHelper.isValidIntegerInput(modelYearInput.value, "Year", applicationContext)
+        return DataHelper.isValidIntegerInput(modelYearInput.value, "Year", displayToastMessage)
     }
 
     var onUpdateClick = {
@@ -53,7 +53,7 @@ class VehicleSettingsViewModel : ViewModel() {
 
     private fun validateComplianceInputs() : Boolean {
         return if (isUseRucsBoolean.value)
-            DataHelper.isValidIntegerInput(isUseRucsInput.value, "Current RUCs", applicationContext)
+            DataHelper.isValidIntegerInput(isUseRucsInput.value, "Current RUCs", displayToastMessage)
         else
             true
     }

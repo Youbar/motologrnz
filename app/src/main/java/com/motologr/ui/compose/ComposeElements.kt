@@ -60,12 +60,18 @@ fun SliderWithUnits(registrationPrice: MutableState<String> = mutableStateOf("")
 
 @ExperimentalMaterial3Api
 @Composable
-fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String) {
+fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String, hasDefaultValue : Boolean = false) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
-    selectedDate.value = datePickerState.selectedDateMillis?.let {
-        convertMillisToDate(it)
-    } ?: ""
+    if (!hasDefaultValue) {
+        selectedDate.value = datePickerState.selectedDateMillis?.let {
+            convertMillisToDate(it)
+        } ?: ""
+    } else {
+        selectedDate.value = datePickerState.selectedDateMillis?.let {
+            convertMillisToDate(it)
+        } ?: selectedDate.value
+    }
 
     Box(
         modifier = Modifier.fillMaxWidth()
