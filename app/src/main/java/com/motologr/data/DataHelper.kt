@@ -28,6 +28,10 @@ object DataHelper {
         return numericalDateFormat.parse(dateString)
     }
 
+    fun formatNumericalDateFormat(date : Date): String {
+        return numericalDateFormat.format(date)
+    }
+
     fun convertStringToNumericalDate(dateString : String) : Date {
         return numericalDateFormat.parse(dateString)
     }

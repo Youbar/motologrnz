@@ -1,6 +1,5 @@
 package com.motologr.ui.add.fuel
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.motologr.data.DataHelper
@@ -60,6 +59,17 @@ class FuelViewModel : ViewModel() {
     }
 
     var displayToastMessage: (String) -> Unit = { message : String -> }
+
+    private fun setCheckedFuelType(fuelType : Int) {
+        if (fuelType == EnumConstants.FuelType.Unleaded91.ordinal)
+            is91Checked.value = true
+        else if (fuelType == EnumConstants.FuelType.Unleaded95.ordinal)
+            is95Checked.value = true
+        else if (fuelType == EnumConstants.FuelType.Unleaded98.ordinal)
+            is98Checked.value = true
+        else if (fuelType == EnumConstants.FuelType.Diesel.ordinal)
+            isDieselChecked.value = true
+    }
 
     private fun returnCheckedFuelType() : Int {
         if (is91Checked.value)
@@ -133,5 +143,17 @@ class FuelViewModel : ViewModel() {
     fun initFuelViewModel(isTrackingFuelConsumption : Boolean) {
         this.isTrackingFuelConsumption.value = isTrackingFuelConsumption
         this.fuelDate.value = DataHelper.getCurrentDateString()
+    }
+
+    var isReadOnly = mutableStateOf(false)
+        private set
+
+    fun setViewModelToReadOnly(fuel : Fuel) {
+        isReadOnly.value = true
+        fuelDate.value = DataHelper.formatNumericalDateFormat(fuel.purchaseDate)
+        fuelPrice.value = fuel.price.toString()
+        setCheckedFuelType(fuel.fuelType)
+        fuelLitres.value = fuel.litres.toString()
+        fuelOdometer.value = fuel.odometerReading.toString()
     }
 }

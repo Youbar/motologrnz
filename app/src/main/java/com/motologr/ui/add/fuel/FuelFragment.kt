@@ -11,16 +11,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -32,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -92,7 +102,7 @@ class FuelFragment : Fragment() {
         if (logPos != null) {
             DataManager.updateTitle(activity, "View Fuel Record")
             val fuel: Fuel = DataManager.returnActiveVehicle()?.fuelLog?.returnFuel(logPos)!!
-            //setInterfaceToReadOnly(fuel)
+            fuelViewModel.setViewModelToReadOnly(fuel)
         } else {
             DataManager.updateTitle(activity, "Record Fuel Purchase")
         }
@@ -102,7 +112,10 @@ class FuelFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    FuelLoggingInterface(fuelViewModel)
+                    Column {
+                        FuelLoggingInterface(fuelViewModel)
+                        EditDeleteFABs({})
+                    }
                 }
             }
         }
@@ -121,7 +134,8 @@ class FuelFragment : Fragment() {
 fun FuelLoggingInterface(viewModel: FuelViewModel) {
     OutlinedCard(modifier = Modifier
         .padding(16.dp, 8.dp, 16.dp, 8.dp)
-        .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
+        .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
+        .height(IntrinsicSize.Min)) {
         Column(modifier = Modifier
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
             .height(IntrinsicSize.Min)){
@@ -131,23 +145,25 @@ fun FuelLoggingInterface(viewModel: FuelViewModel) {
                     .fillMaxWidth(),
                 lineHeight = 1.em,
                 textAlign = TextAlign.Center)
-            DatePickerModal(viewModel.fuelDate, "Purchase Date", true)
-            CurrencyInput(viewModel.fuelPrice, "Purchase Price")
+            DatePickerModal(viewModel.fuelDate, "Purchase Date", true, viewModel.isReadOnly.value)
+            CurrencyInput(viewModel.fuelPrice, "Purchase Price", isReadOnly = viewModel.isReadOnly.value)
             RowOfFuelTypes(viewModel.is91Checked, viewModel.is95Checked, viewModel.is98Checked, viewModel.isDieselChecked,
-                viewModel.onBoxChecked)
+                viewModel.onBoxChecked, viewModel.isReadOnly.value)
 
             if (viewModel.isTrackingFuelConsumption.value) {
                 HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp)))
                 Text("Fuel Consumption Data", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 20.sp)
-                NumberInput(viewModel.fuelOdometer, "Odometer")
-                CurrencyInput(viewModel.fuelLitres, "Litres")
+                NumberInput(viewModel.fuelOdometer, "Odometer", isReadOnly = viewModel.isReadOnly.value)
+                CurrencyInput(viewModel.fuelLitres, "Litres", isReadOnly = viewModel.isReadOnly.value)
             }
-            
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                .padding(0.dp, 32.dp, 0.dp, 0.dp)
-                .fillMaxWidth()) {
-                Button(onClick = viewModel.onClick, contentPadding = PaddingValues(8.dp)) {
-                    Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
+
+            if (!viewModel.isReadOnly.value) {
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                    .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                    .fillMaxWidth()) {
+                    Button(onClick = viewModel.onClick, contentPadding = PaddingValues(8.dp)) {
+                        Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
+                    }
                 }
             }
         }
@@ -157,21 +173,21 @@ fun FuelLoggingInterface(viewModel: FuelViewModel) {
 @Composable
 fun RowOfFuelTypes(is91Checked : MutableState<Boolean>, is95Checked : MutableState<Boolean>,
                    is98Checked : MutableState<Boolean>, isDieselChecked : MutableState<Boolean>,
-                   onBoxChecked: (Int) -> Unit) {
+                   onBoxChecked: (Int) -> Unit, isReadOnly: Boolean) {
     Row {
         Column {
-            FuelTypeCheckbox(is91Checked, "91 Unleaded", onBoxChecked, 0)
-            FuelTypeCheckbox(is95Checked, "95 Unleaded", onBoxChecked, 1)
+            FuelTypeCheckbox(is91Checked, "91 Unleaded", onBoxChecked, 0, isReadOnly)
+            FuelTypeCheckbox(is95Checked, "95 Unleaded", onBoxChecked, 1, isReadOnly)
         }
         Column (horizontalAlignment = Alignment.End) {
-            FuelTypeCheckbox(is98Checked, "98 Unleaded", onBoxChecked, 2)
-            FuelTypeCheckbox(isDieselChecked, "Diesel", onBoxChecked, 3)
+            FuelTypeCheckbox(is98Checked, "98 Unleaded", onBoxChecked, 2, isReadOnly)
+            FuelTypeCheckbox(isDieselChecked, "Diesel", onBoxChecked, 3, isReadOnly)
         }
     }
 }
 
 @Composable
-fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : String, onBoxChecked : (Int) -> Unit, fuelTypeId : Int) {
+fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : String, onBoxChecked : (Int) -> Unit, fuelTypeId : Int, isReadOnly : Boolean) {
     var boxChecked by remember { checkboxBoolean }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -183,7 +199,51 @@ fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : Str
             checked = boxChecked,
             onCheckedChange = { boxChecked = it;
                 onBoxChecked(fuelTypeId)
-            }
+            },
+            enabled = !isReadOnly
         )
+    }
+}
+
+@Composable
+fun EditDeleteFABs(onClick: () -> Unit = {}) {
+    Column(modifier = Modifier.fillMaxSize(1f)
+        .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
+        verticalArrangement = Arrangement.Bottom) {
+        Row {
+            SmallFloatingActionButton(
+                onClick = { onClick() },
+                shape = CircleShape,
+                modifier = Modifier.size(64.dp)
+            ) {
+                Icon(Icons.Filled.Delete, "Small floating action button.")
+            }
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End) {
+                SmallFloatingActionButton(
+                    onClick = { onClick() },
+                    shape = CircleShape,
+                    modifier = Modifier.size(64.dp)
+                ) {
+                    Icon(Icons.Filled.Edit, "Small floating action button.")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SaveFAB(onClick: () -> Unit = {}) {
+    Column(modifier = Modifier.fillMaxSize(1f)
+        .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.End) {
+        SmallFloatingActionButton(
+            onClick = { onClick() },
+            shape = CircleShape,
+            modifier = Modifier.size(64.dp)
+        ) {
+            Icon(Icons.Filled.Check, "Small floating action button.")
+        }
     }
 }

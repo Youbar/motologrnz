@@ -60,7 +60,7 @@ fun SliderWithUnits(registrationPrice: MutableState<String> = mutableStateOf("")
 
 @ExperimentalMaterial3Api
 @Composable
-fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String, hasDefaultValue : Boolean = false) {
+fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String, hasDefaultValue : Boolean = false, isReadOnly : Boolean = false) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     if (!hasDefaultValue) {
@@ -82,11 +82,13 @@ fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inp
             label = { Text(inputLabel) },
             readOnly = true,
             trailingIcon = {
-                IconButton(onClick = { showDatePicker = !showDatePicker }) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = "Select registration purchase date"
-                    )
+                if (!isReadOnly) {
+                    IconButton(onClick = { showDatePicker = !showDatePicker }) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Select registration purchase date"
+                        )
+                    }
                 }
             },
             modifier = Modifier
@@ -133,7 +135,7 @@ fun DatePickerModalInput(
 }
 
 @Composable
-fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modifier: Modifier = Modifier) {
+fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modifier: Modifier = Modifier, isReadOnly : Boolean = false) {
     var priceObserver by remember { priceMutable }
     OutlinedTextField(
         value = priceObserver,
@@ -141,18 +143,20 @@ fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modi
         onValueChange = { priceObserver = it },
         label = { Text(priceLabel) },
         modifier = modifier.fillMaxWidth(),
+        readOnly = isReadOnly
     )
 }
 
 @Composable
-fun NumberInput(numberMutable : MutableState<String>, numberLabel : String, modifier: Modifier = Modifier) {
+fun NumberInput(numberMutable : MutableState<String>, numberLabel : String, modifier: Modifier = Modifier, isReadOnly: Boolean = false) {
     var stringObserver by remember { numberMutable }
     OutlinedTextField(
         value = stringObserver,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         onValueChange = { stringObserver = it },
         label = { Text(numberLabel) },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        readOnly = isReadOnly
     )
 }
 
