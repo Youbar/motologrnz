@@ -183,6 +183,11 @@ class FuelViewModel : ViewModel() {
         setCheckedFuelType(fuel.fuelType)
         fuelLitres.value = fuel.litres.toString()
         fuelOdometer.value = fuel.odometerReading.toString()
+
+        if (fuelOdometer.value == "-1" || fuelLitres.value == "-1")
+            isTrackingFuelConsumption.value = false
+        else
+            isTrackingFuelConsumption.value = true
     }
 
     val onEditClick = {

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -138,37 +139,41 @@ class FuelFragment : Fragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FuelLoggingInterface(viewModel: FuelViewModel) {
-    OutlinedCard(modifier = Modifier
-        .padding(16.dp, 8.dp, 16.dp, 8.dp)
-        .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
-        .height(IntrinsicSize.Min)) {
-        Column(modifier = Modifier
-            .padding(16.dp, 8.dp, 16.dp, 8.dp)
-            .height(IntrinsicSize.Min)){
-            Text(viewModel.fuelCardTitle, fontSize = 24.sp,
-                modifier = Modifier
-                    .padding(PaddingValues(0.dp, 0.dp))
-                    .fillMaxWidth(),
-                lineHeight = 1.em,
-                textAlign = TextAlign.Center)
-            DatePickerModal(viewModel.fuelDate, "Purchase Date", true, viewModel.isReadOnly.value)
-            CurrencyInput(viewModel.fuelPrice, "Purchase Price", isReadOnly = viewModel.isReadOnly.value)
-            RowOfFuelTypes(viewModel.is91Checked, viewModel.is95Checked, viewModel.is98Checked, viewModel.isDieselChecked,
-                viewModel.onBoxChecked, viewModel.isReadOnly.value)
+    LazyColumn {
+        item {
+            OutlinedCard(modifier = Modifier
+                .padding(16.dp, 8.dp, 16.dp, 8.dp)
+                .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
+                .height(IntrinsicSize.Min)) {
+                Column(modifier = Modifier
+                    .padding(16.dp, 8.dp, 16.dp, 8.dp)
+                    .height(IntrinsicSize.Min)){
+                    Text(viewModel.fuelCardTitle, fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(PaddingValues(0.dp, 0.dp))
+                            .fillMaxWidth(),
+                        lineHeight = 1.em,
+                        textAlign = TextAlign.Center)
+                    DatePickerModal(viewModel.fuelDate, "Purchase Date", true, viewModel.isReadOnly.value)
+                    CurrencyInput(viewModel.fuelPrice, "Purchase Price", isReadOnly = viewModel.isReadOnly.value)
+                    RowOfFuelTypes(viewModel.is91Checked, viewModel.is95Checked, viewModel.is98Checked, viewModel.isDieselChecked,
+                        viewModel.onBoxChecked, viewModel.isReadOnly.value)
 
-            if (viewModel.isTrackingFuelConsumption.value) {
-                HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp)))
-                Text("Fuel Consumption Data", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 20.sp)
-                NumberInput(viewModel.fuelOdometer, "Odometer", isReadOnly = viewModel.isReadOnly.value)
-                CurrencyInput(viewModel.fuelLitres, "Litres", isReadOnly = viewModel.isReadOnly.value)
-            }
+                    if (viewModel.isTrackingFuelConsumption.value) {
+                        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp)))
+                        Text("Fuel Consumption Data", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 20.sp)
+                        NumberInput(viewModel.fuelOdometer, "Odometer", isReadOnly = viewModel.isExistingData)
+                        CurrencyInput(viewModel.fuelLitres, "Litres", isReadOnly = viewModel.isExistingData)
+                    }
 
-            if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
-                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                    .padding(0.dp, 32.dp, 0.dp, 0.dp)
-                    .fillMaxWidth()) {
-                    Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
-                        Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
+                    if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
+                        Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                            .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                            .fillMaxWidth()) {
+                            Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
+                                Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
+                            }
+                        }
                     }
                 }
             }
