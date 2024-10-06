@@ -19,7 +19,7 @@ class VehicleSettingsViewModel : ViewModel() {
         private set
 
     private fun validateGeneralInputs() : Boolean {
-        return DataHelper.isValidIntegerInput(modelYearInput.value, "Year", applicationContext)
+        return DataHelper.isValidIntegerInput(modelYearInput.value, "Year", displayToastMessage)
     }
 
     var onUpdateClick = {
@@ -52,10 +52,10 @@ class VehicleSettingsViewModel : ViewModel() {
     }
 
     private fun validateComplianceInputs() : Boolean {
-        if (isUseRucsBoolean.value)
-            return DataHelper.isValidIntegerInput(isUseRucsInput.value, "Current RUCs", applicationContext)
+        return if (isUseRucsBoolean.value)
+            DataHelper.isValidIntegerInput(isUseRucsInput.value, "Current RUCs", displayToastMessage)
         else
-            return true
+            true
     }
 
     var onSaveClick = {
@@ -69,13 +69,13 @@ class VehicleSettingsViewModel : ViewModel() {
         }
     }
 
-    lateinit var activeVehicle : Vehicle
+    private lateinit var activeVehicle : Vehicle
 
     private fun getRucsInput(isUseRoadUserCharges: Boolean): String {
-        if (isUseRoadUserCharges) {
-            return "This vehicle requires RUCs"
+        return if (isUseRoadUserCharges) {
+            "This vehicle requires RUCs"
         } else {
-            return "This vehicle does not require RUCs"
+            "This vehicle does not require RUCs"
         }
     }
 

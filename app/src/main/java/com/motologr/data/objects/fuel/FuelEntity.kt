@@ -8,6 +8,7 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -44,9 +45,12 @@ interface FuelDao {
     @Query("SELECT * FROM Fuel WHERE vehicleId == :vehicleId")
     fun getAllByVehicleId(vehicleId : Int): List<FuelEntity>
 
+    @Update
+    fun updateFuel(fuel: FuelEntity)
+
     @Insert
     fun insert(vararg fuel: FuelEntity)
 
-    @Delete
-    fun delete(fuel: FuelEntity)
+    @Query("DELETE FROM Fuel WHERE id = :id")
+    fun delete(id: Int)
 }

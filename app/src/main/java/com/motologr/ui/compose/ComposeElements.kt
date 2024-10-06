@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -58,14 +60,25 @@ fun SliderWithUnits(registrationPrice: MutableState<String> = mutableStateOf("")
     Text(text = "${sliderPositionObserver.roundToInt()} $sliderUnits")
 }
 
+fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
+}
+
 @ExperimentalMaterial3Api
 @Composable
-fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String) {
+fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String, hasDefaultValue : Boolean = false, isReadOnly : Boolean = false) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
-    selectedDate.value = datePickerState.selectedDateMillis?.let {
-        convertMillisToDate(it)
-    } ?: ""
+    if (!hasDefaultValue) {
+        selectedDate.value = datePickerState.selectedDateMillis?.let {
+            convertMillisToDate(it)
+        } ?: ""
+    } else {
+        selectedDate.value = datePickerState.selectedDateMillis?.let {
+            convertMillisToDate(it)
+        } ?: selectedDate.value
+    }
 
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -76,11 +89,13 @@ fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inp
             label = { Text(inputLabel) },
             readOnly = true,
             trailingIcon = {
-                IconButton(onClick = { showDatePicker = !showDatePicker }) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = "Select registration purchase date"
-                    )
+                if (!isReadOnly) {
+                    IconButton(onClick = { showDatePicker = !showDatePicker }) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Select registration purchase date"
+                        )
+                    }
                 }
             },
             modifier = Modifier
@@ -127,7 +142,7 @@ fun DatePickerModalInput(
 }
 
 @Composable
-fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modifier: Modifier = Modifier) {
+fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modifier: Modifier = Modifier, isReadOnly : Boolean = false) {
     var priceObserver by remember { priceMutable }
     OutlinedTextField(
         value = priceObserver,
@@ -135,18 +150,20 @@ fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modi
         onValueChange = { priceObserver = it },
         label = { Text(priceLabel) },
         modifier = modifier.fillMaxWidth(),
+        readOnly = isReadOnly
     )
 }
 
 @Composable
-fun NumberInput(numberMutable : MutableState<String>, numberLabel : String, modifier: Modifier = Modifier) {
+fun NumberInput(numberMutable : MutableState<String>, numberLabel : String, modifier: Modifier = Modifier, isReadOnly: Boolean = false) {
     var stringObserver by remember { numberMutable }
     OutlinedTextField(
         value = stringObserver,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         onValueChange = { stringObserver = it },
         label = { Text(numberLabel) },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        readOnly = isReadOnly
     )
 }
 
@@ -162,7 +179,43 @@ fun StringInput(stringMutable : MutableState<String>, stringLabel : String, modi
     )
 }
 
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis))
+@Composable
+fun WarningDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String
+) {
+    AlertDialog(
+        icon = {
+            Icon(Icons.Filled.Warning, contentDescription = "Warning Symbol")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
 }

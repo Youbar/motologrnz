@@ -8,6 +8,7 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import com.motologr.data.logging.Loggable
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
@@ -43,9 +44,12 @@ interface LoggableDao {
     @Query("SELECT * FROM Loggable")
     fun getAll(): List<LoggableEntity>
 
-    @Insert
-    fun insert(vararg fuel: LoggableEntity)
+    @Update
+    fun updateLoggable(loggable: LoggableEntity)
 
-    @Delete
-    fun delete(fuel: LoggableEntity)
+    @Insert
+    fun insert(vararg loggable: LoggableEntity)
+
+    @Query("DELETE FROM Loggable WHERE id = :id")
+    fun delete(id: Int)
 }
