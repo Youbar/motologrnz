@@ -11,6 +11,19 @@ import java.math.RoundingMode
 import java.util.Date
 
 class FuelViewModel : ViewModel() {
+    companion object {
+        const val recordFuelPurchase = "Record Fuel Purchase"
+        const val updateFuelPurchase = "Update Fuel Purchase"
+    }
+
+    val fuelCardTitle : String
+        get() {
+            if (isExistingData)
+                return updateFuelPurchase
+            else
+                return recordFuelPurchase
+        }
+
     var fuelDate = mutableStateOf("")
         private set
 
@@ -115,7 +128,7 @@ class FuelViewModel : ViewModel() {
 
     var navigateToVehicle = { }
 
-    var onClick = {
+    private fun getFuelObjectFromInputs() : Fuel? {
         if (validateFuelInputs()) {
             val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
             val fuelType: Int = returnCheckedFuelType()
@@ -123,22 +136,29 @@ class FuelViewModel : ViewModel() {
                 .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
             val purchaseDate: Date = DataHelper.parseNumericalDateFormat(fuelDate.value)
 
-            val fuel: Fuel
+            var fuel: Fuel
             if (isTrackingFuelConsumption.value) {
                 val litres: BigDecimal = fuelLitres.value
                     .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
                 val odometer: Int = fuelOdometer.value.toInt()
 
-                fuel = Fuel(fuelType, price, litres, purchaseDate, odometer, vehicleId)
+                return Fuel(fuelType, price, litres, purchaseDate, odometer, vehicleId)
             } else {
-                fuel = Fuel(fuelType, price, (-1.0).toBigDecimal(), purchaseDate, -1, vehicleId)
+                return Fuel(fuelType, price, (-1.0).toBigDecimal(), purchaseDate, -1, vehicleId)
             }
+        }
 
+        return null
+    }
+
+    val onRecordClick = {
+        val fuel = getFuelObjectFromInputs()
+
+        if (fuel != null) {
             DataManager.returnActiveVehicle()?.logFuel(fuel)
             navigateToVehicle()
         }
     }
-        private set
 
     fun initFuelViewModel(isTrackingFuelConsumption : Boolean) {
         this.isTrackingFuelConsumption.value = isTrackingFuelConsumption
@@ -148,12 +168,52 @@ class FuelViewModel : ViewModel() {
     var isReadOnly = mutableStateOf(false)
         private set
 
+    private var fuelId = -1
+
+    val isExistingData : Boolean
+        get() {
+            return fuelId != -1
+        }
+
     fun setViewModelToReadOnly(fuel : Fuel) {
+        fuelId = fuel.id
         isReadOnly.value = true
         fuelDate.value = DataHelper.formatNumericalDateFormat(fuel.purchaseDate)
         fuelPrice.value = fuel.price.toString()
         setCheckedFuelType(fuel.fuelType)
         fuelLitres.value = fuel.litres.toString()
         fuelOdometer.value = fuel.odometerReading.toString()
+    }
+
+    val onEditClick = {
+        isReadOnly.value = false
+    }
+
+    val onSaveClick = {
+        val fuel = getFuelObjectFromInputs()
+
+        if (fuel != null) {
+            fuel.id = fuelId
+            DataManager.returnActiveVehicle()?.updateFuel(fuel)
+            displayToastMessage("Changes saved.")
+            isReadOnly.value = true
+        }
+    }
+
+    var isDisplayDeleteDialog = mutableStateOf(false)
+
+    val onDeleteClick = {
+        isDisplayDeleteDialog.value = true
+    }
+
+    val onConfirmClick = {
+        DataManager.returnActiveVehicle()?.deleteFuel(fuelId)
+        displayToastMessage("Fuel record deleted.")
+        navigateToVehicle()
+    }
+
+    val onDismissClick = {
+        isDisplayDeleteDialog.value = false
+        displayToastMessage("Deletion cancelled.")
     }
 }

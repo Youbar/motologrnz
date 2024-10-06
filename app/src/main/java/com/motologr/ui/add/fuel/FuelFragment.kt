@@ -41,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -57,6 +56,7 @@ import com.motologr.data.objects.fuel.Fuel
 import com.motologr.ui.compose.CurrencyInput
 import com.motologr.ui.compose.DatePickerModal
 import com.motologr.ui.compose.NumberInput
+import com.motologr.ui.compose.WarningDialog
 import com.motologr.ui.theme.AppTheme
 
 
@@ -114,7 +114,13 @@ class FuelFragment : Fragment() {
                 AppTheme {
                     Column {
                         FuelLoggingInterface(fuelViewModel)
-                        EditDeleteFABs({})
+                        if (fuelViewModel.isExistingData && fuelViewModel.isReadOnly.value)
+                            EditDeleteFABs(fuelViewModel.onDeleteClick, fuelViewModel.onEditClick)
+                        else if (fuelViewModel.isExistingData && !fuelViewModel.isReadOnly.value)
+                            SaveFAB(fuelViewModel.onSaveClick)
+                        if (fuelViewModel.isDisplayDeleteDialog.value) {
+                            WarningDialog(fuelViewModel.onDismissClick, fuelViewModel.onConfirmClick, "Delete Record", "Are you sure you want to delete this record? The deletion is irreversible.")
+                        }
                     }
                 }
             }
@@ -139,7 +145,7 @@ fun FuelLoggingInterface(viewModel: FuelViewModel) {
         Column(modifier = Modifier
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
             .height(IntrinsicSize.Min)){
-            Text("Record Fuel Purchase", fontSize = 24.sp,
+            Text(viewModel.fuelCardTitle, fontSize = 24.sp,
                 modifier = Modifier
                     .padding(PaddingValues(0.dp, 0.dp))
                     .fillMaxWidth(),
@@ -157,11 +163,11 @@ fun FuelLoggingInterface(viewModel: FuelViewModel) {
                 CurrencyInput(viewModel.fuelLitres, "Litres", isReadOnly = viewModel.isReadOnly.value)
             }
 
-            if (!viewModel.isReadOnly.value) {
+            if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
                 Row(horizontalArrangement = Arrangement.End, modifier = Modifier
                     .padding(0.dp, 32.dp, 0.dp, 0.dp)
                     .fillMaxWidth()) {
-                    Button(onClick = viewModel.onClick, contentPadding = PaddingValues(8.dp)) {
+                    Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
                         Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
                     }
                 }
@@ -197,7 +203,8 @@ fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : Str
         )
         Checkbox(
             checked = boxChecked,
-            onCheckedChange = { boxChecked = it;
+            onCheckedChange = {
+                boxChecked = it
                 onBoxChecked(fuelTypeId)
             },
             enabled = !isReadOnly
@@ -206,26 +213,28 @@ fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : Str
 }
 
 @Composable
-fun EditDeleteFABs(onClick: () -> Unit = {}) {
-    Column(modifier = Modifier.fillMaxSize(1f)
+fun EditDeleteFABs(onDeleteClick: () -> Unit = {},
+                   onEditClick: () -> Unit = {}) {
+    Column(modifier = Modifier
+        .fillMaxSize(1f)
         .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
         verticalArrangement = Arrangement.Bottom) {
         Row {
             SmallFloatingActionButton(
-                onClick = { onClick() },
+                onClick = { onDeleteClick() },
                 shape = CircleShape,
                 modifier = Modifier.size(64.dp)
             ) {
-                Icon(Icons.Filled.Delete, "Small floating action button.")
+                Icon(Icons.Filled.Delete, "Small delete button.")
             }
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End) {
                 SmallFloatingActionButton(
-                    onClick = { onClick() },
+                    onClick = { onEditClick() },
                     shape = CircleShape,
                     modifier = Modifier.size(64.dp)
                 ) {
-                    Icon(Icons.Filled.Edit, "Small floating action button.")
+                    Icon(Icons.Filled.Edit, "Small edit button.")
                 }
             }
         }
@@ -234,7 +243,8 @@ fun EditDeleteFABs(onClick: () -> Unit = {}) {
 
 @Composable
 fun SaveFAB(onClick: () -> Unit = {}) {
-    Column(modifier = Modifier.fillMaxSize(1f)
+    Column(modifier = Modifier
+        .fillMaxSize(1f)
         .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.End) {
@@ -243,7 +253,7 @@ fun SaveFAB(onClick: () -> Unit = {}) {
             shape = CircleShape,
             modifier = Modifier.size(64.dp)
         ) {
-            Icon(Icons.Filled.Check, "Small floating action button.")
+            Icon(Icons.Filled.Check, "Small save button.")
         }
     }
 }

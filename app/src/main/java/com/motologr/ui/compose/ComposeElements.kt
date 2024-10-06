@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -56,6 +58,11 @@ fun SliderWithUnits(registrationPrice: MutableState<String> = mutableStateOf("")
         valueRange = 0f..sliderMaxRange
     )
     Text(text = "${sliderPositionObserver.roundToInt()} $sliderUnits")
+}
+
+fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
 }
 
 @ExperimentalMaterial3Api
@@ -172,7 +179,43 @@ fun StringInput(stringMutable : MutableState<String>, stringLabel : String, modi
     )
 }
 
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis))
+@Composable
+fun WarningDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String
+) {
+    AlertDialog(
+        icon = {
+            Icon(Icons.Filled.Warning, contentDescription = "Warning Symbol")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
 }

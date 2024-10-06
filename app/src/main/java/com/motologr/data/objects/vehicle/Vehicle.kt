@@ -229,6 +229,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateFuel(fuel: Fuel) {
+        fuelLog.returnFuelLog().removeIf { log -> log.id == fuel.id }
+        fuelLog.addFuelToFuelLog(fuel)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.fuelDao()
+                ?.updateFuel(fuel.convertToFuelEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(fuel.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteFuel(fuelId : Int) {
+        fuelLog.returnFuelLog().removeIf { log -> log.id == fuelId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.fuelDao()
+                ?.delete(fuelId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(fuelId)
+        }.start()
+    }
+
     fun returnFuelLog() : ArrayList<Fuel> {
         return fuelLog.returnFuelLog()
     }
