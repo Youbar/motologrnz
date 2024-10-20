@@ -100,7 +100,7 @@ fun ArtPackCard(
             HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 0.dp)))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
                 ArtPackSquare()
-                Text("MotoLogr NZ is committed to an ad-free experience. Show your support by purchasing this art pack for your garage.",
+                Text("Show your support for MotoLogr NZ by purchasing this art pack for your garage. You will also benefit from an ad-free experience.",
                     modifier = Modifier.weight(1.0f)
                         .padding(PaddingValues(6.dp, 0.dp)),
                     fontSize = 2.5.em)
