@@ -74,7 +74,7 @@ class RepairFragment : Fragment() {
         val root: View = binding.root
 
         val bundle: Bundle? = arguments
-        val logPos: Int? = arguments?.getInt("position");
+        val logPos: Int? = arguments?.getInt("position")
 
         var defaultProvider = ""
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
@@ -152,7 +152,7 @@ fun RepairLoggingInterface(viewModel: RepairViewModel) {
                     RowOfRepairTypes(viewModel.isMinorChecked, viewModel.isMajorChecked, viewModel.isCriticalChecked,
                         viewModel.onBoxChecked, viewModel.isReadOnly.value)
                     StringInput(viewModel.repairProvider, "Repair Provider", isReadOnly = viewModel.isReadOnly.value)
-                    MultiLineStringInput(viewModel.repairComments, "Repair Comments",
+                    MultiLineStringInput(viewModel.repairComments, "Repair Comments (Optional)",
                         modifier = Modifier.height(120.dp), isReadOnly = viewModel.isReadOnly.value)
 
                     if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
@@ -176,15 +176,15 @@ fun RowOfRepairTypes(isMinorChecked : MutableState<Boolean>, isMajorChecked : Mu
                      onBoxChecked: (Int) -> Unit, isReadOnly: Boolean) {
     Row {
         Column {
-            FuelTypeCheckbox(isMinorChecked, "Minor Repair", onBoxChecked, EnumConstants.RepairType.Minor.ordinal, isReadOnly)
-            FuelTypeCheckbox(isMajorChecked, "Major Repair", onBoxChecked, EnumConstants.RepairType.Major.ordinal, isReadOnly)
-            FuelTypeCheckbox(isCriticalChecked, "Critical Repair", onBoxChecked, EnumConstants.RepairType.Critical.ordinal, isReadOnly)
+            RepairTypeCheckbox(isMinorChecked, "Minor Repair", onBoxChecked, EnumConstants.RepairType.Minor.ordinal, isReadOnly)
+            RepairTypeCheckbox(isMajorChecked, "Major Repair", onBoxChecked, EnumConstants.RepairType.Major.ordinal, isReadOnly)
+            RepairTypeCheckbox(isCriticalChecked, "Critical Repair", onBoxChecked, EnumConstants.RepairType.Critical.ordinal, isReadOnly)
         }
     }
 }
 
 @Composable
-fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : String, onBoxChecked : (Int) -> Unit, fuelTypeId : Int, isReadOnly : Boolean) {
+fun RepairTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : String, onBoxChecked : (Int) -> Unit, repairTypeId : Int, isReadOnly : Boolean) {
     var boxChecked by remember { checkboxBoolean }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -196,7 +196,7 @@ fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : Str
             checked = boxChecked,
             onCheckedChange = {
                 boxChecked = it
-                onBoxChecked(fuelTypeId)
+                onBoxChecked(repairTypeId)
             },
             enabled = !isReadOnly
         )

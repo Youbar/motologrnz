@@ -57,7 +57,7 @@ class HistoricalWofViewModel : ViewModel() {
             val wofPrice = wofPrice.value
                 .replace(",","").toBigDecimal()
             val wofProvider = wofProvider.value
-            val purchaseDate = DataHelper.convertStringToNumericalDate(wofDate.value)
+            val purchaseDate = DataHelper.parseNumericalDateFormat(wofDate.value)
 
             val minDt = DataHelper.getMinDt()
             val activeVehicle = DataManager.returnActiveVehicle()

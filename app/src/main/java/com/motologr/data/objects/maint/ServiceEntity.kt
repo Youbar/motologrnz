@@ -8,6 +8,7 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -43,9 +44,15 @@ interface ServiceDao {
     @Query("SELECT * FROM Service WHERE vehicleId == :vehicleId")
     fun getAllByVehicleId(vehicleId : Int): List<ServiceEntity>
 
+    @Update
+    fun updateService(service: ServiceEntity)
+
     @Insert
     fun insert(vararg service: ServiceEntity)
 
     @Delete
     fun delete(service: ServiceEntity)
+
+    @Query("DELETE FROM Service WHERE id = :id")
+    fun delete(id: Int)
 }

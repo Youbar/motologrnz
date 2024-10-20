@@ -57,7 +57,7 @@ class HistoricalRegViewModel : ViewModel() {
             val registrationPrice = registrationPrice.value
                 .replace(",","").toBigDecimal()
             val registrationMonths = sliderPosition.floatValue.roundToInt()
-            val purchaseDate = DataHelper.convertStringToNumericalDate(selectedDate.value)
+            val purchaseDate = DataHelper.parseNumericalDateFormat(selectedDate.value)
 
             val minDt = DataHelper.getMinDt()
             val activeVehicle = DataManager.returnActiveVehicle()

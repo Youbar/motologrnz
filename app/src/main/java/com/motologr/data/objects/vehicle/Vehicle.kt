@@ -273,6 +273,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateService(service: Service) {
+        serviceLog.returnServiceLog().removeIf { log -> log.id == service.id }
+        serviceLog.addServiceToServiceLog(service)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.serviceDao()
+                ?.updateService(service.convertToServiceEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(service.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteService(serviceId : Int) {
+        serviceLog.returnServiceLog().removeIf { log -> log.id == serviceId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.serviceDao()
+                ?.delete(serviceId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(serviceId)
+        }.start()
+    }
+
     fun logRepair(repair: Repair) {
         repairLog.addRepairToRepairLog(repair)
 

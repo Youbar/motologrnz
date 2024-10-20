@@ -180,7 +180,7 @@ class RepairViewModel : ViewModel() {
 
     val onConfirmClick = {
         DataManager.returnActiveVehicle()?.deleteRepair(repairId)
-        displayToastMessage("Fuel record deleted.")
+        displayToastMessage("Repair record deleted.")
         navigateToVehicle()
     }
 

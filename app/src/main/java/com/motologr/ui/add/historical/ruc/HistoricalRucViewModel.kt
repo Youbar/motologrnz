@@ -56,7 +56,7 @@ class HistoricalRucViewModel : ViewModel() {
             val rucPrice = registrationPrice.value
                 .replace(",","").toBigDecimal()
             val unitsPurchased = sliderPosition.floatValue.roundToInt()
-            val purchaseDate = DataHelper.convertStringToNumericalDate(selectedDate.value)
+            val purchaseDate = DataHelper.parseNumericalDateFormat(selectedDate.value)
 
             val activeVehicle = DataManager.returnActiveVehicle()
             if (activeVehicle != null) {

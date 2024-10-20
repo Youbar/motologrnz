@@ -119,8 +119,14 @@ fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inp
             datePickerState.selectedDateMillis = selectedDateMillis
         }
 
+        var initialSelectedDateMillis : Long? = null
+        val oneDayInMillis : Long = 86400000
+        if (hasDefaultValue) {
+            initialSelectedDateMillis = DataHelper.parseNumericalDateFormat(selectedDate.value).time + oneDayInMillis
+        }
+
         if (showDatePicker) {
-            DatePickerModalInput(onDateSelected) { showDatePicker = false }
+            DatePickerModalInput(onDateSelected,  initialSelectedDateMillis) { showDatePicker = false }
         }
     }
 }
@@ -129,9 +135,10 @@ fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inp
 @Composable
 fun DatePickerModalInput(
     onDateSelected: (Long?) -> Unit,
+    initialSelectedDateMillis : Long? = null,
     onDismiss: () -> Unit
 ) {
-    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialSelectedDateMillis, initialDisplayMode = DisplayMode.Picker)
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
