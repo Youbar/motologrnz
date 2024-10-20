@@ -27,10 +27,12 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.google.android.gms.ads.AdRequest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
@@ -54,6 +56,14 @@ class VehicleFragment : Fragment() {
     ): View {
         _binding = FragmentVehicleBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        val adView = binding.adCar
+        if (!BillingClientHelper.isArtPackEnabled) {
+            val adRequest = AdRequest.Builder().build()
+            adView.loadAd(adRequest)
+        } else {
+            adView.isVisible = false
+        }
 
         if (!DataManager.isVehicles())
             findNavController().navigate(R.id.nav_plus)

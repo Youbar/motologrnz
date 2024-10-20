@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -107,14 +109,27 @@ class ServiceFragment : Fragment() {
             setContent {
                 AppTheme {
                     Column {
-                        ServiceLoggingInterface(serviceViewModel)
-                        if (serviceViewModel.isExistingData && serviceViewModel.isReadOnly.value)
-                            EditDeleteFABs(serviceViewModel.onDeleteClick, serviceViewModel.onEditClick)
-                        else if (serviceViewModel.isExistingData && !serviceViewModel.isReadOnly.value)
-                            SaveFAB(serviceViewModel.onSaveClick)
-                        if (serviceViewModel.isDisplayDeleteDialog.value) {
-                            WarningDialog(serviceViewModel.onDismissClick, serviceViewModel.onConfirmClick, "Delete Record", "Are you sure you want to delete this record? The deletion is irreversible.")
+                        LazyColumn {
+                            item {
+                                ServiceLoggingInterface(serviceViewModel)
+                                if (serviceViewModel.isExistingData && serviceViewModel.isReadOnly.value)
+                                    EditDeleteFABs(
+                                        serviceViewModel.onDeleteClick,
+                                        serviceViewModel.onEditClick
+                                    )
+                                else if (serviceViewModel.isExistingData && !serviceViewModel.isReadOnly.value)
+                                    SaveFAB(serviceViewModel.onSaveClick)
+                                if (serviceViewModel.isDisplayDeleteDialog.value) {
+                                    WarningDialog(
+                                        serviceViewModel.onDismissClick,
+                                        serviceViewModel.onConfirmClick,
+                                        "Delete Record",
+                                        "Are you sure you want to delete this record? The deletion is irreversible."
+                                    )
+                                }
+                            }
                         }
+
                     }
                 }
             }
@@ -132,37 +147,33 @@ class ServiceFragment : Fragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceLoggingInterface(viewModel: ServiceViewModel) {
-    LazyColumn {
-        item {
-            OutlinedCard(modifier = Modifier
-                .padding(16.dp, 8.dp, 16.dp, 8.dp)
-                .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
-                .height(IntrinsicSize.Min)) {
-                Column(modifier = Modifier
-                    .padding(16.dp, 8.dp, 16.dp, 8.dp)
-                    .height(IntrinsicSize.Min)){
-                    Text(viewModel.serviceCardTitle, fontSize = 24.sp,
-                        modifier = Modifier
-                            .padding(PaddingValues(0.dp, 0.dp))
-                            .fillMaxWidth(),
-                        lineHeight = 1.em,
-                        textAlign = TextAlign.Center)
-                    DatePickerModal(viewModel.serviceDate, "Service Date", true, viewModel.isReadOnly.value)
-                    CurrencyInput(viewModel.servicePrice, "Service Price", isReadOnly = viewModel.isReadOnly.value)
-                    RowOfServiceTypes(viewModel.isOilChangeChecked, viewModel.isGeneralChecked, viewModel.isFullChecked,
-                        viewModel.onBoxChecked, viewModel.isReadOnly.value)
-                    StringInput(viewModel.serviceProvider, "Service Provider", isReadOnly = viewModel.isReadOnly.value)
-                    MultiLineStringInput(viewModel.serviceComments, "Service Comments (Optional)",
-                        modifier = Modifier.height(120.dp), isReadOnly = viewModel.isReadOnly.value)
+    OutlinedCard(modifier = Modifier
+        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
+        .height(IntrinsicSize.Min)) {
+        Column(modifier = Modifier
+            .padding(16.dp, 8.dp, 16.dp, 8.dp)
+            .height(IntrinsicSize.Min)){
+            Text(viewModel.serviceCardTitle, fontSize = 24.sp,
+                modifier = Modifier
+                    .padding(PaddingValues(0.dp, 0.dp))
+                    .fillMaxWidth(),
+                lineHeight = 1.em,
+                textAlign = TextAlign.Center)
+            DatePickerModal(viewModel.serviceDate, "Service Date", true, viewModel.isReadOnly.value)
+            CurrencyInput(viewModel.servicePrice, "Service Price", isReadOnly = viewModel.isReadOnly.value)
+            RowOfServiceTypes(viewModel.isOilChangeChecked, viewModel.isGeneralChecked, viewModel.isFullChecked,
+                viewModel.onBoxChecked, viewModel.isReadOnly.value)
+            StringInput(viewModel.serviceProvider, "Service Provider", isReadOnly = viewModel.isReadOnly.value)
+            MultiLineStringInput(viewModel.serviceComments, "Service Comments (Optional)",
+                modifier = Modifier.defaultMinSize(minHeight = 120.dp), isReadOnly = viewModel.isReadOnly.value)
 
-                    if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
-                        Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                            .padding(0.dp, 32.dp, 0.dp, 0.dp)
-                            .fillMaxWidth()) {
-                            Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
-                                Text("Record", fontSize = 20.sp, textAlign = TextAlign.Center)
-                            }
-                        }
+            if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                    .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                    .fillMaxWidth()) {
+                    Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
+                        Text("Record", fontSize = 20.sp, textAlign = TextAlign.Center)
                     }
                 }
             }
