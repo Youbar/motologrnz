@@ -1,11 +1,21 @@
 package com.motologr.ui.compose
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
@@ -18,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -28,6 +39,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -150,7 +162,8 @@ fun CurrencyInput(priceMutable : MutableState<String>, priceLabel : String, modi
         onValueChange = { priceObserver = it },
         label = { Text(priceLabel) },
         modifier = modifier.fillMaxWidth(),
-        readOnly = isReadOnly
+        readOnly = isReadOnly,
+        singleLine = true
     )
 }
 
@@ -163,19 +176,34 @@ fun NumberInput(numberMutable : MutableState<String>, numberLabel : String, modi
         onValueChange = { stringObserver = it },
         label = { Text(numberLabel) },
         modifier = modifier.fillMaxWidth(),
-        readOnly = isReadOnly
+        readOnly = isReadOnly,
+        singleLine = true
     )
 }
 
 @Composable
-fun StringInput(stringMutable : MutableState<String>, stringLabel : String, modifier: Modifier = Modifier) {
+fun StringInput(stringMutable : MutableState<String>, stringLabel : String, modifier: Modifier = Modifier, isReadOnly : Boolean = false) {
     var stringObserver by remember { stringMutable }
     OutlinedTextField(
         value = stringObserver,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
         onValueChange = { stringObserver = it },
         label = { Text(stringLabel) },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        singleLine = true
+    )
+}
+
+@Composable
+fun MultiLineStringInput(stringMutable : MutableState<String>, stringLabel : String, modifier: Modifier = Modifier, isReadOnly : Boolean = false) {
+    var stringObserver by remember { stringMutable }
+    OutlinedTextField(
+        value = stringObserver,
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
+        onValueChange = { stringObserver = it },
+        label = { Text(stringLabel) },
+        modifier = modifier.fillMaxWidth(),
+        singleLine = false
     )
 }
 
@@ -218,4 +246,50 @@ fun WarningDialog(
             }
         }
     )
+}
+
+@Composable
+fun EditDeleteFABs(onDeleteClick: () -> Unit = {},
+                   onEditClick: () -> Unit = {}) {
+    Column(modifier = Modifier
+        .fillMaxSize(1f)
+        .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
+        verticalArrangement = Arrangement.Bottom) {
+        Row {
+            SmallFloatingActionButton(
+                onClick = { onDeleteClick() },
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.size(64.dp)
+            ) {
+                Icon(Icons.Filled.Delete, "Small delete button.")
+            }
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End) {
+                SmallFloatingActionButton(
+                    onClick = { onEditClick() },
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.size(64.dp)
+                ) {
+                    Icon(Icons.Filled.Edit, "Small edit button.")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SaveFAB(onClick: () -> Unit = {}) {
+    Column(modifier = Modifier
+        .fillMaxSize(1f)
+        .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.End) {
+        SmallFloatingActionButton(
+            onClick = { onClick() },
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.size(64.dp)
+        ) {
+            Icon(Icons.Filled.Check, "Small save button.")
+        }
+    }
 }

@@ -7,4 +7,16 @@ object EnumConstants {
         Unleaded98,
         Diesel
     }
+
+    enum class RepairType {
+        Minor,
+        Major,
+        Critical
+    }
+
+    enum class ServiceType {
+        OilChange,
+        General,
+        Full
+    }
 }

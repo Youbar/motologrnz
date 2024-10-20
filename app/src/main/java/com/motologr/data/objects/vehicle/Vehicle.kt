@@ -286,6 +286,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateRepair(repair: Repair) {
+        repairLog.returnRepairLog().removeIf { log -> log.id == repair.id }
+        repairLog.addRepairToRepairLog(repair)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.repairDao()
+                ?.updateRepair(repair.convertToRepairEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(repair.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteRepair(repairId : Int) {
+        repairLog.returnRepairLog().removeIf { log -> log.id == repairId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.repairDao()
+                ?.delete(repairId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(repairId)
+        }.start()
+    }
+
     fun logWof(wof: Wof) {
         wofLog.addWofToWofLog(wof)
 

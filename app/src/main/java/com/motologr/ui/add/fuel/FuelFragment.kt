@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
@@ -53,10 +54,13 @@ import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.databinding.FragmentFuelBinding
 import com.motologr.data.DataManager
+import com.motologr.data.EnumConstants
 import com.motologr.data.objects.fuel.Fuel
 import com.motologr.ui.compose.CurrencyInput
 import com.motologr.ui.compose.DatePickerModal
+import com.motologr.ui.compose.EditDeleteFABs
 import com.motologr.ui.compose.NumberInput
+import com.motologr.ui.compose.SaveFAB
 import com.motologr.ui.compose.WarningDialog
 import com.motologr.ui.theme.AppTheme
 
@@ -171,7 +175,7 @@ fun FuelLoggingInterface(viewModel: FuelViewModel) {
                             .padding(0.dp, 32.dp, 0.dp, 0.dp)
                             .fillMaxWidth()) {
                             Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
-                                Text("Record", fontSize = 3.em, textAlign = TextAlign.Center)
+                                Text("Record", fontSize = 20.sp, textAlign = TextAlign.Center)
                             }
                         }
                     }
@@ -187,12 +191,12 @@ fun RowOfFuelTypes(is91Checked : MutableState<Boolean>, is95Checked : MutableSta
                    onBoxChecked: (Int) -> Unit, isReadOnly: Boolean) {
     Row {
         Column {
-            FuelTypeCheckbox(is91Checked, "91 Unleaded", onBoxChecked, 0, isReadOnly)
-            FuelTypeCheckbox(is95Checked, "95 Unleaded", onBoxChecked, 1, isReadOnly)
+            FuelTypeCheckbox(is91Checked, "91 Unleaded", onBoxChecked, EnumConstants.FuelType.Unleaded91.ordinal, isReadOnly)
+            FuelTypeCheckbox(is95Checked, "95 Unleaded", onBoxChecked, EnumConstants.FuelType.Unleaded95.ordinal, isReadOnly)
         }
         Column (horizontalAlignment = Alignment.End) {
-            FuelTypeCheckbox(is98Checked, "98 Unleaded", onBoxChecked, 2, isReadOnly)
-            FuelTypeCheckbox(isDieselChecked, "Diesel", onBoxChecked, 3, isReadOnly)
+            FuelTypeCheckbox(is98Checked, "98 Unleaded", onBoxChecked, EnumConstants.FuelType.Unleaded98.ordinal, isReadOnly)
+            FuelTypeCheckbox(isDieselChecked, "Diesel", onBoxChecked, EnumConstants.FuelType.Diesel.ordinal, isReadOnly)
         }
     }
 }
@@ -214,51 +218,5 @@ fun FuelTypeCheckbox(checkboxBoolean : MutableState<Boolean>, checkboxText : Str
             },
             enabled = !isReadOnly
         )
-    }
-}
-
-@Composable
-fun EditDeleteFABs(onDeleteClick: () -> Unit = {},
-                   onEditClick: () -> Unit = {}) {
-    Column(modifier = Modifier
-        .fillMaxSize(1f)
-        .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
-        verticalArrangement = Arrangement.Bottom) {
-        Row {
-            SmallFloatingActionButton(
-                onClick = { onDeleteClick() },
-                shape = CircleShape,
-                modifier = Modifier.size(64.dp)
-            ) {
-                Icon(Icons.Filled.Delete, "Small delete button.")
-            }
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End) {
-                SmallFloatingActionButton(
-                    onClick = { onEditClick() },
-                    shape = CircleShape,
-                    modifier = Modifier.size(64.dp)
-                ) {
-                    Icon(Icons.Filled.Edit, "Small edit button.")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun SaveFAB(onClick: () -> Unit = {}) {
-    Column(modifier = Modifier
-        .fillMaxSize(1f)
-        .padding(start = 8.dp, bottom = 8.dp, end = 8.dp),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.End) {
-        SmallFloatingActionButton(
-            onClick = { onClick() },
-            shape = CircleShape,
-            modifier = Modifier.size(64.dp)
-        ) {
-            Icon(Icons.Filled.Check, "Small save button.")
-        }
     }
 }

@@ -1,166 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/add_fuel_scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    tools:context="com.motologr.ui.add.repair.RepairFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view_repair"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.motologr.ui.add.repair.RepairFragment">
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/editText_repair_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            app:layout_constraintStart_toStartOf="@+id/text_repair_price_prompt"
-            app:layout_constraintTop_toBottomOf="@+id/text_repair_price_prompt" />
-
-        <TextView
-            android:id="@+id/text_repair_price_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Price:"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText_repair_provider"
-            app:layout_constraintTop_toBottomOf="@+id/editText_repair_provider" />
-
-        <Button
-            android:id="@+id/button_repair_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="Add"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText_repair_comment" />
-
-        <RadioGroup
-            android:id="@+id/radioGroup_repair_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_repair_type_prompt">
-
-            <RadioButton
-                android:id="@+id/radioButton_repair_minor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Minor" />
-
-            <RadioButton
-                android:id="@+id/radioButton_repair_major"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Major" />
-
-            <RadioButton
-                android:id="@+id/radioButton_repair_critical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Critical" />
-
-        </RadioGroup>
-
-        <TextView
-            android:id="@+id/text_repair_type_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Type:"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_repair_title" />
-
-        <TextView
-            android:id="@+id/text_repair_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Repair"
-            android:textAlignment="center"
-            android:textSize="32sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_repair_date_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Repair Date"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText_repair_date"
-            app:layout_constraintTop_toBottomOf="@+id/text_repair_title" />
-
-        <TextView
-            android:id="@+id/text_repair_comment_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Comments (Optional)"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText_repair_price"
-            app:layout_constraintTop_toBottomOf="@+id/editText_repair_price" />
-
-        <TextView
-            android:id="@+id/text_repair_provider_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Provider"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/radioGroup_repair_type"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup_repair_type" />
-
-        <DatePicker
-            android:id="@+id/editText_repair_date"
-            android:layout_width="248dp"
-            android:layout_height="124dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            app:layout_constraintStart_toEndOf="@+id/radioGroup_repair_type"
-            app:layout_constraintTop_toBottomOf="@+id/text_repair_date_prompt" />
-
-        <EditText
-            android:id="@+id/editText_repair_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:inputType="textMultiLine"
-            android:hint="This will be added to your data when you export it"
-            app:layout_constraintStart_toStartOf="@+id/text_repair_comment_prompt"
-            app:layout_constraintTop_toBottomOf="@+id/text_repair_comment_prompt" />
-
-        <EditText
-            android:id="@+id/editText_repair_provider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:inputType="textMultiLine"
-            app:layout_constraintStart_toStartOf="@+id/text_repair_provider_prompt"
-            app:layout_constraintTop_toBottomOf="@+id/text_repair_provider_prompt" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

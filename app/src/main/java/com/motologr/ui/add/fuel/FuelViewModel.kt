@@ -12,16 +12,16 @@ import java.util.Date
 
 class FuelViewModel : ViewModel() {
     companion object {
-        const val recordFuelPurchase = "Record Fuel Purchase"
-        const val updateFuelPurchase = "Update Fuel Purchase"
+        const val RECORD_FUEL_PURCHASE = "Record Fuel Purchase"
+        const val UPDATE_FUEL_PURCHASE = "Update Fuel Purchase"
     }
 
     val fuelCardTitle : String
         get() {
             if (isExistingData)
-                return updateFuelPurchase
+                return UPDATE_FUEL_PURCHASE
             else
-                return recordFuelPurchase
+                return RECORD_FUEL_PURCHASE
         }
 
     var fuelDate = mutableStateOf("")
@@ -136,7 +136,6 @@ class FuelViewModel : ViewModel() {
                 .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)
             val purchaseDate: Date = DataHelper.parseNumericalDateFormat(fuelDate.value)
 
-            var fuel: Fuel
             if (isTrackingFuelConsumption.value) {
                 val litres: BigDecimal = fuelLitres.value
                     .replace(",","").toBigDecimal().setScale(2, RoundingMode.HALF_UP)

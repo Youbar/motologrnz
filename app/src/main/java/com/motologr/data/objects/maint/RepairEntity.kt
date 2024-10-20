@@ -8,6 +8,7 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import com.motologr.data.objects.fuel.FuelEntity
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
@@ -44,9 +45,15 @@ interface RepairDao {
     @Query("SELECT * FROM Repair WHERE vehicleId == :vehicleId")
     fun getAllByVehicleId(vehicleId : Int): List<RepairEntity>
 
+    @Update
+    fun updateRepair(repair: RepairEntity)
+
     @Insert
     fun insert(vararg repair: RepairEntity)
 
     @Delete
     fun delete(repair: RepairEntity)
+
+    @Query("DELETE FROM Repair WHERE id = :id")
+    fun delete(id: Int)
 }
