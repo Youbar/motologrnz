@@ -1,5 +1,6 @@
-package com.motologr
+package com.motologr.vehicle
 
+import com.motologr.UnitTestBase
 import com.motologr.data.DataManager
 import com.motologr.data.objects.vehicle.Vehicle
 import org.junit.Assert.assertEquals

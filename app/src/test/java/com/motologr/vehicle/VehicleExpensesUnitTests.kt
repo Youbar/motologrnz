@@ -1,5 +1,6 @@
-package com.motologr
+package com.motologr.vehicle
 
+import com.motologr.UnitTestBase
 import com.motologr.data.objects.maint.Repair
 import com.motologr.data.objects.maint.Service
 import com.motologr.data.objects.maint.Wof

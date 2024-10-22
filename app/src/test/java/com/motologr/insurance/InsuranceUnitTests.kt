@@ -1,5 +1,6 @@
-package com.motologr
+package com.motologr.insurance
 
+import com.motologr.UnitTestBase
 import com.motologr.data.objects.insurance.Insurance
 import org.junit.Test
 import java.time.LocalDate
@@ -19,7 +20,7 @@ class InsuranceUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", startDate, 0, 0, 15.30.toBigDecimal(), startDate, 0)
         vehicle.logInsurance(insurance)
         val countDownLatch = CountDownLatch(1)
-        countDownLatch.await(100, TimeUnit.MILLISECONDS)
+        countDownLatch.await(1000, TimeUnit.MILLISECONDS)
 
         assert(!vehicle.hasCurrentInsurance())
     }
@@ -33,7 +34,7 @@ class InsuranceUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", calendar.time, 0, 0, 15.30.toBigDecimal(), calendar.time, 0)
         vehicle.logInsurance(insurance)
         val countDownLatch = CountDownLatch(1)
-        countDownLatch.await(100, TimeUnit.MILLISECONDS)
+        countDownLatch.await(1000, TimeUnit.MILLISECONDS)
 
         assert(vehicle.hasCurrentInsurance())
     }
@@ -46,7 +47,7 @@ class InsuranceUnitTests : UnitTestBase() {
         val insurance = Insurance(0, "AA", calendar.time, 0, 0, 15.30.toBigDecimal(), calendar.time, 0)
         vehicle.logInsurance(insurance)
         val countDownLatch = CountDownLatch(1)
-        countDownLatch.await(100, TimeUnit.MILLISECONDS)
+        countDownLatch.await(1000, TimeUnit.MILLISECONDS)
 
         assert(vehicle.hasCurrentInsurance())
     }

@@ -1,11 +1,11 @@
-package com.motologr
+package com.motologr.vehicle
 
+import com.motologr.UnitTestBase
 import com.motologr.data.objects.fuel.Fuel
-import com.motologr.data.objects.vehicle.Vehicle
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class OdometerUnitTests : UnitTestBase() {
+class VehicleOdometerUnitTests : UnitTestBase() {
     @Test
     fun getLatestOdometerReading_DefaultReading() {
         val vehicle = returnDefaultVehicle()

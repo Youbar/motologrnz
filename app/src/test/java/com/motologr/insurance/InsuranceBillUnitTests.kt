@@ -1,5 +1,6 @@
-package com.motologr
+package com.motologr.insurance
 
+import com.motologr.UnitTestBase
 import com.motologr.data.objects.insurance.Insurance
 import org.junit.Test
 

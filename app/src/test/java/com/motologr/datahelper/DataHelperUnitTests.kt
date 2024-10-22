@@ -1,5 +1,6 @@
-package com.motologr
+package com.motologr.datahelper
 
+import com.motologr.UnitTestBase
 import com.motologr.data.DataHelper
 import org.junit.Assert
 import org.junit.Test
