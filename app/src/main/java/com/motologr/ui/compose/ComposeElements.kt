@@ -79,7 +79,9 @@ fun convertMillisToDate(millis: Long): String {
 
 @ExperimentalMaterial3Api
 @Composable
-fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String, hasDefaultValue : Boolean = false, isReadOnly : Boolean = false) {
+fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inputLabel : String,
+                    hasDefaultValue : Boolean = false, isReadOnly : Boolean = false,
+                    modifier : Modifier = Modifier) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     if (!hasDefaultValue) {
@@ -110,7 +112,7 @@ fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inp
                     }
                 }
             },
-            modifier = Modifier
+            modifier = modifier
                 .height(64.dp)
                 .fillMaxWidth()
         )
@@ -121,7 +123,7 @@ fun DatePickerModal(selectedDate: MutableState<String> = mutableStateOf(""), inp
 
         var initialSelectedDateMillis : Long? = null
         val oneDayInMillis : Long = 86400000
-        if (hasDefaultValue) {
+        if (selectedDate.value.isNotEmpty()) {
             initialSelectedDateMillis = DataHelper.parseNumericalDateFormat(selectedDate.value).time + oneDayInMillis
         }
 

@@ -60,16 +60,21 @@ class AddFragment : Fragment() {
 
         DataManager.updateTitle(activity, "Record/Update Details")
 
+        val historicalBundle = Bundle()
+        val notHistoricalBundle = Bundle()
+        historicalBundle.putBoolean("isHistorical", true)
+        notHistoricalBundle.putBoolean("isHistorical", false)
+
         val fuelNav = { findNavController().navigate(R.id.action_nav_add_to_nav_fuel) }
-        val wofNav = { findNavController().navigate(R.id.action_nav_add_to_nav_wof) }
-        val regNav = { findNavController().navigate(R.id.action_nav_add_to_nav_reg) }
-        val rucNav = { findNavController().navigate(R.id.nav_rucs) }
+        val wofNav = { findNavController().navigate(R.id.action_nav_add_to_nav_wof, notHistoricalBundle) }
+        val regNav = { findNavController().navigate(R.id.nav_historical_reg, notHistoricalBundle) }
+        val rucNav = { findNavController().navigate(R.id.nav_historical_rucs, notHistoricalBundle) }
         val repairNav = { findNavController().navigate(R.id.action_nav_add_to_nav_repair) }
         val serviceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_service) }
         val insuranceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_insurance) }
-        val historicalWofNav = { findNavController().navigate(R.id.nav_historical_wof) }
-        val historicalRegNav = { findNavController().navigate(R.id.nav_historical_reg) }
-        val historicalRucNav = { findNavController().navigate(R.id.nav_historical_rucs) }
+        val historicalWofNav = { findNavController().navigate(R.id.nav_historical_wof, historicalBundle) }
+        val historicalRegNav = { findNavController().navigate(R.id.nav_historical_reg, historicalBundle) }
+        val historicalRucNav = { findNavController().navigate(R.id.nav_historical_rucs, historicalBundle) }
 
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_add)
         composeView.apply {

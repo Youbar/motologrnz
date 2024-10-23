@@ -91,7 +91,7 @@
             app:destination="@id/nav_service" />
         <action
             android:id="@+id/action_nav_add_to_nav_wof"
-            app:destination="@id/nav_wof" />
+            app:destination="@id/nav_historical_wof" />
         <action
             android:id="@+id/action_nav_add_to_nav_reg"
             app:destination="@id/nav_reg" />

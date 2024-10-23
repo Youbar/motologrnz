@@ -398,7 +398,8 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return insuranceLog.returnInsuranceLog().first()
     }
 
-    private val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
+    private val ddMMyyyy : SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+    private val ddMMMyyyy: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
     fun returnWofExpiry(): String {
         if (!isMeetingCompliance())
@@ -407,10 +408,20 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         val wofLogItems = wofLog.returnWofLog().filter { wof -> !wof.isHistorical }
 
         if (wofLogItems.isEmpty())
-            return format.format(expiryWOF)
+            return ddMMMyyyy.format(expiryWOF)
 
-        wofLogItems.sortedByDescending { wof -> wof.wofDate.time }
-        return format.format(wofLogItems.first().wofDate)
+        val sortedWofs = wofLogItems.sortedByDescending { wof -> wof.wofDate }
+        return ddMMMyyyy.format(sortedWofs.first().wofDate)
+    }
+
+    fun returnWofExpiryDate(): Date {
+        val wofLogItems = wofLog.returnWofLog().filter { wof -> !wof.isHistorical }
+
+        if (wofLogItems.isEmpty())
+            return expiryWOF
+
+        val sortedWofs = wofLogItems.sortedByDescending { wof -> wof.wofDate.time }
+        return sortedWofs.first().wofDate
     }
 
     fun returnRegExpiry(): String {
@@ -420,23 +431,23 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         val regLogItems = regLog.returnRegLog().filter { reg -> !reg.isHistorical}
 
         if (regLogItems.isEmpty())
-            return format.format(regExpiry)
+            return ddMMMyyyy.format(regExpiry)
 
-        regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
-        return format.format(regLogItems.first().newRegExpiryDate)
+        val sortedRegs = regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
+        return ddMMMyyyy.format(sortedRegs.first().newRegExpiryDate)
     }
 
     fun returnLatestRucUnits(): String {
         if (!isMeetingCompliance())
             return "N/A"
 
-        var rucLogItems = rucLog.filter { ruc -> !ruc.isHistorical }
+        val rucLogItems = rucLog.filter { ruc -> !ruc.isHistorical }
 
         if (rucLogItems.isEmpty())
             return roadUserChargesHeld.toString()
 
-        rucLogItems.sortedByDescending { ruc -> ruc.unitsHeldAfterTransaction }
-        return rucLogItems.first().unitsHeldAfterTransaction.toString()
+        val sortedRucs = rucLogItems.sortedByDescending { ruc -> ruc.unitsHeldAfterTransaction }
+        return sortedRucs.first().unitsHeldAfterTransaction.toString()
     }
 
     fun convertToVehicleEntity() : VehicleEntity {
