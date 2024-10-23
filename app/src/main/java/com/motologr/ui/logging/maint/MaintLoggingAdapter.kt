@@ -46,7 +46,7 @@ class MaintLoggingAdapter(private val mList: List<MaintLoggingItemsViewModel>) :
             } else if (holder.maintType.text == "Service") {
                 holder.itemView.findNavController().navigate(R.id.nav_service, bundle)
             } else if (holder.maintType.text == "WOF") {
-                holder.itemView.findNavController().navigate(R.id.nav_wof, bundle)
+                holder.itemView.findNavController().navigate(R.id.nav_historical_wof, bundle)
             }
         }
     }

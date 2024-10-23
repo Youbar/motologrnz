@@ -8,6 +8,8 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
+import com.motologr.data.objects.fuel.FuelEntity
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -44,9 +46,15 @@ interface WofDao {
     @Query("SELECT * FROM Wof WHERE vehicleId == :vehicleId")
     fun getAllByVehicleId(vehicleId : Int): List<WofEntity>
 
+    @Update
+    fun updateWof(wof: WofEntity)
+
     @Insert
     fun insert(vararg service: WofEntity)
 
     @Delete
     fun delete(service: WofEntity)
+
+    @Query("DELETE FROM Wof WHERE id = :id")
+    fun delete(id: Int)
 }

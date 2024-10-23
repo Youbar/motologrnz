@@ -353,6 +353,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateWof(wof: Wof) {
+        wofLog.returnWofLog().removeIf { log -> log.id == wof.id }
+        wofLog.addWofToWofLog(wof)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.wofDao()
+                ?.updateWof(wof.convertToWofEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(wof.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteWof(wofId : Int) {
+        wofLog.returnWofLog().removeIf { log -> log.id == wofId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.wofDao()
+                ?.delete(wofId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(wofId)
+        }.start()
+    }
+
     fun logReg(reg: Reg) {
         regLog.addRegToRegLog(reg)
 

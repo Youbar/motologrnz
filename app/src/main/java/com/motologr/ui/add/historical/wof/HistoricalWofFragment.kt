@@ -41,7 +41,10 @@ import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.databinding.FragmentHistoricalWofBinding
 import com.motologr.ui.compose.CurrencyInput
 import com.motologr.ui.compose.DatePickerModal
+import com.motologr.ui.compose.EditDeleteFABs
+import com.motologr.ui.compose.SaveFAB
 import com.motologr.ui.compose.StringInput
+import com.motologr.ui.compose.WarningDialog
 import com.motologr.ui.theme.AppTheme
 
 class HistoricalWofFragment : Fragment() {
@@ -54,16 +57,15 @@ class HistoricalWofFragment : Fragment() {
     private fun initViewModel(historicalWofViewModel: HistoricalWofViewModel,
                               activeVehicle : Vehicle,
                               savedInstanceState: Bundle?) {
-        val bundle = arguments
-        val logPos: Int? = arguments?.getInt("position")
 
-        if (logPos != null) {
+        val logPos: Int = arguments?.getInt("position", -1) ?: -1
+        if (logPos != -1) {
             DataManager.updateTitle(activity, "View WOF")
             val wof: Wof = DataManager.returnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
             historicalWofViewModel.setViewModelToReadOnly(wof)
         } else {
             DataManager.updateTitle(activity, "Update WOF")
-            val isHistorical = bundle?.getBoolean("isHistorical") ?: false
+            val isHistorical = arguments?.getBoolean("isHistorical") ?: false
             historicalWofViewModel.initViewModel(activeVehicle, isHistorical)
         }
 
@@ -77,7 +79,7 @@ class HistoricalWofFragment : Fragment() {
         }
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
-        if (sharedPref != null) {
+        if (sharedPref != null && logPos == -1) {
             val defaultMechanic = sharedPref.getString(getString(R.string.default_mechanic_key), "")
             historicalWofViewModel.wofProvider.value = defaultMechanic ?: ""
         }
@@ -104,6 +106,13 @@ class HistoricalWofFragment : Fragment() {
                     LazyColumn {
                         item {
                             HistoricalWofCard(historicalWofViewModel)
+                            if (historicalWofViewModel.isExistingData && historicalWofViewModel.isReadOnly.value)
+                                EditDeleteFABs(historicalWofViewModel.onDeleteClick, historicalWofViewModel.onEditClick)
+                            else if (historicalWofViewModel.isExistingData && !historicalWofViewModel.isReadOnly.value)
+                                SaveFAB(historicalWofViewModel.onSaveClick)
+                            if (historicalWofViewModel.isDisplayDeleteDialog.value) {
+                                WarningDialog(historicalWofViewModel.onDismissClick, historicalWofViewModel.onConfirmClick, "Delete Record", "Are you sure you want to delete this record? The deletion is irreversible.")
+                            }
                         }
                     }
                 }
@@ -130,7 +139,9 @@ fun HistoricalWofCard(viewModel : HistoricalWofViewModel) {
                 lineHeight = 1.em,
                 textAlign = TextAlign.Center)
             if (viewModel.isHistorical.value) {
-                DatePickerModal(viewModel.historicalWofDate, "WOF Date")
+                DatePickerModal(viewModel.historicalWofDate, "WOF Date",
+                    hasDefaultValue = viewModel.isExistingData,
+                    isReadOnly = viewModel.isReadOnly.value)
             } else {
                 DatePickerModal(viewModel.oldWofExpiryDate, "Current WOF Expiry",
                     hasDefaultValue = true,
@@ -138,19 +149,26 @@ fun HistoricalWofCard(viewModel : HistoricalWofViewModel) {
                 )
                 DatePickerModal(viewModel.newWofExpiryDate, "New WOF Expiry",
                     hasDefaultValue = true,
-                    isReadOnly = false,
+                    isReadOnly = viewModel.isReadOnly.value,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
 
             HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 16.dp, 16.dp, 16.dp)))
-            CurrencyInput(viewModel.wofPrice, "WOF Price")
-            StringInput(viewModel.wofProvider, "WOF Provider", modifier = Modifier.padding(top = 8.dp))
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                .padding(0.dp, 32.dp, 0.dp, 0.dp)
-                .fillMaxWidth()) {
-                Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
-                    Text("Save", fontSize = 3.em, textAlign = TextAlign.Center)
+            CurrencyInput(viewModel.wofPrice, "WOF Price", isReadOnly = viewModel.isReadOnly.value)
+            StringInput(viewModel.wofProvider, "WOF Provider", modifier = Modifier.padding(top = 8.dp),
+                isReadOnly = viewModel.isReadOnly.value)
+            if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
+                var buttonText = HistoricalWofViewModel.UPDATE_WOF_BUTTON
+                if (viewModel.isHistorical.value)
+                    buttonText = HistoricalWofViewModel.HISTORICAL_WOF_BUTTON
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                        .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                        .fillMaxWidth()) {
+                    Button(onClick = viewModel.onRecordClick,
+                        contentPadding = PaddingValues(8.dp)) {
+                        Text(buttonText, fontSize = 20.sp, textAlign = TextAlign.Center)
+                    }
                 }
             }
         }

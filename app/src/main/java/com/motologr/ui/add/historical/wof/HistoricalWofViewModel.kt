@@ -11,6 +11,8 @@ class HistoricalWofViewModel : ViewModel() {
     companion object {
         private const val HISTORICAL_WOF = "Historical WOF"
         private const val UPDATE_WOF = "Update WOF"
+        const val HISTORICAL_WOF_BUTTON = "Record"
+        const val UPDATE_WOF_BUTTON = "Update"
     }
 
     val wofTitle
@@ -100,7 +102,7 @@ class HistoricalWofViewModel : ViewModel() {
         return true
     }
 
-    fun getWofObjectFromInputs() : Wof? {
+    private fun getWofObjectFromInputs() : Wof? {
         if (isValidInputs()) {
             val wofPrice = wofPrice.value
                 .replace(",","").toBigDecimal()
@@ -149,16 +151,16 @@ class HistoricalWofViewModel : ViewModel() {
         isReadOnly.value = false
     }
 
-/*    val onSaveClick = {
-        val fuel = getFuelObjectFromInputs()
+    val onSaveClick = {
+        val wof = getWofObjectFromInputs()
 
-        if (fuel != null) {
-            fuel.id = fuelId
-            DataManager.returnActiveVehicle()?.updateFuel(fuel)
+        if (wof != null) {
+            wof.id = wofId
+            DataManager.returnActiveVehicle()?.updateWof(wof)
             displayToastMessage("Changes saved.")
             isReadOnly.value = true
         }
-    }*/
+    }
 
     var isDisplayDeleteDialog = mutableStateOf(false)
 
@@ -166,11 +168,11 @@ class HistoricalWofViewModel : ViewModel() {
         isDisplayDeleteDialog.value = true
     }
 
-/*    val onConfirmClick = {
+    val onConfirmClick = {
         DataManager.returnActiveVehicle()?.deleteWof(wofId)
         displayToastMessage("WOF record deleted.")
         navigateToVehicle()
-    }*/
+    }
 
     val onDismissClick = {
         isDisplayDeleteDialog.value = false
