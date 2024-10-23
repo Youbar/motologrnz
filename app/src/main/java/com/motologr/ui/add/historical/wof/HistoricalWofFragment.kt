@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +36,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.motologr.R
 import com.motologr.data.DataManager
+import com.motologr.data.objects.maint.Wof
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.databinding.FragmentHistoricalWofBinding
 import com.motologr.ui.compose.CurrencyInput
@@ -53,8 +55,17 @@ class HistoricalWofFragment : Fragment() {
                               activeVehicle : Vehicle,
                               savedInstanceState: Bundle?) {
         val bundle = arguments
-        val isHistorical = bundle?.getBoolean("isHistorical") ?: false
-        historicalWofViewModel.initViewModel(activeVehicle, isHistorical)
+        val logPos: Int? = arguments?.getInt("position")
+
+        if (logPos != null) {
+            DataManager.updateTitle(activity, "View WOF")
+            val wof: Wof = DataManager.returnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
+            historicalWofViewModel.setViewModelToReadOnly(wof)
+        } else {
+            DataManager.updateTitle(activity, "Update WOF")
+            val isHistorical = bundle?.getBoolean("isHistorical") ?: false
+            historicalWofViewModel.initViewModel(activeVehicle, isHistorical)
+        }
 
         historicalWofViewModel.displayToastMessage = { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
@@ -90,7 +101,11 @@ class HistoricalWofFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    HistoricalWofCard(historicalWofViewModel)
+                    LazyColumn {
+                        item {
+                            HistoricalWofCard(historicalWofViewModel)
+                        }
+                    }
                 }
             }
         }
@@ -103,7 +118,7 @@ class HistoricalWofFragment : Fragment() {
 @Composable
 fun HistoricalWofCard(viewModel : HistoricalWofViewModel) {
     OutlinedCard(modifier = Modifier
-        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .padding(16.dp, 16.dp, 16.dp, 8.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
         Column(modifier = Modifier
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
@@ -134,7 +149,7 @@ fun HistoricalWofCard(viewModel : HistoricalWofViewModel) {
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier
                 .padding(0.dp, 32.dp, 0.dp, 0.dp)
                 .fillMaxWidth()) {
-                Button(onClick = viewModel.onSaveClick, contentPadding = PaddingValues(8.dp)) {
+                Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
                     Text("Save", fontSize = 3.em, textAlign = TextAlign.Center)
                 }
             }

@@ -67,8 +67,8 @@ class AddFragment : Fragment() {
 
         val fuelNav = { findNavController().navigate(R.id.action_nav_add_to_nav_fuel) }
         val wofNav = { findNavController().navigate(R.id.action_nav_add_to_nav_wof, notHistoricalBundle) }
-        val regNav = { findNavController().navigate(R.id.nav_historical_reg, notHistoricalBundle) }
-        val rucNav = { findNavController().navigate(R.id.nav_historical_rucs, notHistoricalBundle) }
+        val regNav = { findNavController().navigate(R.id.nav_reg, notHistoricalBundle) }
+        val rucNav = { findNavController().navigate(R.id.nav_rucs, notHistoricalBundle) }
         val repairNav = { findNavController().navigate(R.id.action_nav_add_to_nav_repair) }
         val serviceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_service) }
         val insuranceNav = { findNavController().navigate(R.id.action_nav_add_to_nav_insurance) }
