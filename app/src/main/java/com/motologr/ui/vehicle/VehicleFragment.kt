@@ -96,6 +96,10 @@ class VehicleFragment : Fragment() {
             binding.textCar.text = it
         }
 
+        val complianceLoggingNavigate = {
+            findNavController().navigate(R.id.nav_compliance_logging)
+        }
+
         val expensesNavigate = {
             findNavController().navigate(R.id.nav_expenses)
         }
@@ -104,7 +108,7 @@ class VehicleFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    OutlinedCards(viewModel, expensesNavigate)
+                    OutlinedCards(viewModel, expensesNavigate, complianceLoggingNavigate)
                 }
             }
         }
@@ -169,7 +173,7 @@ class VehicleFragment : Fragment() {
 }
 
 @Composable
-fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit) {
+fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit, complianceLoggingNavigate : () -> Unit) {
     Column {
         Row(modifier = Modifier
             .padding(8.dp)
@@ -186,7 +190,7 @@ fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit) {
             val isRoadUserChargesDisplayed = viewModel.isRoadUserChargesDisplayed.observeAsState(false)
             val roadUserCharges = viewModel.textRoadUserCharges.observeAsState("")
             ComplianceCard(cardModifier, vehicleWofDt, vehicleRegDt, trackingFuelConsumption,
-                vehicleOdo, isRoadUserChargesDisplayed, roadUserCharges)
+                vehicleOdo, isRoadUserChargesDisplayed, roadUserCharges, complianceLoggingNavigate)
 
             val policyInsurer = viewModel.textInsurer.observeAsState("")
             val policyCoverage = viewModel.textInsurerCoverage.observeAsState("")
@@ -222,13 +226,13 @@ fun ComplianceCard(
     isOdoReadingVisible : State<Boolean>,
     odoReading : State<String>,
     isRoadUserChargesDisplayed: State<Boolean>,
-    roadUserChargesHeld : State<String>
+    roadUserChargesHeld : State<String>,
+    onClick : () -> Unit
 ) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        modifier = cardModifier
+        border = BorderStroke(1.dp, Color.Black),
+        modifier = cardModifier,
+        onClick = onClick
     ) {
         Text(
             text = "Compliance",
@@ -273,9 +277,6 @@ fun InsuranceCard(
     hasActivePolicy : State<Boolean>
 ) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
         modifier = cardModifier
     ) {
         Text(
@@ -328,9 +329,6 @@ fun ExpensesCard(
     onClick : () -> Unit
 ) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
         border = BorderStroke(1.dp, Color.Black),
         modifier = cardModifier,
         onClick = onClick

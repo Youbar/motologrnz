@@ -261,7 +261,7 @@ class MainActivity : AppCompatActivity() {
                         ArrayList()
                     vehicleOptions.add("Overview")
                     vehicleOptions.add("Fuel")
-                    vehicleOptions.add("Maintenance")
+                    vehicleOptions.add("Mechanical")
                     vehicleOptions.add("Insurance")
                     vehicleOptions.add("Settings")
 
@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         else if (optionName == "Insurance") {
             navigationController.navigate(R.id.nav_insurance_logging)
         }
-        else if (optionName == "Maintenance") {
+        else if (optionName == "Mecahnical") {
             navigationController.navigate(R.id.nav_maint_logging)
         }
         else if (optionName == "Fuel") {

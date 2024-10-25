@@ -120,12 +120,22 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return odometer
     }
 
-    fun returnMaintLogs() : ArrayList<Loggable> {
-        var logs = ArrayList<Loggable>()
+    fun returnComplianceLogs() : ArrayList<Loggable> {
+        val logs = ArrayList<Loggable>()
+
+        logs.addAll(wofLog.returnWofLog())
+        logs.addAll(regLog.returnRegLog())
+        logs.addAll(rucLog)
+        logs.sortByDescending { loggable -> loggable.sortableDate.time }
+
+        return logs
+    }
+
+    fun returnMechanicalLogs() : ArrayList<Loggable> {
+        val logs = ArrayList<Loggable>()
 
         logs.addAll(serviceLog.returnServiceLog())
         logs.addAll(repairLog.returnRepairLog())
-        logs.addAll(wofLog.returnWofLog())
         logs.sortByDescending { loggable -> loggable.sortableDate.time }
 
         return logs
@@ -193,14 +203,14 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return loggableDate.before(maxDate) and loggableDate.after(minDate)
     }
 
-    fun returnLoggable(id: Int) : Loggable? {
-        var loggable: Loggable? = returnMaintLogs().find { loggable -> loggable.id == id }
+    fun returnLoggableById(id: Int) : Loggable? {
+        val loggable: Loggable? = returnComplianceLogs().find { loggable -> loggable.id == id }
 
         return loggable
     }
 
     fun returnLoggableByPosition(position : Int) : Loggable? {
-        var loggable: Loggable? = returnMaintLogs()[position]
+        val loggable: Loggable? = returnMechanicalLogs()[position]
 
         return loggable
     }

@@ -55,13 +55,11 @@ class HistoricalWofFragment : Fragment() {
     private val binding get() = _binding!!
 
     private fun initViewModel(historicalWofViewModel: HistoricalWofViewModel,
-                              activeVehicle : Vehicle,
-                              savedInstanceState: Bundle?) {
-
-        val logPos: Int = arguments?.getInt("position", -1) ?: -1
-        if (logPos != -1) {
+                              activeVehicle : Vehicle) {
+        val loggableId: Int = arguments?.getInt("loggableId", -1) ?: -1
+        if (loggableId != -1) {
             DataManager.updateTitle(activity, "View WOF")
-            val wof: Wof = DataManager.returnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Wof
+            val wof: Wof = DataManager.returnActiveVehicle()?.returnLoggableById(loggableId)!! as Wof
             historicalWofViewModel.setViewModelToReadOnly(wof)
         } else {
             DataManager.updateTitle(activity, "Update WOF")
@@ -79,7 +77,7 @@ class HistoricalWofFragment : Fragment() {
         }
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.requireContext())
-        if (sharedPref != null && logPos == -1) {
+        if (sharedPref != null && loggableId == -1) {
             val defaultMechanic = sharedPref.getString(getString(R.string.default_mechanic_key), "")
             historicalWofViewModel.wofProvider.value = defaultMechanic ?: ""
         }
@@ -93,7 +91,7 @@ class HistoricalWofFragment : Fragment() {
 
         val historicalWofViewModel =
             ViewModelProvider(this)[HistoricalWofViewModel::class.java]
-        initViewModel(historicalWofViewModel, activeVehicle, savedInstanceState)
+        initViewModel(historicalWofViewModel, activeVehicle)
 
         _binding = FragmentHistoricalWofBinding.inflate(inflater, container, false)
         val root: View = binding.root

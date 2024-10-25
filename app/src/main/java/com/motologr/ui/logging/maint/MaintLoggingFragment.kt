@@ -37,7 +37,7 @@ class MaintLoggingFragment : Fragment() {
         _binding = FragmentMaintLoggingBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        DataManager.updateTitle(activity, "Maintenance Logs")
+        DataManager.updateTitle(activity, "Mechanical Logs")
 
         // getting the recyclerview by its id
         val recyclerview = binding.recyclerViewMaintLogging
@@ -49,7 +49,7 @@ class MaintLoggingFragment : Fragment() {
         val data = ArrayList<MaintLoggingItemsViewModel>()
         val format = SimpleDateFormat("dd/MM/yy")
 
-        val maintLog = DataManager.returnActiveVehicle()?.returnMaintLogs()
+        val maintLog = DataManager.returnActiveVehicle()?.returnMechanicalLogs()
 
         val df = DecimalFormat("0.00")
         df.roundingMode = RoundingMode.CEILING
@@ -78,15 +78,6 @@ class MaintLoggingFragment : Fragment() {
                                 "Service",
                                 format.format(service.serviceDate),
                                 "$" + df.format(service.price)
-                            )
-                        )
-                    }
-                    2 -> { // WOF
-                        var wof: Wof = loggable as Wof
-                        data.add(
-                            MaintLoggingItemsViewModel(
-                                R.drawable.ic_log_car_wof_16, "WOF", format.format(wof.wofCompletedDate),
-                                "$" + df.format(wof.price)
                             )
                         )
                     }
