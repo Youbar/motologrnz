@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.motologr.R
 import com.motologr.ui.theme.AppTheme
@@ -103,7 +104,7 @@ fun ArtPackCard(
                 Text("Show your support for MotoLogr NZ by purchasing this art pack for your garage. You will also benefit from an ad-free experience.",
                     modifier = Modifier.weight(1.0f)
                         .padding(PaddingValues(6.dp, 0.dp)),
-                    fontSize = 2.5.em)
+                    fontSize = 14.sp, lineHeight = 1.2.em)
                 Button(onClick = onClick,
                     enabled = isArtPackPurchaseEnabled, contentPadding = PaddingValues(8.dp)) {
                     Text(artPackButtonText, fontSize = 3.em, textAlign = TextAlign.Center)

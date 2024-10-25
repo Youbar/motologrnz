@@ -125,7 +125,7 @@ class HistoricalWofFragment : Fragment() {
 @Composable
 fun HistoricalWofCard(viewModel : HistoricalWofViewModel) {
     OutlinedCard(modifier = Modifier
-        .padding(16.dp, 16.dp, 16.dp, 8.dp)
+        .padding(16.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
         Column(modifier = Modifier
             .padding(16.dp, 8.dp, 16.dp, 8.dp)

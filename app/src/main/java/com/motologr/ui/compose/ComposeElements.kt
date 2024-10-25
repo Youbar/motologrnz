@@ -108,6 +108,38 @@ fun SliderWithUnitsForRegistration(sliderPrice: MutableState<String> = mutableSt
     Text(text = "${sliderPositionObserver.roundToInt()} $sliderUnits")
 }
 
+@Composable
+fun SliderWithUnitsForRoadUserCharges(sliderPrice: MutableState<String> = mutableStateOf(""),
+                                   sliderPosition : MutableState<Float> = mutableFloatStateOf(0f),
+                                   sliderSteps : Int,
+                                   sliderUnits : String,
+                                   calculationFormula : (Int) -> BigDecimal,
+                                   oldUnitsHeld : MutableState<String>,
+                                   newUnitsHeld : MutableState<String>,
+                                   rucFormula : (String, Int) -> String,
+                                   isReadOnly: Boolean = false) {
+    var newUnitsHeldObserver by remember { newUnitsHeld }
+    var sliderPriceObserver by remember { sliderPrice }
+    var sliderPositionObserver by remember { sliderPosition }
+    val sliderMaxRange = (sliderSteps + 1).toFloat()
+    Slider(
+        value = sliderPositionObserver,
+        onValueChange = { sliderPositionObserver = it
+            sliderPriceObserver = DataHelper.roundToTwoDecimalPlaces(calculationFormula(sliderPositionObserver.roundToInt()))
+            newUnitsHeldObserver = rucFormula(oldUnitsHeld.value, sliderPositionObserver.roundToInt())
+        },
+        colors = SliderDefaults.colors(
+            thumbColor = MaterialTheme.colorScheme.secondary,
+            activeTrackColor = MaterialTheme.colorScheme.secondary,
+            inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        steps = sliderSteps,
+        valueRange = 0f..sliderMaxRange,
+        enabled = !isReadOnly
+    )
+    Text(text = "${sliderPositionObserver.roundToInt()} $sliderUnits")
+}
+
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))

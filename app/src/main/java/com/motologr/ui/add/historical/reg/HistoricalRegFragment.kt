@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -96,15 +97,19 @@ class HistoricalRegFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    HistoricalRegCard(historicalRegViewModel)
-                    if (historicalRegViewModel.isExistingData && historicalRegViewModel.isReadOnly.value)
-                        EditDeleteFABs(historicalRegViewModel.onDeleteClick, historicalRegViewModel.onEditClick)
-                    else if (historicalRegViewModel.isExistingData && !historicalRegViewModel.isReadOnly.value)
-                        SaveFAB(historicalRegViewModel.onSaveClick)
-                    if (historicalRegViewModel.isDisplayDeleteDialog.value) {
-                        WarningDialog(historicalRegViewModel.onDismissClick, historicalRegViewModel.onConfirmClick, "Delete Record", "Are you sure you want to delete this record? The deletion is irreversible.")
+                    LazyColumn {
+                        item {
+                            HistoricalRegCard(historicalRegViewModel)
+                            if (historicalRegViewModel.isExistingData && historicalRegViewModel.isReadOnly.value)
+                                EditDeleteFABs(historicalRegViewModel.onDeleteClick, historicalRegViewModel.onEditClick)
+                            else if (historicalRegViewModel.isExistingData && !historicalRegViewModel.isReadOnly.value)
+                                SaveFAB(historicalRegViewModel.onSaveClick)
+                            if (historicalRegViewModel.isDisplayDeleteDialog.value) {
+                                WarningDialog(historicalRegViewModel.onDismissClick, historicalRegViewModel.onConfirmClick, "Delete Record",
+                                    "Are you sure you want to delete this record? The deletion is irreversible.")
+                            }
+                        }
                     }
-
                 }
             }
         }
@@ -117,7 +122,7 @@ class HistoricalRegFragment : Fragment() {
 @Composable
 fun HistoricalRegCard(viewModel : HistoricalRegViewModel) {
     OutlinedCard(modifier = Modifier
-        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .padding(16.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
         Column(modifier = Modifier
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
@@ -153,7 +158,7 @@ fun HistoricalRegCard(viewModel : HistoricalRegViewModel) {
                     hasDefaultValue = true,
                     isReadOnly = viewModel.isReadOnly.value)
             }
-            CurrencyInput(viewModel.regPrice, "Purchase Price", modifier = Modifier.padding(top = 8.dp))
+            CurrencyInput(viewModel.regPrice, "Purchase Price", isReadOnly = viewModel.isReadOnly.value, modifier = Modifier.padding(top = 8.dp))
 
             if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
                 var buttonText = HistoricalRegViewModel.UPDATE_REG_BUTTON

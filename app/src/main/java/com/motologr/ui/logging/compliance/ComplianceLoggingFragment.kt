@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,12 +53,11 @@ class ComplianceLoggingFragment : Fragment() {
         val bundle = Bundle()
         bundle.putInt("loggableId", loggableId)
 
-        if (classId == EnumConstants.LoggableType.WOF.id)
-            findNavController().navigate(R.id.nav_historical_wof, bundle)
-        else if (classId == EnumConstants.LoggableType.Reg.id)
-            findNavController().navigate(R.id.nav_historical_reg, bundle)
-        else if (classId == EnumConstants.LoggableType.Ruc.id)
-            findNavController().navigate(R.id.nav_historical_rucs, bundle)
+        when (classId) {
+            EnumConstants.LoggableType.WOF.id -> findNavController().navigate(R.id.nav_historical_wof, bundle)
+            EnumConstants.LoggableType.Reg.id -> findNavController().navigate(R.id.nav_historical_reg, bundle)
+            EnumConstants.LoggableType.Ruc.id -> findNavController().navigate(R.id.nav_historical_rucs, bundle)
+        }
     }
 
     override fun onCreateView(

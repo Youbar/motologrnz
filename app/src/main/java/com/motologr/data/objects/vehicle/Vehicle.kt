@@ -443,6 +443,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateRuc(ruc: Ruc) {
+        rucLog.removeIf { log -> log.id == ruc.id }
+        rucLog.add(ruc)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.rucDao()
+                ?.updateRuc(ruc.convertToRucEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(ruc.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteRuc(rucId : Int) {
+        rucLog.removeIf { log -> log.id == rucId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.rucDao()
+                ?.delete(rucId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(rucId)
+        }.start()
+    }
+
     fun hasCurrentInsurance() : Boolean {
         val calendar = Calendar.getInstance()
 

@@ -35,5 +35,18 @@ class Ruc(var purchaseDate: Date,
 
             return numberOfUnits.multiply(unitPrice).add(adminFee)
         }
+
+        var calculateRucUnitsLambda : (String, Int) -> String = {
+                oldUnitsHeld, sliderPosition -> calculateRucUnits(oldUnitsHeld, sliderPosition)
+        }
+
+        fun calculateRucUnits(oldUnitsHeld : String, sliderPosition : Int): String {
+            if (sliderPosition == 0)
+                return oldUnitsHeld
+
+            val newUnitsHeld = oldUnitsHeld.toInt() + sliderPosition * 1000
+
+            return newUnitsHeld.toString()
+        }
     }
 }

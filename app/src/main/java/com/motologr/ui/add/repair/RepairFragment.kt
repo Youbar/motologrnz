@@ -147,7 +147,7 @@ class RepairFragment : Fragment() {
 @Composable
 fun RepairLoggingInterface(viewModel: RepairViewModel) {
     OutlinedCard(modifier = Modifier
-        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .padding(16.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
         .height(IntrinsicSize.Min)) {
         Column(modifier = Modifier

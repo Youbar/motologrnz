@@ -38,6 +38,7 @@ class HistoricalRegViewModel : ViewModel() {
         private set
 
     var newRegExpiryDate = mutableStateOf("")
+        private set
 
     var isHistorical = mutableStateOf(false)
         private set
@@ -125,14 +126,12 @@ class HistoricalRegViewModel : ViewModel() {
     }
 
     var onRecordClick = {
-        if (isValidInputs()) {
-            val reg = getRegObjectFromInputs()
+        val reg = getRegObjectFromInputs()
 
-            if (reg != null) {
-                DataManager.returnActiveVehicle()?.logReg(reg)
-                displayToastMessage("Registration saved")
-                navigateToVehicle()
-            }
+        if (reg != null) {
+            DataManager.returnActiveVehicle()?.logReg(reg)
+            displayToastMessage("Registration saved")
+            navigateToVehicle()
         }
     }
 
