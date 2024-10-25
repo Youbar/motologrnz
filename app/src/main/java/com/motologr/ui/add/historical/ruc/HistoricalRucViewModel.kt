@@ -69,7 +69,7 @@ class HistoricalRucViewModel : ViewModel() {
         purchaseDate.value = DataHelper.formatNumericalDateFormat(ruc.purchaseDate)
 
         if (!isHistorical.value) {
-            oldUnitsHeld.value = ruc.unitsHeldAfterTransaction.toString()
+            oldUnitsHeld.value = (ruc.unitsHeldAfterTransaction - 1000 * ruc.unitsPurchased).toString()
             newUnitsHeld.value = ruc.unitsHeldAfterTransaction.toString()
         }
 

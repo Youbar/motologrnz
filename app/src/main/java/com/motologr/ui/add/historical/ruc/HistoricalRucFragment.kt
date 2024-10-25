@@ -24,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -39,7 +38,6 @@ import com.motologr.data.DataManager
 import com.motologr.data.objects.ruc.Ruc
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.databinding.FragmentHistoricalRucBinding
-import com.motologr.ui.add.historical.reg.HistoricalRegViewModel
 import com.motologr.ui.compose.CurrencyInput
 import com.motologr.ui.compose.DatePickerModal
 import com.motologr.ui.compose.EditDeleteFABs
@@ -134,7 +132,7 @@ fun HistoricalRucCard(viewModel: HistoricalRucViewModel) {
                     .fillMaxWidth(),
                 lineHeight = 1.em,
                 textAlign = TextAlign.Center)
-            DatePickerModal(viewModel.purchaseDate, "Purchase Date", true, isReadOnly = viewModel.isReadOnly.value)
+            DatePickerModal(viewModel.purchaseDate, "Purchase Date", hasDefaultValue = !viewModel.isHistorical.value || viewModel.isExistingData, isReadOnly = viewModel.isReadOnly.value)
             if (!viewModel.isHistorical.value)
                 NumberInput(viewModel.oldUnitsHeld, "RUCs Held", modifier = Modifier.padding(top = 8.dp), isReadOnly = true)
             HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 16.dp, 16.dp, 16.dp)))
@@ -144,7 +142,7 @@ fun HistoricalRucCard(viewModel: HistoricalRucViewModel) {
                 SliderWithUnitsForRoadUserCharges(viewModel.rucPrice, viewModel.sliderPosition, 19, "unit(s)", Ruc.calculateRucPriceLambda,
                     viewModel.oldUnitsHeld, viewModel.newUnitsHeld, Ruc.calculateRucUnitsLambda, isReadOnly = viewModel.isReadOnly.value)
             if (!viewModel.isHistorical.value)
-                NumberInput(viewModel.newUnitsHeld, "New RUCs Held", modifier = Modifier.padding(top = 8.dp), isReadOnly = viewModel.isReadOnly.value)
+                NumberInput(viewModel.newUnitsHeld, "New RUCs Held", modifier = Modifier.padding(top = 8.dp), isReadOnly = true)
             CurrencyInput(viewModel.rucPrice, "Purchase Price", modifier = Modifier.padding(top = 8.dp), isReadOnly = viewModel.isReadOnly.value)
 
             if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {

@@ -155,7 +155,8 @@
         android:name="com.motologr.ui.expenses.ExpensesFragment" />
     <fragment
         android:id="@+id/nav_compliance_logging"
-        android:name="com.motologr.ui.logging.compliance.ComplianceLoggingFragment" />
+        android:name="com.motologr.ui.logging.compliance.ComplianceLoggingFragment"
+        android:label="Compliance Logs"/>
     <fragment
         android:id="@+id/nav_insurance_logging"
         android:name="com.motologr.ui.logging.insurance.InsuranceLoggingFragment" />
