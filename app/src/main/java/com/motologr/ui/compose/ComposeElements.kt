@@ -51,23 +51,59 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
-fun SliderWithUnits(registrationPrice: MutableState<String> = mutableStateOf(""),
+fun SliderWithUnits(sliderPrice: MutableState<String> = mutableStateOf(""),
                     sliderPosition : MutableState<Float> = mutableFloatStateOf(0f),
-                    sliderSteps : Int, sliderUnits : String, calculationFormula : (Int) -> BigDecimal) {
-    var registrationPriceObserver by remember { registrationPrice }
+                    sliderSteps : Int,
+                    sliderUnits : String,
+                    calculationFormula : (Int) -> BigDecimal,
+                    isReadOnly: Boolean = false) {
+    var sliderPriceObserver by remember { sliderPrice }
     var sliderPositionObserver by remember { sliderPosition }
     val sliderMaxRange = (sliderSteps + 1).toFloat()
     Slider(
         value = sliderPositionObserver,
         onValueChange = { sliderPositionObserver = it
-            registrationPriceObserver = DataHelper.roundToTwoDecimalPlaces(calculationFormula(sliderPositionObserver.roundToInt())) },
+            sliderPriceObserver = DataHelper.roundToTwoDecimalPlaces(calculationFormula(sliderPositionObserver.roundToInt())) },
         colors = SliderDefaults.colors(
             thumbColor = MaterialTheme.colorScheme.secondary,
             activeTrackColor = MaterialTheme.colorScheme.secondary,
             inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
         steps = sliderSteps,
-        valueRange = 0f..sliderMaxRange
+        valueRange = 0f..sliderMaxRange,
+        enabled = !isReadOnly
+    )
+    Text(text = "${sliderPositionObserver.roundToInt()} $sliderUnits")
+}
+
+@Composable
+fun SliderWithUnitsForRegistration(sliderPrice: MutableState<String> = mutableStateOf(""),
+                                   sliderPosition : MutableState<Float> = mutableFloatStateOf(0f),
+                                   sliderSteps : Int,
+                                   sliderUnits : String,
+                                   calculationFormula : (Int) -> BigDecimal,
+                                   oldExpiryDate : MutableState<String>,
+                                   newExpiryDate : MutableState<String>,
+                                   dateFormula : (String, Int) -> String,
+                                   isReadOnly: Boolean = false) {
+    var newExpiryDateObserver by remember { newExpiryDate }
+    var sliderPriceObserver by remember { sliderPrice }
+    var sliderPositionObserver by remember { sliderPosition }
+    val sliderMaxRange = (sliderSteps + 1).toFloat()
+    Slider(
+        value = sliderPositionObserver,
+        onValueChange = { sliderPositionObserver = it
+            sliderPriceObserver = DataHelper.roundToTwoDecimalPlaces(calculationFormula(sliderPositionObserver.roundToInt()))
+            newExpiryDateObserver = dateFormula(oldExpiryDate.value, sliderPositionObserver.roundToInt())
+                        },
+        colors = SliderDefaults.colors(
+            thumbColor = MaterialTheme.colorScheme.secondary,
+            activeTrackColor = MaterialTheme.colorScheme.secondary,
+            inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        steps = sliderSteps,
+        valueRange = 0f..sliderMaxRange,
+        enabled = !isReadOnly
     )
     Text(text = "${sliderPositionObserver.roundToInt()} $sliderUnits")
 }

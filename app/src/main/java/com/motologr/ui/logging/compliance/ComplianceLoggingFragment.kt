@@ -120,10 +120,10 @@ fun ComplianceCard(loggableId : Int = 0,
         var complianceText = "WOF"
 
         if (complianceClassId == EnumConstants.LoggableType.Reg.id) {
-            complianceIconResourceId = R.drawable.ic_log_car_repair_16
-            complianceText = "Reg"
+            complianceIconResourceId = R.drawable.ic_log_car_reg_16
+            complianceText = "REG"
         } else if (complianceClassId == EnumConstants.LoggableType.Ruc.id) {
-            complianceIconResourceId = R.drawable.ic_log_car_service_16
+            complianceIconResourceId = R.drawable.ic_log_car_ruc_16
             complianceText = "RUC"
         }
 

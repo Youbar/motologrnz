@@ -403,6 +403,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateReg(reg: Reg) {
+        regLog.returnRegLog().removeIf { log -> log.id == reg.id }
+        regLog.addRegToRegLog(reg)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.regDao()
+                ?.updateReg(reg.convertToRegEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(reg.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteReg(regId : Int) {
+        regLog.returnRegLog().removeIf { log -> log.id == regId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.regDao()
+                ?.delete(regId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(regId)
+        }.start()
+    }
+
     fun logRuc(ruc : Ruc) {
         rucLog.add(ruc)
 
@@ -472,6 +499,16 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
 
         val sortedRegs = regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
         return ddMMMyyyy.format(sortedRegs.first().newRegExpiryDate)
+    }
+
+    fun returnRegExpiryDate(): Date {
+        val regLogItems = regLog.returnRegLog().filter { reg -> !reg.isHistorical}
+
+        if (regLogItems.isEmpty())
+            return regExpiry
+
+        val sortedRegs = regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
+        return sortedRegs.first().newRegExpiryDate
     }
 
     fun returnLatestRucUnits(): String {

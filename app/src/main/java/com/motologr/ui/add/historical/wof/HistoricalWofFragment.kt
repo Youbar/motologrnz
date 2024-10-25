@@ -139,11 +139,13 @@ fun HistoricalWofCard(viewModel : HistoricalWofViewModel) {
             if (viewModel.isHistorical.value) {
                 DatePickerModal(viewModel.historicalWofDate, "WOF Date",
                     hasDefaultValue = viewModel.isExistingData,
-                    isReadOnly = viewModel.isReadOnly.value)
+                    isReadOnly = viewModel.isReadOnly.value,
+                    modifier = Modifier.padding(top = 8.dp))
             } else {
                 DatePickerModal(viewModel.oldWofExpiryDate, "Current WOF Expiry",
                     hasDefaultValue = true,
-                    isReadOnly = true
+                    isReadOnly = true,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
                 DatePickerModal(viewModel.newWofExpiryDate, "New WOF Expiry",
                     hasDefaultValue = true,

@@ -25,7 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -42,7 +41,11 @@ import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.databinding.FragmentHistoricalRegBinding
 import com.motologr.ui.compose.DatePickerModal
 import com.motologr.ui.compose.CurrencyInput
+import com.motologr.ui.compose.EditDeleteFABs
+import com.motologr.ui.compose.SaveFAB
 import com.motologr.ui.compose.SliderWithUnits
+import com.motologr.ui.compose.SliderWithUnitsForRegistration
+import com.motologr.ui.compose.WarningDialog
 import com.motologr.ui.theme.AppTheme
 
 class HistoricalRegFragment : Fragment() {
@@ -57,18 +60,13 @@ class HistoricalRegFragment : Fragment() {
         val loggableId: Int = arguments?.getInt("loggableId", -1) ?: -1
         if (loggableId != -1) {
             DataManager.updateTitle(activity, "View Reg")
-/*
-            val reg: Reg = DataManager.returnActiveVehicle()?.returnLoggableByPosition(logPos)!! as Reg
+            val reg: Reg = DataManager.returnActiveVehicle()?.returnLoggableById(loggableId)!! as Reg
             historicalRegViewModel.setViewModelToReadOnly(reg)
-*/
         } else {
             DataManager.updateTitle(activity, "Update Reg")
             val isHistorical = arguments?.getBoolean("isHistorical") ?: false
-/*
             historicalRegViewModel.initViewModel(activeVehicle, isHistorical)
-*/
         }
-
 
         historicalRegViewModel.displayToastMessage = { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
@@ -98,8 +96,15 @@ class HistoricalRegFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    HistoricalRegCard(historicalRegViewModel.registrationPrice, historicalRegViewModel.sliderPosition,
-                        historicalRegViewModel.selectedDate, historicalRegViewModel.onClick)
+                    HistoricalRegCard(historicalRegViewModel)
+                    if (historicalRegViewModel.isExistingData && historicalRegViewModel.isReadOnly.value)
+                        EditDeleteFABs(historicalRegViewModel.onDeleteClick, historicalRegViewModel.onEditClick)
+                    else if (historicalRegViewModel.isExistingData && !historicalRegViewModel.isReadOnly.value)
+                        SaveFAB(historicalRegViewModel.onSaveClick)
+                    if (historicalRegViewModel.isDisplayDeleteDialog.value) {
+                        WarningDialog(historicalRegViewModel.onDismissClick, historicalRegViewModel.onConfirmClick, "Delete Record", "Are you sure you want to delete this record? The deletion is irreversible.")
+                    }
+
                 }
             }
         }
@@ -108,30 +113,63 @@ class HistoricalRegFragment : Fragment() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalRegCard(registrationPrice: MutableState<String>, sliderPosition: MutableState<Float>,
-                      selectedDate: MutableState<String>, onSaveClick: () -> Unit = {}) {
+fun HistoricalRegCard(viewModel : HistoricalRegViewModel) {
     OutlinedCard(modifier = Modifier
         .padding(16.dp, 8.dp, 16.dp, 8.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
         Column(modifier = Modifier
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
             .height(IntrinsicSize.Min)){
-            Text("Historical Registration", fontSize = 24.sp,
+            Text(viewModel.regTitle, fontSize = 24.sp,
                 modifier = Modifier
                     .padding(PaddingValues(0.dp, 0.dp))
                     .fillMaxWidth(),
                 lineHeight = 1.em,
                 textAlign = TextAlign.Center)
-            DatePickerModal(selectedDate, "Purchase Date")
+            if (viewModel.isHistorical.value) {
+                DatePickerModal(viewModel.historicalRegDate, "Purchase Date",
+                    hasDefaultValue = viewModel.isExistingData,
+                    isReadOnly = viewModel.isReadOnly.value,
+                    modifier = Modifier.padding(top = 8.dp))
+            } else {
+                DatePickerModal(viewModel.oldRegExpiryDate, "Current Expiry Date",
+                    hasDefaultValue = true,
+                    isReadOnly = true,
+                    modifier = Modifier.padding(top = 8.dp))
+            }
             HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 16.dp, 16.dp, 16.dp)))
-            SliderWithUnits(registrationPrice, sliderPosition, 11, "month(s)", Reg.calculateRegistrationLambda)
-            CurrencyInput(registrationPrice, "Purchase Price")
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                .padding(0.dp, 32.dp, 0.dp, 0.dp)
-                .fillMaxWidth()) {
-                Button(onClick = onSaveClick, contentPadding = PaddingValues(8.dp)) {
-                    Text("Save", fontSize = 3.em, textAlign = TextAlign.Center)
+            if (viewModel.isHistorical.value) {
+                SliderWithUnits(viewModel.regPrice, viewModel.sliderPosition, 11, "month(s)",
+                    Reg.calculateRegistrationLambda, viewModel.isReadOnly.value)
+            } else {
+                SliderWithUnitsForRegistration(viewModel.regPrice, viewModel.sliderPosition, 11, "month(s)",
+                    Reg.calculateRegistrationLambda, viewModel.oldRegExpiryDate, viewModel.newRegExpiryDate,
+                    Reg.calculateRegistrationDateLambda, viewModel.isReadOnly.value)
+            }
+            if (!viewModel.isHistorical.value) {
+                DatePickerModal(viewModel.newRegExpiryDate, "New Expiry Date",
+                    hasDefaultValue = true,
+                    isReadOnly = viewModel.isReadOnly.value)
+            }
+            CurrencyInput(viewModel.regPrice, "Purchase Price", modifier = Modifier.padding(top = 8.dp))
+
+            if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
+                var buttonText = HistoricalRegViewModel.UPDATE_REG_BUTTON
+                if (viewModel.isHistorical.value)
+                    buttonText = HistoricalRegViewModel.HISTORICAL_REG_BUTTON
+                Row(
+                    horizontalArrangement = Arrangement.End, modifier = Modifier
+                        .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                        .fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = viewModel.onRecordClick,
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        Text(buttonText, fontSize = 3.em, textAlign = TextAlign.Center)
+                    }
                 }
             }
         }

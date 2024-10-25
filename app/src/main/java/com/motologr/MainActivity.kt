@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         else if (optionName == "Insurance") {
             navigationController.navigate(R.id.nav_insurance_logging)
         }
-        else if (optionName == "Mecahnical") {
+        else if (optionName == "Mechanical") {
             navigationController.navigate(R.id.nav_maint_logging)
         }
         else if (optionName == "Fuel") {

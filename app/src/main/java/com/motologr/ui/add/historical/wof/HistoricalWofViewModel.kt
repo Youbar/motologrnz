@@ -17,10 +17,10 @@ class HistoricalWofViewModel : ViewModel() {
 
     val wofTitle
         get() : String {
-            if (isHistorical.value)
-                return HISTORICAL_WOF
+            return if (isHistorical.value)
+                HISTORICAL_WOF
             else
-                return UPDATE_WOF
+                UPDATE_WOF
         }
 
     var wofPrice = mutableStateOf("")
@@ -125,25 +125,13 @@ class HistoricalWofViewModel : ViewModel() {
 
     var onRecordClick = {
         if (isValidInputs()) {
-            val wofPrice = wofPrice.value
-                .replace(",","").toBigDecimal()
-            val wofProvider = wofProvider.value
-            val activeVehicle = DataManager.returnActiveVehicle()!!
+            val wof = getWofObjectFromInputs()
 
-            val wof : Wof?
-            if (isHistorical.value) {
-                val minDt = DataHelper.getMinDt()
-                val purchaseDate = DataHelper.parseNumericalDateFormat(historicalWofDate.value)
-                wof = Wof(minDt, purchaseDate, wofPrice, activeVehicle.id, wofProvider, purchaseDate, isHistorical.value)
-            } else {
-                val newWofDate = DataHelper.parseNumericalDateFormat(newWofExpiryDate.value)
-                val oldWofDate = DataHelper.parseNumericalDateFormat(oldWofExpiryDate.value)
-                wof = Wof(newWofDate, oldWofDate, wofPrice, activeVehicle.id, wofProvider, oldWofDate, isHistorical.value)
+            if (wof != null) {
+                DataManager.returnActiveVehicle()?.logWof(wof)
+                displayToastMessage("WOF updated")
+                navigateToVehicle()
             }
-
-            activeVehicle.logWof(wof)
-            displayToastMessage("WOF updated")
-            navigateToVehicle()
         }
     }
 
