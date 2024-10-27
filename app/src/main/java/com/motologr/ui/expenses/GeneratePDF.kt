@@ -2,8 +2,10 @@ package com.motologr.ui.expenses
 
 import android.content.ContentValues
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.graphics.pdf.PdfDocument.Page
@@ -14,7 +16,9 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.motologr.R
+import com.motologr.data.EnumConstants
 import com.motologr.data.logging.Loggable
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.math.BigDecimal
@@ -28,10 +32,22 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
     companion object {
         const val A4_PAGE_WIDTH = 596
         const val A4_PAGE_HEIGHT = 842
+        val decimalFormat = DecimalFormat("0.00")
+
+        fun returnGSTComponent(amount : BigDecimal) : String {
+            return decimalFormat.format(amount.multiply(3.0.toBigDecimal())
+                .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_UP))
+        }
+
+        fun returnExcGst(amount : BigDecimal) : String {
+            val gst = amount.multiply(3.0.toBigDecimal())
+                .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_UP)
+
+            return decimalFormat.format(amount.subtract(gst))
+        }
     }
 
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-    private val decimalFormat = DecimalFormat("0.00")
     private val initTime = Calendar.getInstance().time
 
     // Repair = 0, Service = 1, WOF = 2, Reg = 3, Fuel = 100, BillLog = 201
@@ -55,90 +71,126 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         decimalFormat.roundingMode = RoundingMode.HALF_UP
     }
 
-    private fun returnGSTComponent(amount : BigDecimal) : String {
-        return decimalFormat.format(amount.multiply(3.0.toBigDecimal())
-            .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_UP))
-    }
-
-    private fun returnExcGst(amount : BigDecimal) : String {
-        val gst = amount.multiply(3.0.toBigDecimal())
-            .divide(23.0.toBigDecimal(),2, RoundingMode.HALF_UP)
-
-        return decimalFormat.format(amount.subtract(gst))
-    }
-
-    private fun checkIfNeedNewPage(titleOffset: Float) {
-        if (titleOffset + 20 > 820) {
-            canvas = startNewPage(paint, expensesReportTitle)
+    private fun checkIfNeedNewPage(titleOffset: Float, expensesCategory: String) {
+        if (titleOffset + 25 > 820) {
+            canvas = startNewPage(paint, expensesReportTitle, expensesCategory)
         }
     }
 
-    private fun writeLoggablesToCanvas(paint: Paint, logGroup: String, logs : List<Loggable>) : Float {
-        checkIfNeedNewPage(titleOffset)
+    private fun writeLoggablesToCanvas(paint: Paint, logs : List<Loggable>, expensesCategory : String) : Float {
+        checkIfNeedNewPage(titleOffset, "$expensesCategory - Cont.")
 
-        val logGroupTile = "$logGroup - Date | Inc. GST | Exc. GST | GST"
-
-        canvas.drawText(logGroupTile, 78F, titleOffset, paint)
-        titleOffset += 20
+        val dateColumnX = 3F
+        val itemColumnX = 153F
+        val excGstX = 302F
+        val gstX = 398F
+        val incGstX = 499F
+        canvas.drawText("Date", dateColumnX, 152F, paint)
+        canvas.drawText("Item", itemColumnX, 152F, paint)
+        canvas.drawText("Exc. GST", excGstX, 152F, paint)
+        canvas.drawText("GST", gstX, 152F, paint)
+        canvas.drawText("Inc. GST", incGstX, 152F, paint)
+        titleOffset += 25
 
         for (log in logs) {
+            val isProjected = log.sortableDate > initTime
+            if (isProjected)
+                continue
+
             val date = dateFormat.format(log.sortableDate)
+            val item = log.returnNameByClassId()
+            val lessGst = "$" + returnExcGst(log.unitPrice)
             val unitPrice = "$" + decimalFormat.format(log.unitPrice)
             val gstComponent = "$" + returnGSTComponent(log.unitPrice)
-            val lessGst = "$" + returnExcGst(log.unitPrice)
-            val isProjected = log.sortableDate > initTime
 
-            var text = "$date | $unitPrice | $lessGst | $gstComponent"
-            if (isProjected)
-                text += " | PROJECTED"
+            canvas.drawText(date, dateColumnX, titleOffset, paint)
+            canvas.drawText(item, itemColumnX, titleOffset, paint)
+            canvas.drawText(lessGst, excGstX, titleOffset, paint)
+            canvas.drawText(gstComponent, gstX, titleOffset, paint)
+            canvas.drawText(unitPrice, incGstX, titleOffset, paint)
 
-            checkIfNeedNewPage(titleOffset)
-            canvas.drawText(text, 78F, titleOffset, paint)
-            titleOffset += 20
+            checkIfNeedNewPage(titleOffset, expensesCategory)
+            titleOffset += 25
         }
 
-        // End of block of records so create a gap
-        return titleOffset + 20
+        return titleOffset
     }
 
-    private fun writeTotalToCanvas(paint: Paint, total : BigDecimal) : Float {
-        checkIfNeedNewPage(titleOffset)
+    private fun writeTotalsToCanvas(paint: Paint, logs : List<Loggable>, expensesCategory : String) : Float {
+        checkIfNeedNewPage(titleOffset, expensesCategory)
 
-        val totalPrice = "$" + decimalFormat.format(total)
-        val gstComponent = "$" + returnGSTComponent(total)
+        val dateColumnX = 3F
+        val itemColumnX = 153F
+        val excGstX = 302F
+        val gstX = 398F
+        val incGstX = 499F
+        canvas.drawText("Category", dateColumnX, 152F, paint)
+        canvas.drawText("Percentage", itemColumnX, 152F, paint)
+        canvas.drawText("Exc. GST", excGstX, 152F, paint)
+        canvas.drawText("GST", gstX, 152F, paint)
+        canvas.drawText("Inc. GST", incGstX, 152F, paint)
+        titleOffset += 25
 
-        val totalString = "Total - $totalPrice - $gstComponent"
-        canvas.drawText(totalString, 78F, titleOffset, paint)
+        val expenseCategories : List<TotalExpense> = listOf(
+            TotalExpense(logs, TotalExpense.Companion.ExpenseCategory.Fuel),
+            TotalExpense(logs, TotalExpense.Companion.ExpenseCategory.Compliance),
+            TotalExpense(logs, TotalExpense.Companion.ExpenseCategory.Mechanical),
+            TotalExpense(logs, TotalExpense.Companion.ExpenseCategory.Insurance),
+            TotalExpense(logs, TotalExpense.Companion.ExpenseCategory.Total))
 
-        // End of block of records so create a gap
-        return titleOffset + 40
+        for (expense in expenseCategories) {
+            val category = expense.expenseCategory
+            val percentage = expense.percentage + "%"
+            val lessGst = "$" + expense.excGst
+            val gstComponent = "$" + expense.gst
+            val unitPrice = "$" + expense.incGst
+
+            canvas.drawText(category, dateColumnX, titleOffset, paint)
+            canvas.drawText(percentage, itemColumnX, titleOffset, paint)
+            canvas.drawText(lessGst, excGstX, titleOffset, paint)
+            canvas.drawText(gstComponent, gstX, titleOffset, paint)
+            canvas.drawText(unitPrice, incGstX, titleOffset, paint)
+
+            checkIfNeedNewPage(titleOffset, expensesCategory)
+            titleOffset += 25
+
+            // Add an extra space for totals at the end
+            if (expense.expenseCategory == "Insurance")
+                titleOffset += 25
+        }
+
+        titleOffset += 25
+
+        // Total - 100% - Exc. GST - GST - Inc. GST
+
+        return titleOffset
     }
 
     private var pageNumber = 1
-    private var titleOffset = 140F
+    private var titleOffset = 152F
     private var paint = Paint()
     private lateinit var currentPage : Page
     private lateinit var canvas : Canvas
 
     private val pdfDocument = PdfDocument()
 
-    private fun getBoldTypeface(paint: Paint) : Paint {
+    private fun getBoldTypeface(paint: Paint, textSize : Float = 18F) : Paint {
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
         paint.color = ContextCompat.getColor(context, R.color.black)
-        paint.textSize = 18F
+        paint.textSize = textSize
 
         return paint
     }
 
-    private fun getNormalTypeface(paint: Paint) : Paint {
+    private fun getNormalTypeface(paint: Paint, textSize : Float = 15F) : Paint {
         paint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL))
         paint.color = ContextCompat.getColor(context, R.color.black)
-        paint.textSize = 15F
+        paint.textSize = textSize
 
         return paint
     }
 
-    private fun startNewPage(paint : Paint, expensesReportTitle : String) : Canvas {
+    private fun startNewPage(paint : Paint, expensesReportTitle : String, expensesCategory : String) : Canvas {
         if (pageNumber > 1)
             pdfDocument.finishPage(currentPage)
 
@@ -146,15 +198,24 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         currentPage = pdfDocument.startPage(myPageInfo)
         val canvas = currentPage.canvas
 
+        val options = BitmapFactory.Options()
+        options.inScaled = false
+        val baseBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.expenses_report_base, options)
+        canvas.drawBitmap(baseBitmap, null, RectF(0F, 0F, canvas.width.toFloat(), canvas.height.toFloat()), null)
+
         // Draw header of page
-        getBoldTypeface(paint)
-        canvas.drawText("MotoLogr NZ", 78F, 80F, paint)
-        canvas.drawText("Page $pageNumber", 448F, 80F, paint)
-        canvas.drawText(expensesReportTitle, 78F, 100F, paint)
+        getBoldTypeface(paint, 48F)
+        canvas.drawText(expensesReportTitle, 132F, 60F, paint)
+        getBoldTypeface(paint, 36F)
+        canvas.drawText(expensesCategory, 12F, 120F, paint)
+
+        // Draw page number
+        getBoldTypeface(paint, 24F)
+        canvas.drawText("Page $pageNumber", 312F, 832F, paint)
 
         // Prepare to write further info
-        getNormalTypeface(paint)
-        titleOffset = 140F
+        getNormalTypeface(paint, 20F)
+        titleOffset = 152F
 
         pageNumber += 1
 
@@ -169,22 +230,27 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         // two variables for paint "paint" is used for drawing shapes and we will use "title" for adding text in our PDF file.
         val paint = Paint()
 
-        canvas = startNewPage(paint, expensesReportTitle)
+        var expensesCategory = "Fuel Expenses"
+        canvas = startNewPage(paint, expensesReportTitle, expensesCategory)
+        titleOffset = writeLoggablesToCanvas(paint, fuelLogs, expensesCategory)
 
-        titleOffset = writeLoggablesToCanvas(paint, "Repairs", repairLogs)
-        titleOffset = writeLoggablesToCanvas(paint, "Services", serviceLogs)
-        titleOffset = writeLoggablesToCanvas(paint, "Fuel", fuelLogs)
-        titleOffset = writeLoggablesToCanvas(paint, "Reg", regLogs)
-        titleOffset = writeLoggablesToCanvas(paint, "RUC", rucLogs)
-        titleOffset = writeLoggablesToCanvas(paint, "WOF", wofLogs)
-        titleOffset = writeLoggablesToCanvas(paint, "Insurance", insuranceLogs)
+        expensesCategory = "Compliance Expenses"
+        canvas = startNewPage(paint, expensesReportTitle, expensesCategory)
+        val complianceLogs = (regLogs + rucLogs + wofLogs).sortedByDescending { x -> x.sortableDate.time }
+        titleOffset = writeLoggablesToCanvas(paint, complianceLogs, expensesCategory)
 
-        val total = expensesLogs.sumOf { x -> x.unitPrice}
-        titleOffset = writeTotalToCanvas(paint, total)
+        expensesCategory = "Mechanical Expenses"
+        canvas = startNewPage(paint, expensesReportTitle, "Mechanical Expenses")
+        val mechanicalLogs = (repairLogs + serviceLogs).sortedByDescending { x -> x.sortableDate.time }
+        titleOffset = writeLoggablesToCanvas(paint, mechanicalLogs, expensesCategory)
 
-        // setting our text to center of PDF.
-        //title.setTextAlign(Paint.Align.CENTER);
-        // 596 w 842 h @ 140f height / 15f = 47 lines
+        expensesCategory = "Insurance Expenses"
+        canvas = startNewPage(paint, expensesReportTitle, "Insurance Expenses")
+        titleOffset = writeLoggablesToCanvas(paint, insuranceLogs, expensesCategory)
+
+        expensesCategory = "Total Expenses By Category"
+        canvas = startNewPage(paint, expensesReportTitle, "Total Expenses")
+        titleOffset = writeTotalsToCanvas(paint, expensesLogs, expensesCategory)
 
         // finishing our page.
         pdfDocument.finishPage(currentPage)
@@ -214,9 +280,15 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
             if (uri != null) {
                 val outputStream = resolver.openOutputStream(uri)
                 pdfDocument.writeTo(outputStream)
+                outputStream?.flush()
+                outputStream?.close()
             } else {
                 // writing our PDF file to that location.
-                pdfDocument.writeTo(FileOutputStream(file))
+                val fileOutputStream = FileOutputStream(file)
+                val bufferedOutputStream = BufferedOutputStream(fileOutputStream)
+                pdfDocument.writeTo(bufferedOutputStream)
+                bufferedOutputStream.flush()
+                bufferedOutputStream.close()
             }
 
             // printing toast message on completion of PDF generation.
@@ -234,5 +306,55 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
 
         // closing our PDF file.
         pdfDocument.close()
+    }
+}
+
+class TotalExpense(expenseLogs : List<Loggable>, category : ExpenseCategory) {
+    companion object {
+        enum class ExpenseCategory {
+            Fuel,
+            Compliance,
+            Mechanical,
+            Insurance,
+            Total
+        }
+    }
+
+    private lateinit var expenseCategoryLogs : List<Loggable>
+    var expenseCategory : String = ""
+    var percentage : String = ""
+    var excGst : String = ""
+    var gst : String = ""
+    var incGst : String = ""
+
+    init {
+        val sumTotal : BigDecimal = expenseLogs.sumOf { x -> x.unitPrice }
+
+        if (category == ExpenseCategory.Fuel) {
+            expenseCategoryLogs = expenseLogs.filter { x -> x.classId == EnumConstants.LoggableType.Fuel.id }
+            expenseCategory = "Fuel"
+        } else if (category == ExpenseCategory.Compliance) {
+            expenseCategoryLogs = expenseLogs.filter { x -> x.classId == EnumConstants.LoggableType.WOF.id
+                    || x.classId == EnumConstants.LoggableType.Reg.id
+                    || x.classId == EnumConstants.LoggableType.Ruc.id }
+            expenseCategory = "Compliance"
+        } else if (category == ExpenseCategory.Mechanical) {
+            expenseCategoryLogs = expenseLogs.filter { x -> x.classId == EnumConstants.LoggableType.Repair.id
+                    || x.classId == EnumConstants.LoggableType.Service.id }
+            expenseCategory = "Mechanical"
+        } else if (category == ExpenseCategory.Insurance) {
+            expenseCategoryLogs = expenseLogs.filter { x -> x.classId == EnumConstants.LoggableType.InsuranceBill.id }
+            expenseCategory = "Insurance"
+        } else if (category == ExpenseCategory.Total) {
+            expenseCategoryLogs = expenseLogs
+            expenseCategory = "Total"
+        }
+
+        val categoryTotal : BigDecimal = expenseCategoryLogs.sumOf { x -> x.unitPrice }
+        percentage = GeneratePDF.decimalFormat.format(categoryTotal.divide(sumTotal, 4, RoundingMode.HALF_UP)
+            .multiply(100.0.toBigDecimal()))
+        excGst = GeneratePDF.returnExcGst(categoryTotal)
+        gst = GeneratePDF.returnGSTComponent(categoryTotal)
+        incGst = GeneratePDF.decimalFormat.format(categoryTotal)
     }
 }

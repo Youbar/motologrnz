@@ -1,6 +1,7 @@
 package com.motologr.data.logging
 
 import com.motologr.data.DataManager
+import com.motologr.data.EnumConstants
 import com.motologr.data.objects.LoggableEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -19,5 +20,26 @@ open class Loggable(var sortableDate: Date,
     fun convertToLoggableEntity() : LoggableEntity {
         val loggableEntity = LoggableEntity(id, sortableDate, classId, unitPrice, vehicleId)
         return loggableEntity
+    }
+
+    fun returnNameByClassId() : String {
+        if (classId == EnumConstants.LoggableType.Fuel.id)
+            return "Fuel"
+        else if (classId == EnumConstants.LoggableType.WOF.id)
+            return "WOF"
+        else if (classId == EnumConstants.LoggableType.Reg.id)
+            return "Registration"
+        else if (classId == EnumConstants.LoggableType.Ruc.id)
+            return "RUCs"
+        else if (classId == EnumConstants.LoggableType.Repair.id)
+            return "Repair"
+        else if (classId == EnumConstants.LoggableType.Service.id)
+            return "Service"
+        else if (classId == EnumConstants.LoggableType.Insurance.id)
+            return "Insurance"
+        else if (classId == EnumConstants.LoggableType.InsuranceBill.id)
+            return "Insurance Bill"
+
+        return ""
     }
 }
