@@ -80,7 +80,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
     private fun writeLoggablesToCanvas(paint: Paint, logs : List<Loggable>, expensesCategory : String) : Float {
         checkIfNeedNewPage(titleOffset, "$expensesCategory - Cont.")
 
-        val dateColumnX = 3F
+        val dateColumnX = 4F
         val itemColumnX = 153F
         val excGstX = 302F
         val gstX = 398F
@@ -119,7 +119,7 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
     private fun writeTotalsToCanvas(paint: Paint, logs : List<Loggable>, expensesCategory : String) : Float {
         checkIfNeedNewPage(titleOffset, expensesCategory)
 
-        val dateColumnX = 3F
+        val dateColumnX = 4F
         val itemColumnX = 153F
         val excGstX = 302F
         val gstX = 398F
