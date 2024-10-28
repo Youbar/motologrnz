@@ -36,7 +36,7 @@ class MaintLoggingAdapter(private val mList: List<MaintLoggingItemsViewModel>) :
         holder.maintPrice.text = ItemsViewModel.maintPrice
 
         holder.itemView.setOnClickListener { v ->
-            val bundle: Bundle = Bundle()
+            val bundle = Bundle()
             bundle.putInt("position", position)
 
             // Need a function to collect all logs, sort by date, and then find relative within that collection of logs
@@ -45,8 +45,6 @@ class MaintLoggingAdapter(private val mList: List<MaintLoggingItemsViewModel>) :
                 holder.itemView.findNavController().navigate(R.id.nav_repair, bundle)
             } else if (holder.maintType.text == "Service") {
                 holder.itemView.findNavController().navigate(R.id.nav_service, bundle)
-            } else if (holder.maintType.text == "WOF") {
-                holder.itemView.findNavController().navigate(R.id.nav_wof, bundle)
             }
         }
     }

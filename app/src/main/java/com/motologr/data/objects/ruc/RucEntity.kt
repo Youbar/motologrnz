@@ -8,6 +8,8 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
+import com.motologr.data.objects.reg.RegEntity
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -44,9 +46,15 @@ interface RucDao {
     @Query("SELECT * FROM Ruc WHERE vehicleId == :vehicleId")
     fun getAllByVehicleId(vehicleId : Int): List<RucEntity>
 
+    @Update
+    fun updateRuc(ruc: RucEntity)
+
     @Insert
     fun insert(vararg ruc: RucEntity)
 
     @Delete
     fun delete(ruc: RucEntity)
+
+    @Query("DELETE FROM Ruc WHERE id = :id")
+    fun delete(id: Int)
 }

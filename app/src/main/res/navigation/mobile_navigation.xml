@@ -91,7 +91,7 @@
             app:destination="@id/nav_service" />
         <action
             android:id="@+id/action_nav_add_to_nav_wof"
-            app:destination="@id/nav_wof" />
+            app:destination="@id/nav_historical_wof" />
         <action
             android:id="@+id/action_nav_add_to_nav_reg"
             app:destination="@id/nav_reg" />
@@ -153,6 +153,10 @@
     <fragment
         android:id="@+id/nav_expenses"
         android:name="com.motologr.ui.expenses.ExpensesFragment" />
+    <fragment
+        android:id="@+id/nav_compliance_logging"
+        android:name="com.motologr.ui.logging.compliance.ComplianceLoggingFragment"
+        android:label="Compliance Logs"/>
     <fragment
         android:id="@+id/nav_insurance_logging"
         android:name="com.motologr.ui.logging.insurance.InsuranceLoggingFragment" />

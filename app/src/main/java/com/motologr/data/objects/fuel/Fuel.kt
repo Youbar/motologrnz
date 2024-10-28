@@ -13,7 +13,6 @@ class Fuel(var fuelType: Int,
            var odometerReading: Int,
            override var vehicleId: Int) : Loggable(purchaseDate, 100, price, vehicleId) {
 
-    // type 0 = 91, 1 = 95, 2 = 98, 3 = diesel
     fun returnFuelType() : String {
         return when (fuelType) {
             EnumConstants.FuelType.Unleaded91.ordinal -> {

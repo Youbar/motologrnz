@@ -8,6 +8,8 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
+import com.motologr.data.objects.maint.WofEntity
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -44,9 +46,15 @@ interface RegDao {
     @Query("SELECT * FROM Reg WHERE vehicleId == :vehicleId")
     fun getAllByVehicleId(vehicleId : Int): List<RegEntity>
 
+    @Update
+    fun updateReg(reg: RegEntity)
+
     @Insert
-    fun insert(vararg service: RegEntity)
+    fun insert(vararg reg: RegEntity)
 
     @Delete
-    fun delete(service: RegEntity)
+    fun delete(reg: RegEntity)
+
+    @Query("DELETE FROM Reg WHERE id = :id")
+    fun delete(id: Int)
 }

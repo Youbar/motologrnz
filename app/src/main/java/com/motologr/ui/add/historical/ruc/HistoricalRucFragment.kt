@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -34,11 +34,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
+import com.motologr.data.DataManager
 import com.motologr.data.objects.ruc.Ruc
+import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.databinding.FragmentHistoricalRucBinding
 import com.motologr.ui.compose.CurrencyInput
 import com.motologr.ui.compose.DatePickerModal
+import com.motologr.ui.compose.EditDeleteFABs
+import com.motologr.ui.compose.NumberInput
+import com.motologr.ui.compose.SaveFAB
 import com.motologr.ui.compose.SliderWithUnits
+import com.motologr.ui.compose.SliderWithUnitsForRoadUserCharges
+import com.motologr.ui.compose.WarningDialog
 import com.motologr.ui.theme.AppTheme
 
 class HistoricalRucFragment : Fragment() {
@@ -48,19 +55,38 @@ class HistoricalRucFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val historicalRucViewModel =
-            ViewModelProvider(this)[HistoricalRucViewModel::class.java]
+    private fun initViewModel(historicalRucViewModel: HistoricalRucViewModel,
+                              activeVehicle : Vehicle) {
+        val loggableId: Int = arguments?.getInt("loggableId", -1) ?: -1
+        if (loggableId != -1) {
+            DataManager.updateTitle(activity, "View RUCs")
+            val ruc: Ruc = DataManager.returnActiveVehicle()?.returnLoggableById(loggableId)!! as Ruc
+            historicalRucViewModel.setViewModelToReadOnly(ruc)
+        } else {
+            DataManager.updateTitle(activity, "Update RUCs")
+            val isHistorical = arguments?.getBoolean("isHistorical") ?: false
+            historicalRucViewModel.initViewModel(activeVehicle, isHistorical)
+        }
 
         historicalRucViewModel.displayToastMessage = { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
                 .show()
         }
 
-        historicalRucViewModel.navigateToVehicle = { findNavController().navigate(R.id.nav_vehicle_1) }
+        historicalRucViewModel.navigateToVehicle = {
+            findNavController().navigate(R.id.nav_vehicle_1)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val activeVehicle = DataManager.returnActiveVehicle()!!
+
+        val historicalRucViewModel =
+            ViewModelProvider(this)[HistoricalRucViewModel::class.java]
+        initViewModel(historicalRucViewModel, activeVehicle)
 
         _binding = FragmentHistoricalRucBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -70,8 +96,19 @@ class HistoricalRucFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    HistoricalRucCard(historicalRucViewModel.registrationPrice, historicalRucViewModel.sliderPosition,
-                        historicalRucViewModel.selectedDate, historicalRucViewModel.onClick)
+                    LazyColumn {
+                        item {
+                            HistoricalRucCard(historicalRucViewModel)
+                            if (historicalRucViewModel.isExistingData && historicalRucViewModel.isReadOnly.value)
+                                EditDeleteFABs(historicalRucViewModel.onDeleteClick, historicalRucViewModel.onEditClick)
+                            else if (historicalRucViewModel.isExistingData && !historicalRucViewModel.isReadOnly.value)
+                                SaveFAB(historicalRucViewModel.onSaveClick)
+                            if (historicalRucViewModel.isDisplayDeleteDialog.value) {
+                                WarningDialog(historicalRucViewModel.onDismissClick, historicalRucViewModel.onConfirmClick, "Delete Record",
+                                    "Are you sure you want to delete this record? The deletion is irreversible.")
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -82,29 +119,42 @@ class HistoricalRucFragment : Fragment() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalRucCard(rucPrice: MutableState<String>, sliderPosition: MutableState<Float>,
-                      selectedDate: MutableState<String>, onSaveClick: () -> Unit = {}) {
+fun HistoricalRucCard(viewModel: HistoricalRucViewModel) {
     OutlinedCard(modifier = Modifier
-        .padding(16.dp, 8.dp, 16.dp, 8.dp)
+        .padding(16.dp)
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)) {
         Column(modifier = Modifier
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
             .height(IntrinsicSize.Min)){
-            Text("Historical Road User Charges", fontSize = 24.sp,
+            Text(viewModel.rucTitle, fontSize = 24.sp,
                 modifier = Modifier
                     .padding(PaddingValues(0.dp, 0.dp))
                     .fillMaxWidth(),
                 lineHeight = 1.em,
                 textAlign = TextAlign.Center)
-            DatePickerModal(selectedDate, "Purchase Date")
+            DatePickerModal(viewModel.purchaseDate, "Purchase Date", hasDefaultValue = !viewModel.isHistorical.value || viewModel.isExistingData, isReadOnly = viewModel.isReadOnly.value)
+            if (!viewModel.isHistorical.value)
+                NumberInput(viewModel.oldUnitsHeld, "RUCs Held", modifier = Modifier.padding(top = 8.dp), isReadOnly = true)
             HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 16.dp, 16.dp, 16.dp)))
-            SliderWithUnits(rucPrice, sliderPosition, 19, "unit(s)", Ruc.calculateRucPriceLambda)
-            CurrencyInput(rucPrice, "Purchase Price")
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                .padding(0.dp, 32.dp, 0.dp, 0.dp)
-                .fillMaxWidth()) {
-                Button(onClick = onSaveClick, contentPadding = PaddingValues(8.dp)) {
-                    Text("Save", fontSize = 3.em, textAlign = TextAlign.Center)
+            if (viewModel.isHistorical.value)
+                SliderWithUnits(viewModel.rucPrice, viewModel.sliderPosition, 19, "unit(s)", Ruc.calculateRucPriceLambda, isReadOnly = viewModel.isReadOnly.value)
+            else
+                SliderWithUnitsForRoadUserCharges(viewModel.rucPrice, viewModel.sliderPosition, 19, "unit(s)", Ruc.calculateRucPriceLambda,
+                    viewModel.oldUnitsHeld, viewModel.newUnitsHeld, Ruc.calculateRucUnitsLambda, isReadOnly = viewModel.isReadOnly.value)
+            if (!viewModel.isHistorical.value)
+                NumberInput(viewModel.newUnitsHeld, "New RUCs Held", modifier = Modifier.padding(top = 8.dp), isReadOnly = true)
+            CurrencyInput(viewModel.rucPrice, "Purchase Price", modifier = Modifier.padding(top = 8.dp), isReadOnly = viewModel.isReadOnly.value)
+
+            if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
+                var buttonText = HistoricalRucViewModel.UPDATE_RUC_BUTTON
+                if (viewModel.isHistorical.value)
+                    buttonText = HistoricalRucViewModel.HISTORICAL_RUC_BUTTON
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                    .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                    .fillMaxWidth()) {
+                    Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
+                        Text(buttonText, fontSize = 3.em, textAlign = TextAlign.Center)
+                    }
                 }
             }
         }

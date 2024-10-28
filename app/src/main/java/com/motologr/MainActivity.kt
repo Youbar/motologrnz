@@ -25,6 +25,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.navigation.NavigationView
 import com.motologr.databinding.ActivityMainBinding
 import com.motologr.data.AppDatabase
@@ -39,6 +40,9 @@ import com.motologr.data.logging.maint.WofLog
 import com.motologr.data.logging.reg.RegLog
 import com.motologr.data.objects.vehicle.Vehicle
 import com.motologr.data.sampleData.SampleData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -82,10 +86,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initAdMob() {
+        val backgroundScope = CoroutineScope(Dispatchers.IO)
+        backgroundScope.launch {
+            // Initialize the Google Mobile Ads SDK on a background thread.
+            MobileAds.initialize(this@MainActivity) {
+
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        initAdMob()
 
         var thread: Thread = initDb()
         thread.start()
@@ -245,7 +261,7 @@ class MainActivity : AppCompatActivity() {
                         ArrayList()
                     vehicleOptions.add("Overview")
                     vehicleOptions.add("Fuel")
-                    vehicleOptions.add("Maintenance")
+                    vehicleOptions.add("Mechanical")
                     vehicleOptions.add("Insurance")
                     vehicleOptions.add("Settings")
 
@@ -270,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         else if (optionName == "Insurance") {
             navigationController.navigate(R.id.nav_insurance_logging)
         }
-        else if (optionName == "Maintenance") {
+        else if (optionName == "Mechanical") {
             navigationController.navigate(R.id.nav_maint_logging)
         }
         else if (optionName == "Fuel") {

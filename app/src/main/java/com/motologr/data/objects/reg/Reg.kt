@@ -1,9 +1,12 @@
 package com.motologr.data.objects.reg
 
+import com.motologr.data.DataHelper
 import com.motologr.data.logging.Loggable
+import com.motologr.data.toCalendar
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.util.Calendar
 import java.util.Date
 
 class Reg(var newRegExpiryDate: Date,
@@ -41,6 +44,18 @@ class Reg(var newRegExpiryDate: Date,
                 12 -> 106.15.toBigDecimal()
                 else -> registrationEstimate
             }
+        }
+
+        var calculateRegistrationDateLambda : (String, Int) -> String = { oldExpiryDate, monthsAdded ->
+            calculateRegistrationDate(oldExpiryDate, monthsAdded)
+        }
+
+        fun calculateRegistrationDate(oldExpiryDateString : String, monthsAdded : Int) : String {
+            val oldExpiryDate = DataHelper.parseNumericalDateFormat(oldExpiryDateString)
+
+            val calendar: Calendar = Calendar.getInstance().toCalendar(oldExpiryDate)
+            calendar.add(Calendar.MONTH, monthsAdded)
+            return DataHelper.formatNumericalDateFormat(calendar.time)
         }
     }
 }

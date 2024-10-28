@@ -1,23 +1,80 @@
 package com.motologr.ui.add.historical.wof
 
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.motologr.data.DataHelper
 import com.motologr.data.DataManager
 import com.motologr.data.objects.maint.Wof
-import com.motologr.data.objects.reg.Reg
-import kotlin.math.roundToInt
+import com.motologr.data.objects.vehicle.Vehicle
 
 class HistoricalWofViewModel : ViewModel() {
+    companion object {
+        private const val HISTORICAL_WOF = "Historical WOF"
+        private const val UPDATE_WOF = "Update WOF"
+        const val HISTORICAL_WOF_BUTTON = "Record"
+        const val UPDATE_WOF_BUTTON = "Update"
+    }
+
+    val wofTitle
+        get() : String {
+            return if (isHistorical.value)
+                HISTORICAL_WOF
+            else
+                UPDATE_WOF
+        }
+
     var wofPrice = mutableStateOf("")
         private set
 
     var wofProvider = mutableStateOf("")
         private set
 
-    var wofDate = mutableStateOf("")
+    var historicalWofDate = mutableStateOf("")
         private set
+
+    var oldWofExpiryDate = mutableStateOf("")
+        private set
+
+    var newWofExpiryDate = mutableStateOf("")
+        private set
+
+    var isHistorical = mutableStateOf(false)
+        private set
+
+    fun initViewModel(activeVehicle : Vehicle, isHistorical : Boolean) {
+        this.isHistorical.value = isHistorical
+
+        val vehicleWofExpiryDate = activeVehicle.returnWofExpiryDate()
+        oldWofExpiryDate.value = DataHelper.formatNumericalDateFormat(vehicleWofExpiryDate)
+        val newVehicleWofExpiryDate = Wof.applyWofYearRule(vehicleWofExpiryDate, activeVehicle.modelYear)
+        newWofExpiryDate.value = DataHelper.formatNumericalDateFormat(newVehicleWofExpiryDate)
+    }
+
+    var isReadOnly = mutableStateOf(false)
+        private set
+
+    private var wofId = -1
+
+    val isExistingData : Boolean
+        get() {
+            return wofId != -1
+        }
+
+    fun setViewModelToReadOnly(wof: Wof) {
+        wofId = wof.id
+        isReadOnly.value = true
+        isHistorical.value = wof.isHistorical
+
+        if (isHistorical.value) {
+            historicalWofDate.value = DataHelper.formatNumericalDateFormat(wof.wofCompletedDate)
+        } else {
+            oldWofExpiryDate.value = DataHelper.formatNumericalDateFormat(wof.wofCompletedDate)
+            newWofExpiryDate.value = DataHelper.formatNumericalDateFormat(wof.wofDate)
+        }
+
+        wofPrice.value = wof.price.toString()
+        wofProvider.value = wof.wofProvider
+    }
 
     var displayToastMessage = { message : String -> }
 
@@ -26,48 +83,87 @@ class HistoricalWofViewModel : ViewModel() {
     }
 
     private fun isValidInputs() : Boolean {
-        if (wofDate.value.isEmpty()) {
-            displayToastMessage("Please input a valid purchase date")
-            return false
+        if (isHistorical.value) {
+            if (!DataHelper.isValidStringInput(historicalWofDate.value, "WOF Date", displayToastMessage))
+                return false
+        } else {
+            if (!DataHelper.isValidStringInput(oldWofExpiryDate.value, "WOF Date", displayToastMessage))
+                return false
+            if (!DataHelper.isValidStringInput(newWofExpiryDate.value, "WOF Date", displayToastMessage))
+                return false
         }
 
-        if (wofPrice.value.isEmpty()) {
-            displayToastMessage("Please input a WOF price")
+        if (!DataHelper.isValidCurrencyInput(wofPrice.value, "WOF Price", displayToastMessage))
             return false
-        }
 
-        try {
-            wofPrice.value
-                .replace(",","").toBigDecimal()
-        } catch (exception : Exception) {
-            displayToastMessage("Please input a valid WOF price")
+        if (!DataHelper.isValidStringInput(wofProvider.value, "WOF Provider", displayToastMessage))
             return false
-        }
-
-        if (wofProvider.value.isEmpty()) {
-            displayToastMessage("Please input a WOF provider")
-            return false
-        }
 
         return true
     }
 
-    var onClick = {
+    private fun getWofObjectFromInputs() : Wof? {
         if (isValidInputs()) {
             val wofPrice = wofPrice.value
                 .replace(",","").toBigDecimal()
             val wofProvider = wofProvider.value
-            val purchaseDate = DataHelper.convertStringToNumericalDate(wofDate.value)
+            val activeVehicle = DataManager.returnActiveVehicle()!!
 
-            val minDt = DataHelper.getMinDt()
-            val activeVehicle = DataManager.returnActiveVehicle()
+            if (isHistorical.value) {
+                val minDt = DataHelper.getMinDt()
+                val purchaseDate = DataHelper.parseNumericalDateFormat(historicalWofDate.value)
+                return Wof(minDt, purchaseDate, wofPrice, activeVehicle.id, wofProvider, purchaseDate, isHistorical.value)
+            } else {
+                val newWofDate = DataHelper.parseNumericalDateFormat(newWofExpiryDate.value)
+                val oldWofDate = DataHelper.parseNumericalDateFormat(oldWofExpiryDate.value)
+                return Wof(newWofDate, oldWofDate, wofPrice, activeVehicle.id, wofProvider, oldWofDate, isHistorical.value)
+            }
+        }
 
-            if (activeVehicle != null) {
-                val wof = Wof(minDt, purchaseDate, wofPrice, activeVehicle.id, wofProvider, purchaseDate, true)
-                activeVehicle.logWof(wof)
-                displayToastMessage("WOF saved")
+        return null
+    }
+
+    var onRecordClick = {
+        if (isValidInputs()) {
+            val wof = getWofObjectFromInputs()
+
+            if (wof != null) {
+                DataManager.returnActiveVehicle()?.logWof(wof)
+                displayToastMessage("WOF updated")
                 navigateToVehicle()
             }
         }
+    }
+
+    val onEditClick = {
+        isReadOnly.value = false
+    }
+
+    val onSaveClick = {
+        val wof = getWofObjectFromInputs()
+
+        if (wof != null) {
+            wof.id = wofId
+            DataManager.returnActiveVehicle()?.updateWof(wof)
+            displayToastMessage("Changes saved.")
+            isReadOnly.value = true
+        }
+    }
+
+    var isDisplayDeleteDialog = mutableStateOf(false)
+
+    val onDeleteClick = {
+        isDisplayDeleteDialog.value = true
+    }
+
+    val onConfirmClick = {
+        DataManager.returnActiveVehicle()?.deleteWof(wofId)
+        displayToastMessage("WOF record deleted.")
+        navigateToVehicle()
+    }
+
+    val onDismissClick = {
+        isDisplayDeleteDialog.value = false
+        displayToastMessage("Deletion cancelled.")
     }
 }

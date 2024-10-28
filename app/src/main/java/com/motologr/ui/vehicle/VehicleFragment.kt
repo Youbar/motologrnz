@@ -27,11 +27,16 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.motologr.BuildConfig
 import com.motologr.R
 import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
@@ -47,6 +52,8 @@ class VehicleFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var adView : AdView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,6 +61,23 @@ class VehicleFragment : Fragment() {
     ): View {
         _binding = FragmentVehicleBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        val adView = AdView(requireContext())
+        if (BuildConfig.DEBUG)
+            adView.adUnitId = "ca-app-pub-3940256099942544/9214589741"
+        else
+            adView.adUnitId = "ca-app-pub-2605560937669954/2596902508"
+        adView.setAdSize(AdSize.BANNER)
+        this.adView = adView
+
+        if (!BillingClientHelper.isArtPackEnabled) {
+            binding.adCar.removeAllViews()
+            binding.adCar.addView(adView)
+            val adRequest = AdRequest.Builder().build()
+            adView.loadAd(adRequest)
+        } else {
+            adView.isVisible = false
+        }
 
         if (!DataManager.isVehicles())
             findNavController().navigate(R.id.nav_plus)
@@ -72,6 +96,10 @@ class VehicleFragment : Fragment() {
             binding.textCar.text = it
         }
 
+        val complianceLoggingNavigate = {
+            findNavController().navigate(R.id.nav_compliance_logging)
+        }
+
         val expensesNavigate = {
             findNavController().navigate(R.id.nav_expenses)
         }
@@ -80,7 +108,7 @@ class VehicleFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    OutlinedCards(viewModel, expensesNavigate)
+                    OutlinedCards(viewModel, expensesNavigate, complianceLoggingNavigate)
                 }
             }
         }
@@ -145,7 +173,7 @@ class VehicleFragment : Fragment() {
 }
 
 @Composable
-fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit) {
+fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit, complianceLoggingNavigate : () -> Unit) {
     Column {
         Row(modifier = Modifier
             .padding(8.dp)
@@ -162,7 +190,7 @@ fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit) {
             val isRoadUserChargesDisplayed = viewModel.isRoadUserChargesDisplayed.observeAsState(false)
             val roadUserCharges = viewModel.textRoadUserCharges.observeAsState("")
             ComplianceCard(cardModifier, vehicleWofDt, vehicleRegDt, trackingFuelConsumption,
-                vehicleOdo, isRoadUserChargesDisplayed, roadUserCharges)
+                vehicleOdo, isRoadUserChargesDisplayed, roadUserCharges, complianceLoggingNavigate)
 
             val policyInsurer = viewModel.textInsurer.observeAsState("")
             val policyCoverage = viewModel.textInsurerCoverage.observeAsState("")
@@ -198,13 +226,13 @@ fun ComplianceCard(
     isOdoReadingVisible : State<Boolean>,
     odoReading : State<String>,
     isRoadUserChargesDisplayed: State<Boolean>,
-    roadUserChargesHeld : State<String>
+    roadUserChargesHeld : State<String>,
+    onClick : () -> Unit
 ) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        modifier = cardModifier
+        border = BorderStroke(1.dp, Color.Black),
+        modifier = cardModifier,
+        onClick = onClick
     ) {
         Text(
             text = "Compliance",
@@ -249,9 +277,6 @@ fun InsuranceCard(
     hasActivePolicy : State<Boolean>
 ) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
         modifier = cardModifier
     ) {
         Text(
@@ -304,9 +329,6 @@ fun ExpensesCard(
     onClick : () -> Unit
 ) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
         border = BorderStroke(1.dp, Color.Black),
         modifier = cardModifier,
         onClick = onClick

@@ -9,6 +9,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.Calendar
+import kotlin.math.exp
 
 class ExpensesViewModel : ViewModel() {
 
@@ -107,6 +108,10 @@ class ExpensesViewModel : ViewModel() {
 
     //endregion
 
+    fun isMaxFinancialYear() : Boolean {
+        return returnFinancialYear(financialYear + 1).takeLast(2).toInt() > returnFinancialYear().takeLast(2).toInt()
+    }
+
     private fun returnFinancialYear() : String {
         val calendar = Calendar.getInstance()
         val month = calendar.get(Calendar.MONTH)
@@ -118,6 +123,12 @@ class ExpensesViewModel : ViewModel() {
         } else {
             financialYearString + (calendar.get(Calendar.YEAR) + 1).toString().takeLast(2)
         }
+    }
+
+    private fun returnFinancialYear(financialYear : Int) : String {
+        val financialYearString = "Expenses for FY"
+
+        return financialYearString + financialYear.toString().takeLast(2)
     }
 
     private lateinit var expensesLogs : List<Loggable>
@@ -193,13 +204,37 @@ class ExpensesViewModel : ViewModel() {
                 BigDecimal(0)
         }
 
+    private var financialYear : Int = 0
+
     init {
-        calculateExpensesForFinancialYear()
+        calculateExpensesForCurrentFinancialYear()
     }
 
-    private fun calculateExpensesForFinancialYear(){
-        expensesLogs = DataManager.returnActiveVehicle()!!.returnExpensesLogsWithinFinancialYear()
+    fun calculateExpensesForPreviousFinancialYear() {
+        financialYear -= 1
 
+        expensesLogs = DataManager.returnActiveVehicle()!!.returnExpensesLogsWithinFinancialYear(financialYear)
+        updateExpensesDisplay()
+        _textExpensesTitle.value = returnFinancialYear(financialYear)
+    }
+
+    fun calculateExpensesForNextFinancialYear() {
+        financialYear += 1
+
+        expensesLogs = DataManager.returnActiveVehicle()!!.returnExpensesLogsWithinFinancialYear(financialYear)
+        updateExpensesDisplay()
+        _textExpensesTitle.value = returnFinancialYear(financialYear)
+    }
+
+    private fun calculateExpensesForCurrentFinancialYear(){
+        expensesLogs = DataManager.returnActiveVehicle()!!.returnExpensesLogsWithinCurrentFinancialYear()
+        updateExpensesDisplay()
+
+        // It just works folks
+        financialYear = ("20" + returnFinancialYear().takeLast(2)).toInt()
+    }
+
+    private fun updateExpensesDisplay() {
         // Repair = 0, Service = 1, WOF = 2, Reg = 3, Ruc = 4, Fuel = 100, BillLog = 201
         repairLogs = expensesLogs.filter { loggable -> loggable.classId == 0 }
         serviceLogs = expensesLogs.filter { loggable -> loggable.classId == 1 }

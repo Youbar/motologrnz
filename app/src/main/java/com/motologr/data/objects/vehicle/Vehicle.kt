@@ -120,12 +120,22 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return odometer
     }
 
-    fun returnMaintLogs() : ArrayList<Loggable> {
-        var logs = ArrayList<Loggable>()
+    fun returnComplianceLogs() : ArrayList<Loggable> {
+        val logs = ArrayList<Loggable>()
+
+        logs.addAll(wofLog.returnWofLog())
+        logs.addAll(regLog.returnRegLog())
+        logs.addAll(rucLog)
+        logs.sortByDescending { loggable -> loggable.sortableDate.time }
+
+        return logs
+    }
+
+    fun returnMechanicalLogs() : ArrayList<Loggable> {
+        val logs = ArrayList<Loggable>()
 
         logs.addAll(serviceLog.returnServiceLog())
         logs.addAll(repairLog.returnRepairLog())
-        logs.addAll(wofLog.returnWofLog())
         logs.sortByDescending { loggable -> loggable.sortableDate.time }
 
         return logs
@@ -146,25 +156,21 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return logs
     }
 
-    fun returnExpensesLogsWithinFinancialYear() : ArrayList<Loggable> {
+    fun returnExpensesLogsWithinFinancialYear(financialYear : Int) : ArrayList<Loggable> {
         val expensesLogs : ArrayList<Loggable> = returnExpensesLogs()
-        return ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate) })
+        return ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate, financialYear) })
     }
 
-    fun returnExpensesWithinFinancialYear() : BigDecimal {
-        var total : BigDecimal = 0.0.toBigDecimal()
-        for (expenseLog in returnExpensesLogsWithinFinancialYear()) {
-            total += expenseLog.unitPrice;
-        }
-
-        return total
+    fun returnExpensesLogsWithinCurrentFinancialYear() : ArrayList<Loggable> {
+        val expensesLogs : ArrayList<Loggable> = returnExpensesLogs()
+        return ArrayList(expensesLogs.filter { loggable -> isWithinCurrentFinancialYear(loggable.sortableDate) })
     }
 
-    fun returnCurrentExpensesWithinFinancialYear() : BigDecimal {
+    fun returnExpensesWithinCurrentFinancialYear() : BigDecimal {
         var total : BigDecimal = 0.0.toBigDecimal()
 
         val calendar = Calendar.getInstance()
-        for (expenseLog in returnExpensesLogsWithinFinancialYear()) {
+        for (expenseLog in returnExpensesLogsWithinCurrentFinancialYear()) {
             if (expenseLog.sortableDate <= calendar.time)
                 total += expenseLog.unitPrice;
         }
@@ -172,15 +178,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return total
     }
 
-    private fun isWithinFinancialYear(loggableDate : Date) : Boolean {
+    fun returnAllExpensesWithinCurrentFinancialYear() : BigDecimal {
+        var total : BigDecimal = 0.0.toBigDecimal()
+        for (expenseLog in returnExpensesLogsWithinCurrentFinancialYear()) {
+            total += expenseLog.unitPrice;
+        }
+
+        return total
+    }
+
+    private fun isWithinFinancialYear(loggableDate: Date, financialYear : Int) : Boolean {
+        val format = SimpleDateFormat("dd/MM/yyyy")
+
+        val maxDate = format.parse("01/04/$financialYear")
+        val minDate = format.parse("31/03/${financialYear - 1}")
+
+        return loggableDate.before(maxDate) && loggableDate.after(minDate)
+    }
+
+    private fun isWithinCurrentFinancialYear(loggableDate : Date) : Boolean {
         val calendar = Calendar.getInstance()
         val month = calendar.get(Calendar.MONTH)
         val year = calendar.get(Calendar.YEAR)
 
-        var maxDate: Date
-        var minDate: Date
+        val maxDate: Date
+        val minDate: Date
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val format = SimpleDateFormat("dd/MM/yyyy")
 
         if (month < 3) {
             maxDate = format.parse("01/04/" + year)
@@ -190,17 +214,17 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
             minDate = format.parse("31/03/" + year)
         }
 
-        return loggableDate.before(maxDate) and loggableDate.after(minDate)
+        return loggableDate.before(maxDate) && loggableDate.after(minDate)
     }
 
-    fun returnLoggable(id: Int) : Loggable? {
-        var loggable: Loggable? = returnMaintLogs().find { loggable -> loggable.id == id }
+    fun returnLoggableById(id: Int) : Loggable? {
+        val loggable: Loggable? = returnComplianceLogs().find { loggable -> loggable.id == id }
 
         return loggable
     }
 
     fun returnLoggableByPosition(position : Int) : Loggable? {
-        var loggable: Loggable? = returnMaintLogs()[position]
+        val loggable: Loggable? = returnMechanicalLogs()[position]
 
         return loggable
     }
@@ -273,6 +297,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateService(service: Service) {
+        serviceLog.returnServiceLog().removeIf { log -> log.id == service.id }
+        serviceLog.addServiceToServiceLog(service)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.serviceDao()
+                ?.updateService(service.convertToServiceEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(service.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteService(serviceId : Int) {
+        serviceLog.returnServiceLog().removeIf { log -> log.id == serviceId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.serviceDao()
+                ?.delete(serviceId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(serviceId)
+        }.start()
+    }
+
     fun logRepair(repair: Repair) {
         repairLog.addRepairToRepairLog(repair)
 
@@ -283,6 +334,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
             MainActivity.getDatabase()
                 ?.loggableDao()
                 ?.insert(repair.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun updateRepair(repair: Repair) {
+        repairLog.returnRepairLog().removeIf { log -> log.id == repair.id }
+        repairLog.addRepairToRepairLog(repair)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.repairDao()
+                ?.updateRepair(repair.convertToRepairEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(repair.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteRepair(repairId : Int) {
+        repairLog.returnRepairLog().removeIf { log -> log.id == repairId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.repairDao()
+                ?.delete(repairId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(repairId)
         }.start()
     }
 
@@ -299,6 +377,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateWof(wof: Wof) {
+        wofLog.returnWofLog().removeIf { log -> log.id == wof.id }
+        wofLog.addWofToWofLog(wof)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.wofDao()
+                ?.updateWof(wof.convertToWofEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(wof.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteWof(wofId : Int) {
+        wofLog.returnWofLog().removeIf { log -> log.id == wofId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.wofDao()
+                ?.delete(wofId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(wofId)
+        }.start()
+    }
+
     fun logReg(reg: Reg) {
         regLog.addRegToRegLog(reg)
 
@@ -312,6 +417,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun updateReg(reg: Reg) {
+        regLog.returnRegLog().removeIf { log -> log.id == reg.id }
+        regLog.addRegToRegLog(reg)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.regDao()
+                ?.updateReg(reg.convertToRegEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(reg.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteReg(regId : Int) {
+        regLog.returnRegLog().removeIf { log -> log.id == regId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.regDao()
+                ?.delete(regId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(regId)
+        }.start()
+    }
+
     fun logRuc(ruc : Ruc) {
         rucLog.add(ruc)
 
@@ -322,6 +454,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
             MainActivity.getDatabase()
                 ?.loggableDao()
                 ?.insert(ruc.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun updateRuc(ruc: Ruc) {
+        rucLog.removeIf { log -> log.id == ruc.id }
+        rucLog.add(ruc)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.rucDao()
+                ?.updateRuc(ruc.convertToRucEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(ruc.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteRuc(rucId : Int) {
+        rucLog.removeIf { log -> log.id == rucId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.rucDao()
+                ?.delete(rucId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(rucId)
         }.start()
     }
 
@@ -344,7 +503,8 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return insuranceLog.returnInsuranceLog().first()
     }
 
-    private val format: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
+    private val ddMMyyyy : SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+    private val ddMMMyyyy: SimpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
 
     fun returnWofExpiry(): String {
         if (!isMeetingCompliance())
@@ -353,10 +513,20 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         val wofLogItems = wofLog.returnWofLog().filter { wof -> !wof.isHistorical }
 
         if (wofLogItems.isEmpty())
-            return format.format(expiryWOF)
+            return ddMMMyyyy.format(expiryWOF)
 
-        wofLogItems.sortedByDescending { wof -> wof.wofDate.time }
-        return format.format(wofLogItems.first().wofDate)
+        val sortedWofs = wofLogItems.sortedByDescending { wof -> wof.wofDate }
+        return ddMMMyyyy.format(sortedWofs.first().wofDate)
+    }
+
+    fun returnWofExpiryDate(): Date {
+        val wofLogItems = wofLog.returnWofLog().filter { wof -> !wof.isHistorical }
+
+        if (wofLogItems.isEmpty())
+            return expiryWOF
+
+        val sortedWofs = wofLogItems.sortedByDescending { wof -> wof.wofDate.time }
+        return sortedWofs.first().wofDate
     }
 
     fun returnRegExpiry(): String {
@@ -366,23 +536,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         val regLogItems = regLog.returnRegLog().filter { reg -> !reg.isHistorical}
 
         if (regLogItems.isEmpty())
-            return format.format(regExpiry)
+            return ddMMMyyyy.format(regExpiry)
 
-        regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
-        return format.format(regLogItems.first().newRegExpiryDate)
+        val sortedRegs = regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
+        return ddMMMyyyy.format(sortedRegs.first().newRegExpiryDate)
+    }
+
+    fun returnRegExpiryDate(): Date {
+        val regLogItems = regLog.returnRegLog().filter { reg -> !reg.isHistorical}
+
+        if (regLogItems.isEmpty())
+            return regExpiry
+
+        val sortedRegs = regLogItems.sortedByDescending { reg -> reg.newRegExpiryDate.time }
+        return sortedRegs.first().newRegExpiryDate
     }
 
     fun returnLatestRucUnits(): String {
         if (!isMeetingCompliance())
             return "N/A"
 
-        var rucLogItems = rucLog.filter { ruc -> !ruc.isHistorical }
+        val rucLogItems = rucLog.filter { ruc -> !ruc.isHistorical }
 
         if (rucLogItems.isEmpty())
             return roadUserChargesHeld.toString()
 
-        rucLogItems.sortedByDescending { ruc -> ruc.unitsHeldAfterTransaction }
-        return rucLogItems.first().unitsHeldAfterTransaction.toString()
+        val sortedRucs = rucLogItems.sortedByDescending { ruc -> ruc.unitsHeldAfterTransaction }
+        return sortedRucs.first().unitsHeldAfterTransaction.toString()
     }
 
     fun convertToVehicleEntity() : VehicleEntity {

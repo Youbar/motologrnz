@@ -49,7 +49,7 @@ class ExpandableListAdapter internal constructor(
             ArrayList()
         bannedStrings.add("Overview")
         bannedStrings.add("Insurance")
-        bannedStrings.add("Maintenance")
+        bannedStrings.add("Mechanical")
         bannedStrings.add("Fuel")
         bannedStrings.add("Settings")
 

@@ -8,6 +8,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 object DataHelper {
 
@@ -22,7 +23,7 @@ object DataHelper {
         return df.format(bigDecimal)
     }
 
-    private val numericalDateFormat = SimpleDateFormat("dd/MM/yyyy")
+    private val numericalDateFormat by lazy { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
 
     fun parseNumericalDateFormat(dateString : String): Date {
         return numericalDateFormat.parse(dateString)
@@ -30,10 +31,6 @@ object DataHelper {
 
     fun formatNumericalDateFormat(date : Date): String {
         return numericalDateFormat.format(date)
-    }
-
-    fun convertStringToNumericalDate(dateString : String) : Date {
-        return numericalDateFormat.parse(dateString)
     }
 
     fun getCurrentDateString() : String {
