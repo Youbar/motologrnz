@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -36,7 +37,7 @@ class ExpensesFragment : Fragment() {
         val root: View = binding.root
 
         initViewModel(expensesViewModel)
-        DataManager.updateTitle(activity, expensesViewModel.textExpensesTitle.value.toString())
+        DataManager.updateTitle(activity, "Expenses Reports")
 
         binding.buttonExpensesExport.setOnClickListener {
             // At SDK 29 and above, writing PDF to external storage is automatically given
@@ -53,6 +54,21 @@ class ExpensesFragment : Fragment() {
                 val generatePDF = GeneratePDF(requireContext(), expensesViewModel.getExpensesLogs())
                 generatePDF.generatePDF(expensesViewModel.textExpensesTitle.value.toString())
             }
+        }
+
+        binding.imageExpensesLeft.setOnClickListener {
+            expensesViewModel.calculateExpensesForPreviousFinancialYear()
+
+            if (!expensesViewModel.isMaxFinancialYear())
+                binding.imageExpensesRight.isVisible = true
+        }
+
+        binding.imageExpensesRight.isVisible = false
+        binding.imageExpensesRight.setOnClickListener {
+            expensesViewModel.calculateExpensesForNextFinancialYear()
+
+            if (expensesViewModel.isMaxFinancialYear())
+                binding.imageExpensesRight.isVisible = false
         }
 
         return root

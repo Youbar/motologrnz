@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context="com.motologr.ui.plus.PlusFragment">
 
+    <ImageView
+        android:id="@+id/image_expenses_right"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:src="@drawable/ic_expenses_arrow_right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_expenses_title" />
+
     <TextView
         android:id="@+id/text_expenses_ruc"
         android:layout_width="wrap_content"
@@ -45,12 +55,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_expenses_title"
+        app:layout_constraintTop_toBottomOf="@+id/image_expenses_left"
         tools:text="Repairs:" />
 
     <TextView
@@ -130,11 +139,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/text_expenses_repairs"
-        app:layout_constraintTop_toBottomOf="@+id/text_expenses_title"
+        app:layout_constraintTop_toTopOf="@+id/text_expenses_repairs"
         tools:text="$123" />
 
     <TextView
@@ -222,5 +230,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_expenses_left"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:rotation="180"
+        android:src="@drawable/ic_expenses_arrow_right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_expenses_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -71,14 +71,17 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
         decimalFormat.roundingMode = RoundingMode.HALF_UP
     }
 
-    private fun checkIfNeedNewPage(titleOffset: Float, expensesCategory: String) {
+    private fun checkIfNeedNewPage(titleOffset: Float, expensesCategory: String) : Boolean {
         if (titleOffset + 25 > 820) {
             canvas = startNewPage(paint, expensesReportTitle, expensesCategory)
+            return true
         }
+
+        return false
     }
 
     private fun writeLoggablesToCanvas(paint: Paint, logs : List<Loggable>, expensesCategory : String) : Float {
-        checkIfNeedNewPage(titleOffset, "$expensesCategory - Cont.")
+        checkIfNeedNewPage(titleOffset, expensesCategory)
 
         val dateColumnX = 4F
         val itemColumnX = 153F
@@ -109,7 +112,14 @@ class GeneratePDF (val context: Context, private val expensesLogs : List<Loggabl
             canvas.drawText(gstComponent, gstX, titleOffset, paint)
             canvas.drawText(unitPrice, incGstX, titleOffset, paint)
 
-            checkIfNeedNewPage(titleOffset, expensesCategory)
+            if (checkIfNeedNewPage(titleOffset, "$expensesCategory - Cont.")) {
+                canvas.drawText("Date", dateColumnX, 152F, paint)
+                canvas.drawText("Item", itemColumnX, 152F, paint)
+                canvas.drawText("Exc. GST", excGstX, 152F, paint)
+                canvas.drawText("GST", gstX, 152F, paint)
+                canvas.drawText("Inc. GST", incGstX, 152F, paint)
+            }
+
             titleOffset += 25
         }
 

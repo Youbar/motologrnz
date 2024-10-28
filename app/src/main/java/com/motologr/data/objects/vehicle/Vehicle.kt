@@ -156,25 +156,21 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return logs
     }
 
-    fun returnExpensesLogsWithinFinancialYear() : ArrayList<Loggable> {
+    fun returnExpensesLogsWithinFinancialYear(financialYear : Int) : ArrayList<Loggable> {
         val expensesLogs : ArrayList<Loggable> = returnExpensesLogs()
-        return ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate) })
+        return ArrayList(expensesLogs.filter { loggable -> isWithinFinancialYear(loggable.sortableDate, financialYear) })
     }
 
-    fun returnExpensesWithinFinancialYear() : BigDecimal {
-        var total : BigDecimal = 0.0.toBigDecimal()
-        for (expenseLog in returnExpensesLogsWithinFinancialYear()) {
-            total += expenseLog.unitPrice;
-        }
-
-        return total
+    fun returnExpensesLogsWithinCurrentFinancialYear() : ArrayList<Loggable> {
+        val expensesLogs : ArrayList<Loggable> = returnExpensesLogs()
+        return ArrayList(expensesLogs.filter { loggable -> isWithinCurrentFinancialYear(loggable.sortableDate) })
     }
 
-    fun returnCurrentExpensesWithinFinancialYear() : BigDecimal {
+    fun returnExpensesWithinCurrentFinancialYear() : BigDecimal {
         var total : BigDecimal = 0.0.toBigDecimal()
 
         val calendar = Calendar.getInstance()
-        for (expenseLog in returnExpensesLogsWithinFinancialYear()) {
+        for (expenseLog in returnExpensesLogsWithinCurrentFinancialYear()) {
             if (expenseLog.sortableDate <= calendar.time)
                 total += expenseLog.unitPrice;
         }
@@ -182,15 +178,33 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         return total
     }
 
-    private fun isWithinFinancialYear(loggableDate : Date) : Boolean {
+    fun returnAllExpensesWithinCurrentFinancialYear() : BigDecimal {
+        var total : BigDecimal = 0.0.toBigDecimal()
+        for (expenseLog in returnExpensesLogsWithinCurrentFinancialYear()) {
+            total += expenseLog.unitPrice;
+        }
+
+        return total
+    }
+
+    private fun isWithinFinancialYear(loggableDate: Date, financialYear : Int) : Boolean {
+        val format = SimpleDateFormat("dd/MM/yyyy")
+
+        val maxDate = format.parse("01/04/$financialYear")
+        val minDate = format.parse("31/03/${financialYear - 1}")
+
+        return loggableDate.before(maxDate) && loggableDate.after(minDate)
+    }
+
+    private fun isWithinCurrentFinancialYear(loggableDate : Date) : Boolean {
         val calendar = Calendar.getInstance()
         val month = calendar.get(Calendar.MONTH)
         val year = calendar.get(Calendar.YEAR)
 
-        var maxDate: Date
-        var minDate: Date
+        val maxDate: Date
+        val minDate: Date
 
-        val format: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val format = SimpleDateFormat("dd/MM/yyyy")
 
         if (month < 3) {
             maxDate = format.parse("01/04/" + year)
@@ -200,7 +214,7 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
             minDate = format.parse("31/03/" + year)
         }
 
-        return loggableDate.before(maxDate) and loggableDate.after(minDate)
+        return loggableDate.before(maxDate) && loggableDate.after(minDate)
     }
 
     fun returnLoggableById(id: Int) : Loggable? {

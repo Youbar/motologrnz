@@ -40,7 +40,7 @@ class VehicleExpensesUnitTests : UnitTestBase() {
         val wof = Wof(wofDate, newWofDate, 45.0.toBigDecimal(), vehicle.id, "Avonhead Automotive", newWofDate)
         vehicle.wofLog.addWofToWofLog(wof)
 
-        val total = vehicle.returnExpensesWithinFinancialYear()
+        val total = vehicle.returnAllExpensesWithinCurrentFinancialYear()
         assertEquals(345.0.toBigDecimal(), total)
     }
 }

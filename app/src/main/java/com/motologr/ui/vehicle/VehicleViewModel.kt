@@ -141,8 +141,8 @@ class VehicleViewModel : ViewModel() {
         val df = DecimalFormat("0.00")
         df.roundingMode = RoundingMode.HALF_UP
 
-        val currentExpenses = df.format(vehicle.returnCurrentExpensesWithinFinancialYear())
-        val projectedExpenses = df.format(vehicle.returnExpensesWithinFinancialYear())
+        val currentExpenses = df.format(vehicle.returnExpensesWithinCurrentFinancialYear())
+        val projectedExpenses = df.format(vehicle.returnAllExpensesWithinCurrentFinancialYear())
 
         _textCurrentCosts.value = "$$currentExpenses current"
         _textProjectedCosts.value = "$$projectedExpenses projected"
