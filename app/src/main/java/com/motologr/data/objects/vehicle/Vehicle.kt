@@ -494,13 +494,15 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
 
         insuranceLog.sortByDescending {x -> x.endDt.time }
 
-        return calendar.time <= insuranceLog.first().endDt
+        if (returnLatestInsurancePolicy() != null)
+            return calendar.time <= insuranceLog.first().endDt
+
+        return false
     }
 
-    fun returnLatestInsurancePolicy() : Insurance {
-        insuranceLog.returnInsuranceLog()
-            .sortByDescending {x -> x.insurancePolicyStartDate.time }
-        return insuranceLog.returnInsuranceLog().first()
+    fun returnLatestInsurancePolicy() : Insurance? {
+        return insuranceLog.returnInsuranceLog().firstOrNull {x -> x.insurancePolicyStartDate <= DataHelper.getCurrentDate()
+                && x.endDt >= DataHelper.getCurrentDate()}
     }
 
     private val ddMMyyyy : SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")

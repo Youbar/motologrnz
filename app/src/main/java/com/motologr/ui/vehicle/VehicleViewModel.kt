@@ -121,7 +121,7 @@ class VehicleViewModel : ViewModel() {
         if (vehicle.hasCurrentInsurance()) {
             _hasCurrentInsurance.value = true
 
-            val insurancePolicy = vehicle.returnLatestInsurancePolicy()
+            val insurancePolicy = vehicle.returnLatestInsurancePolicy()!!
             _textInsurer.value = insurancePolicy.insurer
             _textInsurerCoverage.value = insurancePolicy.returnCoverageTypeShorthand()
             _textInsurerCost.value = insurancePolicy.returnFormattedBilling()

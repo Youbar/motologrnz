@@ -30,4 +30,16 @@ object EnumConstants {
         General,
         Full
     }
+
+    enum class InsuranceCoverage {
+        Third,
+        ThirdPlus,
+        Comprehensive
+    }
+
+    enum class InsuranceBillingCycle {
+        Fortnightly,
+        Monthly,
+        Annually
+    }
 }

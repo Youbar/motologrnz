@@ -1,17 +1,15 @@
 package com.motologr.data.objects.insurance
 
 import com.motologr.MainActivity
+import com.motologr.data.EnumConstants
 import com.motologr.data.logging.Log
 import com.motologr.data.logging.Loggable
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
-import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.milliseconds
 
 class Insurance (var id : Int,
                  var insurer: String,
@@ -119,14 +117,14 @@ class Insurance (var id : Int,
         val insuranceBills = insuranceBillLog.returnInsuranceBillLog()
         insuranceBills.sortBy { x -> x.billingDate.time }
 
+        if (billingCycle == EnumConstants.InsuranceBillingCycle.Annually.ordinal) {
+            return endDt
+        }
+
         for (insuranceBilling in insuranceBills) {
             if (insuranceBilling.billingDate > Calendar.getInstance().time) {
                 return insuranceBilling.billingDate
             }
-        }
-
-        if (billingCycle == 2) {
-            return endDt
         }
 
         val calendar : Calendar = Calendar.getInstance()
@@ -214,8 +212,8 @@ class Insurance (var id : Int,
     }
 
     fun convertToInsuranceEntity(): InsuranceEntity {
-        val fuelEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
-        return fuelEntity
+        val insuranceEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+        return insuranceEntity
     }
 
     fun returnDaysToNextCharge(): String {
