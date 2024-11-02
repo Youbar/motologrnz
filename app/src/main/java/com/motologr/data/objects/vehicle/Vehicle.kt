@@ -240,6 +240,19 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun deleteInsurance(insuranceId : Int) {
+        insuranceLog.returnInsuranceLog().removeIf { log -> log.id == insuranceId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceDao()
+                ?.delete(insuranceId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(insuranceId)
+        }.start()
+    }
+
     fun logFuel(fuel: Fuel) {
         fuelLog.addFuelToFuelLog(fuel)
 

@@ -21,6 +21,10 @@ class InsuranceLog : Log() {
         return insuranceLog[index]
     }
 
+    fun returnInsuranceById(insuranceId: Int) : Insurance? {
+        return insuranceLog.firstOrNull { x -> x.id == insuranceId}
+    }
+
     fun returnInsuranceBillLogs(): ArrayList<InsuranceBill> {
         val insuranceBills = ArrayList<InsuranceBill>()
 

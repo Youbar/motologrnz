@@ -54,6 +54,9 @@ interface InsuranceDao {
 
     @Delete
     fun delete(repair: InsuranceEntity)
+
+    @Query("DELETE FROM Insurance WHERE id = :id")
+    fun delete(id: Int)
 }
 
 @Entity(tableName = "InsuranceBill",

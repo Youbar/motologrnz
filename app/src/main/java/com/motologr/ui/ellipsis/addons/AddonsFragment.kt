@@ -97,7 +97,7 @@ fun ArtPackCard(
         .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
         .fillMaxWidth()) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Art Pack", fontSize = 5.em, modifier = Modifier.padding(PaddingValues(0.dp, 4.dp)))
+            Text("Art Pack", fontSize = 24.sp, modifier = Modifier.padding(PaddingValues(0.dp, 4.dp)))
             HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(PaddingValues(16.dp, 0.dp)))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
                 ArtPackSquare()
@@ -107,7 +107,7 @@ fun ArtPackCard(
                     fontSize = 14.sp, lineHeight = 1.2.em)
                 Button(onClick = onClick,
                     enabled = isArtPackPurchaseEnabled, contentPadding = PaddingValues(8.dp)) {
-                    Text(artPackButtonText, fontSize = 3.em, textAlign = TextAlign.Center)
+                    Text(artPackButtonText, fontSize = 14.sp, textAlign = TextAlign.Center)
                 }
             }
         }
