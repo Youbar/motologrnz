@@ -1,11 +1,10 @@
-package com.motologr.ui.view.insurance
+package com.motologr.ui.insurance.insurancepolicy
 
 import android.os.Bundle
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.motologr.data.DataHelper
 import com.motologr.data.DataManager
-import com.motologr.data.objects.insurance.Insurance
 
 class InsurancePolicyViewModel : ViewModel() {
     var insurerName = mutableStateOf("")

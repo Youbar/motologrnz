@@ -1,4 +1,4 @@
-package com.motologr.ui.view.insurance
+package com.motologr.ui.insurance.insurancepolicy
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
