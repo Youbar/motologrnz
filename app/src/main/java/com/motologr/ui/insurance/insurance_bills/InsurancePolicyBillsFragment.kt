@@ -36,6 +36,7 @@ import com.motologr.data.DataHelper
 import com.motologr.data.DataManager
 import com.motologr.data.objects.insurance.Insurance
 import com.motologr.databinding.FragmentInsurancePolicyBillsBinding
+import com.motologr.ui.add.AddFragmentCard
 import com.motologr.ui.theme.AppTheme
 import java.math.BigDecimal
 
@@ -49,6 +50,13 @@ class InsurancePolicyBillsFragment : Fragment() {
     private val navigateToInsuranceBill = { insuranceBillId : Int, insuranceId : Int ->
         val bundle = Bundle()
         bundle.putInt("insuranceBillId", insuranceBillId)
+        bundle.putInt("insuranceId", insuranceId)
+
+        findNavController().navigate(R.id.nav_insurance_bill_manage, bundle)
+    }
+
+    private val navigateToNewInsuranceBill = { insuranceId : Int ->
+        val bundle = Bundle()
         bundle.putInt("insuranceId", insuranceId)
 
         findNavController().navigate(R.id.nav_insurance_bill_manage, bundle)
@@ -76,8 +84,10 @@ class InsurancePolicyBillsFragment : Fragment() {
         _binding = FragmentInsurancePolicyBillsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val insuranceBillLogs = getInsurancePolicy()?.insuranceBillLog?.returnInsuranceBillLog()
+        val insurancePolicy = getInsurancePolicy()
             ?: return root
+
+        val insuranceBillLogs = insurancePolicy.insuranceBillLog.returnInsuranceBillLog()
         insuranceBillLogs.sortByDescending { x -> x.billingDate.time }
 
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_insurance_policy_bills)
@@ -92,6 +102,10 @@ class InsurancePolicyBillsFragment : Fragment() {
                             fontSize = 24.sp,
                             fontWeight =  FontWeight.Bold)
                         LazyColumn {
+                            item {
+                                AddFragmentCard("Add New Bill", "Add a new payment for this insurance policy."
+                                ) { navigateToNewInsuranceBill(insurancePolicy.id) }
+                            }
                             items(insuranceBillLogs) { insuranceBill ->
                                 val sortableDate = DataHelper.formatNumericalDateFormat(insuranceBill.sortableDate)
                                 InsuranceBillLoggingCard(insuranceBill.id, insuranceBill.insuranceId, sortableDate, insuranceBill.unitPrice,

@@ -105,13 +105,17 @@ class InsuranceBillManageFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    InsuranceBillInterface(insuranceBillManageViewModel)
-                    if (insuranceBillManageViewModel.isExistingData && insuranceBillManageViewModel.isReadOnly.value)
-                        EditDeleteFABs(insuranceBillManageViewModel.onDeleteClick, insuranceBillManageViewModel.onEditClick)
-                    else if (insuranceBillManageViewModel.isExistingData && !insuranceBillManageViewModel.isReadOnly.value)
-                        SaveFAB(insuranceBillManageViewModel.onSaveClick)
-                    if (insuranceBillManageViewModel.isDisplayDeleteDialog.value) {
-                        WarningDialog(insuranceBillManageViewModel.onDismissClick, insuranceBillManageViewModel.onConfirmClick, "Delete Record", "Are you sure you want to delete this record? The deletion is irreversible.")
+                    LazyColumn {
+                        item {
+                            InsuranceBillInterface(insuranceBillManageViewModel)
+                            if (insuranceBillManageViewModel.isExistingData && insuranceBillManageViewModel.isReadOnly.value)
+                                EditDeleteFABs(insuranceBillManageViewModel.onDeleteClick, insuranceBillManageViewModel.onEditClick)
+                            else if (insuranceBillManageViewModel.isExistingData && !insuranceBillManageViewModel.isReadOnly.value)
+                                SaveFAB(insuranceBillManageViewModel.onSaveClick)
+                            if (insuranceBillManageViewModel.isDisplayDeleteDialog.value) {
+                                WarningDialog(insuranceBillManageViewModel.onDismissClick, insuranceBillManageViewModel.onConfirmClick, "Delete Record", "Are you sure you want to delete this record? The deletion is irreversible.")
+                            }
+                        }
                     }
                 }
             }
@@ -124,34 +128,29 @@ class InsuranceBillManageFragment : Fragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsuranceBillInterface(viewModel: InsuranceBillManageViewModel) {
-    LazyColumn {
-        item {
-            OutlinedCard(modifier = Modifier
-                .padding(16.dp)
-                .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
-                .height(IntrinsicSize.Min)) {
-                Column(modifier = Modifier
-                    .padding(16.dp, 8.dp, 16.dp, 8.dp)
-                    .height(IntrinsicSize.Min)){
-                    Text(viewModel.insuranceBillCardTitle, fontSize = 24.sp,
-                        modifier = Modifier
-                            .padding(PaddingValues(0.dp, 0.dp))
-                            .fillMaxWidth(),
-                        lineHeight = 1.em,
-                        textAlign = TextAlign.Center)
-                    DatePickerModal(viewModel.insuranceBillDate, "Payment Date", true, viewModel.isReadOnly.value, modifier = Modifier.padding(top = 8.dp))
-                    CurrencyInput(viewModel.insuranceBillPrice, "Payment Amount", isReadOnly = viewModel.isReadOnly.value, modifier = Modifier.padding(top = 8.dp))
+    OutlinedCard(modifier = Modifier
+        .padding(16.dp)
+        .border(1.dp, MaterialTheme.colorScheme.secondary, shape)
+        .height(IntrinsicSize.Min)) {
+        Column(modifier = Modifier
+            .padding(16.dp, 8.dp, 16.dp, 8.dp)
+            .height(IntrinsicSize.Min)){
+            Text(viewModel.insuranceBillCardTitle, fontSize = 24.sp,
+                modifier = Modifier
+                    .padding(PaddingValues(0.dp, 0.dp))
+                    .fillMaxWidth(),
+                lineHeight = 1.em,
+                textAlign = TextAlign.Center)
+            DatePickerModal(viewModel.insuranceBillDate, "Payment Date", true, viewModel.isReadOnly.value, modifier = Modifier.padding(top = 8.dp))
+            CurrencyInput(viewModel.insuranceBillPrice, "Payment Amount", isReadOnly = viewModel.isReadOnly.value, modifier = Modifier.padding(top = 8.dp))
 
-                    if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
-                        Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                            .padding(0.dp, 32.dp, 0.dp, 0.dp)
-                            .fillMaxWidth()) {
-                            Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
-                                Text("Add", fontSize = 20.sp, textAlign = TextAlign.Center)
-                            }
-                        }
+            if (!viewModel.isReadOnly.value && !viewModel.isExistingData) {
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                    .padding(0.dp, 32.dp, 0.dp, 0.dp)
+                    .fillMaxWidth()) {
+                    Button(onClick = viewModel.onRecordClick, contentPadding = PaddingValues(8.dp)) {
+                        Text("Add", fontSize = 20.sp, textAlign = TextAlign.Center)
                     }
-
                 }
             }
         }

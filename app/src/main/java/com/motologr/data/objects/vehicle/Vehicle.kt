@@ -263,7 +263,7 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         val insuranceBills = returnInsuranceBillsForInsurance(insuranceBill.insuranceId)
             ?: return
 
-        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill)
+        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill, false)
 
         Thread {
             MainActivity.getDatabase()
@@ -280,7 +280,7 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
             ?: return
 
         insuranceBills.returnInsuranceBillLog().removeIf {x -> x.id == insuranceBill.id}
-        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill)
+        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill, false)
 
         Thread {
             MainActivity.getDatabase()

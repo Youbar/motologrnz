@@ -86,7 +86,7 @@ class InsuranceBillManageViewModel : ViewModel() {
         insuranceBillId = insuranceBill.id
         isReadOnly.value = true
         insuranceBillDate.value = DataHelper.formatNumericalDateFormat(insuranceBill.billingDate)
-        insuranceBillPrice.value = insuranceBill.price.toString()
+        insuranceBillPrice.value = DataHelper.roundToTwoDecimalPlaces(insuranceBill.price)
     }
 
     val onEditClick = {

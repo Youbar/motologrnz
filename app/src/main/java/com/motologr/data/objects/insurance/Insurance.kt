@@ -238,14 +238,16 @@ class Insurance (var id : Int,
 class InsuranceBillLog : Log() {
     private var insuranceBillLog = ArrayList<InsuranceBill>()
 
-    fun addInsuranceBillToInsuranceBillLog(insuranceBill: InsuranceBill) {
+    fun addInsuranceBillToInsuranceBillLog(insuranceBill: InsuranceBill, isNewData : Boolean = true) {
         insuranceBillLog.add(insuranceBill)
 
-        Thread {
-            MainActivity.getDatabase()
-                ?.insuranceBillDao()
-                ?.insert(insuranceBill.convertToInsuranceBillEntity())
-        }.start()
+        if (isNewData) {
+            Thread {
+                MainActivity.getDatabase()
+                    ?.insuranceBillDao()
+                    ?.insert(insuranceBill.convertToInsuranceBillEntity())
+            }.start()
+        }
     }
 
     fun addInsuranceBillToInsuranceBillLog(insuranceBillEntity: InsuranceBillEntity) {
