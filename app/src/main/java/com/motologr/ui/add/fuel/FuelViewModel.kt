@@ -71,7 +71,9 @@ class FuelViewModel : ViewModel() {
         }
     }
 
-    var displayToastMessage: (String) -> Unit = { message : String -> }
+    var displayToastMessage: (String) -> Unit = { message : String ->
+
+    }
 
     private fun setCheckedFuelType(fuelType : Int) {
         if (fuelType == EnumConstants.FuelType.Unleaded91.ordinal)

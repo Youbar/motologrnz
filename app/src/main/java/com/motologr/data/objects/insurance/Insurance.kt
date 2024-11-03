@@ -256,8 +256,8 @@ class InsuranceBillLog : Log() {
         return insuranceBillLog
     }
 
-    fun returnInsurance(index: Int) : InsuranceBill {
-        return insuranceBillLog[index]
+    fun returnInsuranceBillById(insuranceBillId: Int) : InsuranceBill? {
+        return insuranceBillLog.firstOrNull { x -> x.id == insuranceBillId }
     }
 
     companion object {
@@ -281,7 +281,7 @@ class InsuranceBill(var billingDate: Date,
                     var insuranceId: Int,
                     override var vehicleId: Int) : Loggable(billingDate, 201, price, vehicleId) {
     fun convertToInsuranceBillEntity() : InsuranceBillEntity {
-        val fuelEntity = InsuranceBillEntity(billingDate, price, insuranceId, vehicleId)
-        return fuelEntity
+        val insuranceBillEntity = InsuranceBillEntity(id, billingDate, price, insuranceId, vehicleId)
+        return insuranceBillEntity
     }
 }

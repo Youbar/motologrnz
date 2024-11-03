@@ -15,6 +15,8 @@ import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.objects.fuel.Fuel
 import com.motologr.data.objects.insurance.Insurance
+import com.motologr.data.objects.insurance.InsuranceBill
+import com.motologr.data.objects.insurance.InsuranceBillLog
 import com.motologr.data.objects.ruc.Ruc
 import com.motologr.data.objects.ruc.RucEntity
 import java.math.BigDecimal
@@ -250,6 +252,59 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
             MainActivity.getDatabase()
                 ?.loggableDao()
                 ?.delete(insuranceId)
+        }.start()
+    }
+
+    private fun returnInsuranceBillsForInsurance(insuranceId : Int) : InsuranceBillLog? {
+        return insuranceLog.returnInsuranceById(insuranceId)?.returnInsuranceBillingLogs()
+    }
+
+    fun logInsuranceBill(insuranceBill : InsuranceBill) {
+        val insuranceBills = returnInsuranceBillsForInsurance(insuranceBill.insuranceId)
+            ?: return
+
+        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceBillDao()
+                ?.insert(insuranceBill.convertToInsuranceBillEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.insert(insuranceBill.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun updateInsuranceBill(insuranceBill : InsuranceBill) {
+        val insuranceBills = returnInsuranceBillsForInsurance(insuranceBill.insuranceId)
+            ?: return
+
+        insuranceBills.returnInsuranceBillLog().removeIf {x -> x.id == insuranceBill.id}
+        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceBillDao()
+                ?.updateInsuranceBill(insuranceBill.convertToInsuranceBillEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(insuranceBill.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteInsuranceBill(insuranceId : Int, insuranceBillId : Int) {
+        val insuranceBills = returnInsuranceBillsForInsurance(insuranceId)
+            ?: return
+
+        insuranceBills.returnInsuranceBillLog().removeIf {x -> x.id == insuranceBillId}
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceBillDao()
+                ?.delete(insuranceBillId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(insuranceBillId)
         }.start()
     }
 

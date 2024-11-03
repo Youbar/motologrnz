@@ -8,6 +8,8 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
+import com.motologr.data.objects.fuel.FuelEntity
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -34,6 +36,7 @@ data class InsuranceEntity(
 
     fun convertToInsuranceObject() : Insurance {
         val insurance = Insurance(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+        insurance.id = id
         return insurance
     }
 }
@@ -84,6 +87,7 @@ data class InsuranceBillEntity(
 
     fun convertToInsuranceBillObject() : InsuranceBill {
         val insuranceBill = InsuranceBill(billingDate, price, insuranceId, vehicleId)
+        insuranceBill.id = id
         return insuranceBill
     }
 }
@@ -99,6 +103,12 @@ interface InsuranceBillDao {
     @Insert
     fun insert(vararg insuranceBill: InsuranceBillEntity)
 
+    @Update
+    fun updateInsuranceBill(insuranceBill: InsuranceBillEntity)
+
     @Delete
     fun delete(insuranceBill: InsuranceBillEntity)
+
+    @Query("DELETE FROM InsuranceBill WHERE id = :id")
+    fun delete(id: Int)
 }

@@ -1,4 +1,4 @@
-package com.motologr.ui.insurance.insurancepolicy
+package com.motologr.ui.insurance.insurance_policy
 
 import android.os.Bundle
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +22,8 @@ class InsurancePolicyViewModel : ViewModel() {
     var coverage = mutableStateOf("")
         private set
 
-    private var insuranceId = -1
+    var insuranceId = -1
+        private set
 
     fun initInsurancePolicyViewModel(arguments: Bundle?) {
         var argumentInsuranceId = -1
@@ -37,7 +38,7 @@ class InsurancePolicyViewModel : ViewModel() {
         val insurance = if (policyIndex != null) {
             DataManager.returnActiveVehicle()?.insuranceLog?.returnInsurance(policyIndex)
         } else {
-            DataManager.returnActiveVehicle()?.insuranceLog?.returnInsuranceById(insuranceId)
+            DataManager.returnActiveVehicle()?.insuranceLog?.returnInsuranceById(argumentInsuranceId)
         }
 
         if (insurance == null)
@@ -61,6 +62,10 @@ class InsurancePolicyViewModel : ViewModel() {
 
     var isDisplayDeleteDialog = mutableStateOf(false)
         private set
+
+    var onManageBillsClick = { _ : Int ->
+
+    }
 
     val onDeleteClick = {
         isDisplayDeleteDialog.value = true
