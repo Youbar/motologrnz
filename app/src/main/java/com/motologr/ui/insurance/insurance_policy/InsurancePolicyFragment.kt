@@ -67,6 +67,12 @@ class InsurancePolicyFragment : Fragment() {
 
             findNavController().navigate(R.id.nav_insurance_policy_bills, bundle)
         }
+        insurancePolicyViewModel.onCancelPolicyClick = { insuranceId : Int ->
+            val bundle = Bundle()
+            bundle.putInt("insuranceId", insuranceId)
+
+            findNavController().navigate(R.id.nav_insurance_policy_cancel, bundle)
+        }
 
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_insurance_policy)
         composeView.apply {
@@ -81,8 +87,11 @@ class InsurancePolicyFragment : Fragment() {
                             AddFragmentCard("Manage Bills", "View, update, delete, or add to your existing bills for this insurance policy"
                             ) { insurancePolicyViewModel.onManageBillsClick(insurancePolicyViewModel.insuranceId) }
                         }
-                        item {
-                            AddFragmentCard("Cancel Policy", "Cancel this insurance policy. All bills after the cancellation date will be deleted and a new bill will be generated for you to specify arrears or refunds.")
+                        if (!insurancePolicyViewModel.isPolicyCancelled.value) {
+                            item {
+                                AddFragmentCard("Cancel Policy", "Cancel this insurance policy. All bills after the cancellation date will be deleted and a new bill will be generated for you to specify arrears or refunds.")
+                                { insurancePolicyViewModel.onCancelPolicyClick(insurancePolicyViewModel.insuranceId) }
+                            }
                         }
                         item {
                             AddFragmentCard("Delete Policy", "Delete this insurance policy. This will remove all records of this policy from your vehicle. It is the recommended option if your insurance policy generated incorrectly.",

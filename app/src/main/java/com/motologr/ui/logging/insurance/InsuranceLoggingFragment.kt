@@ -61,6 +61,7 @@ class InsuranceLoggingFragment : Fragment() {
 
                 val policyStartDt = insurance.insurancePolicyStartDate
                 calendar.set(policyStartDt.year + 1900 + 1, policyStartDt.month, policyStartDt.date, 0, 0, 0)
+                calendar.set(java.util.Calendar.MILLISECOND, 0)
                 val policyEndDt = calendar.time
 
                 val df = DecimalFormat("0.00")

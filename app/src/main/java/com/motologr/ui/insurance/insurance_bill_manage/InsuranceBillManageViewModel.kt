@@ -43,7 +43,7 @@ class InsuranceBillManageViewModel : ViewModel() {
         return true
     }
 
-    var navigateToVehicle = { }
+    var navigateBack = { }
 
     private fun getInsuranceBillObjectFromInputs() : InsuranceBill? {
         if (isValidInputs()) {
@@ -63,7 +63,7 @@ class InsuranceBillManageViewModel : ViewModel() {
 
         if (insuranceBill != null) {
             DataManager.returnActiveVehicle()?.logInsuranceBill(insuranceBill)
-            navigateToVehicle()
+            navigateBack()
         }
     }
 
@@ -113,7 +113,7 @@ class InsuranceBillManageViewModel : ViewModel() {
     val onConfirmClick = {
         DataManager.returnActiveVehicle()?.deleteInsuranceBill(insuranceId, insuranceBillId)
         displayToastMessage("Insurance payment deleted.")
-        navigateToVehicle()
+        navigateBack()
     }
 
     val onDismissClick = {

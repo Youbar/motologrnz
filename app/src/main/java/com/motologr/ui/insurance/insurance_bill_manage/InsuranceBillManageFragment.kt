@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.motologr.R
 import com.motologr.data.DataHelper
@@ -89,7 +88,7 @@ class InsuranceBillManageFragment : Fragment() {
                 .show()
         }
         insuranceBillManageViewModel.initViewModel(insurance.id)
-        insuranceBillManageViewModel.navigateToVehicle = {
+        insuranceBillManageViewModel.navigateBack = {
             findNavController().popBackStack()
         }
 

@@ -2,6 +2,7 @@ package com.motologr.data.objects.vehicle
 
 import com.motologr.MainActivity
 import com.motologr.data.DataHelper
+import com.motologr.data.DataManager
 import com.motologr.data.logging.Loggable
 import com.motologr.data.objects.reg.Reg
 import com.motologr.data.logging.reg.RegLog
@@ -242,6 +243,39 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         }.start()
     }
 
+    fun cancelInsurance(insuranceId : Int, cancellationDate : Date) {
+        val insurancePolicy = insuranceLog.returnInsuranceLog().firstOrNull { x -> x.id == insuranceId }
+            ?: return
+
+        // Delete all payments after the cancellation date
+        val insuranceBills = insurancePolicy.insuranceBillLog.returnInsuranceBillLog()
+        val insuranceBillIdsToRemove = insuranceBills.filter { x -> x.billingDate > cancellationDate }.map { x -> x.id }
+
+        for (insuranceBillId in insuranceBillIdsToRemove) {
+            deleteInsuranceBill(insuranceId, insuranceBillId)
+        }
+
+        // Add a payment for the cancellation date for any arrears or refunds
+        val insuranceBill = InsuranceBill(cancellationDate, 0f.toBigDecimal(), insurancePolicy.id, insurancePolicy.vehicleId)
+        logInsuranceBill(insuranceBill)
+
+        // Finally, set cancellation date and update policy in db
+        insurancePolicy.insurancePolicyEndDate = cancellationDate
+        insurancePolicy.isCancelled = true
+        updateInsurance(insurancePolicy)
+    }
+
+    fun updateInsurance(insurance : Insurance) {
+        insuranceLog.returnInsuranceLog().removeIf { log -> log.id == insurance.id }
+        insuranceLog.addInsuranceToInsuranceLog(insurance)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceDao()
+                ?.updateInsurance(insurance.convertToInsuranceEntity())
+        }.start()
+    }
+
     fun deleteInsurance(insuranceId : Int) {
         insuranceLog.returnInsuranceLog().removeIf { log -> log.id == insuranceId }
 
@@ -269,9 +303,6 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
             MainActivity.getDatabase()
                 ?.insuranceBillDao()
                 ?.insert(insuranceBill.convertToInsuranceBillEntity())
-            MainActivity.getDatabase()
-                ?.loggableDao()
-                ?.insert(insuranceBill.convertToLoggableEntity())
         }.start()
     }
 
@@ -560,17 +591,17 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         if (insuranceLog.size < 1)
             return false
 
-        insuranceLog.sortByDescending {x -> x.endDt.time }
+        insuranceLog.sortByDescending {x -> x.insurancePolicyEndDate.time }
 
         if (returnLatestInsurancePolicy() != null)
-            return calendar.time <= insuranceLog.first().endDt
+            return calendar.time <= insuranceLog.first().insurancePolicyEndDate
 
         return false
     }
 
     fun returnLatestInsurancePolicy() : Insurance? {
         return insuranceLog.returnInsuranceLog().firstOrNull {x -> x.insurancePolicyStartDate <= DataHelper.getCurrentDate()
-                && x.endDt >= DataHelper.getCurrentDate()}
+                && x.insurancePolicyEndDate >= DataHelper.getCurrentDate()}
     }
 
     private val ddMMyyyy : SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")

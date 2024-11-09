@@ -80,6 +80,8 @@ class MainActivity : AppCompatActivity() {
                 .addMigrations(DatabaseMigration.MIGRATION_16_17)
                 .addMigrations(DatabaseMigration.MIGRATION_17_18)
                 .addMigrations(DatabaseMigration.MIGRATION_18_19)
+                .addMigrations(DatabaseMigration.MIGRATION_19_20)
+                .addMigrations(DatabaseMigration.MIGRATION_20_21)
                 .build()
 
             BillingClientHelper.initBillingHelper(this)

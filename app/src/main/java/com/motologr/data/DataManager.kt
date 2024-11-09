@@ -165,12 +165,19 @@ object DataManager {
     private var idCounterLoggable: Int = 0
 
     fun setIdCounterLoggable() {
-        val maxId = MainActivity.getDatabase()
+        val maxIdForLoggable = MainActivity.getDatabase()
             ?.loggableDao()
-            ?.getMaxId()
+            ?.getMaxId() ?: 0
 
-        if (maxId != null)
-            idCounterLoggable = maxId + 1
+        // A long time ago I was a lazy man and decided not to record insurance bills as loggables in the db
+        // The time has come to pay for that laziness
+        val maxIdForInsuranceBill = MainActivity.getDatabase()
+            ?.insuranceBillDao()
+            ?.getMaxId() ?: 0
+
+        val maxId = maxOf(maxIdForLoggable, maxIdForInsuranceBill)
+
+        idCounterLoggable = maxId + 1
     }
 
     fun fetchIdForLoggable(): Int {

@@ -20,22 +20,33 @@ class Insurance (var id : Int,
                  var lastBill: Date,
                  var vehicleId: Int
 ) {
-    var endDt : Date
+    private fun initEndDt() : Date {
+        val calendar = Calendar.getInstance()
+        calendar.set(insurancePolicyStartDate.year + 1900 + 1, insurancePolicyStartDate.month, insurancePolicyStartDate.date, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return calendar.time
+    }
+
+    var isCancelled : Boolean = false
+
+    var insurancePolicyEndDate : Date = initEndDt()
         get() {
-            val calendar = Calendar.getInstance()
-            calendar.set(insurancePolicyStartDate.year + 1900 + 1, insurancePolicyStartDate.month, insurancePolicyStartDate.date, 0, 0, 0)
-            return calendar.time
+            if (!isCancelled) {
+                return initEndDt()
+            }
+
+            return field
         }
-        set(value){
-            endDt = value
-        }
+
 
     init {
         val calendar = Calendar.getInstance()
         calendar.set(insurancePolicyStartDate.year + 1900, insurancePolicyStartDate.month, insurancePolicyStartDate.date, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
         insurancePolicyStartDate = calendar.time
 
         calendar.set(lastBill.year + 1900, lastBill.month, lastBill.date, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
         lastBill = calendar.time
     }
 
@@ -50,6 +61,7 @@ class Insurance (var id : Int,
         var firstBillingDate = lastBill
 
         calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
 
         while (firstBillingDate.time > policyStartDate.time) {
             if (billingCycle == 0) {
@@ -65,9 +77,11 @@ class Insurance (var id : Int,
 
         // Then forwards
         calendar.set(policyStartDate.year + 1900 + 1, policyStartDate.month, policyStartDate.date, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
         val policyEndDate = calendar.time
 
         calendar.set(firstBillingDate.year + 1900, firstBillingDate.month, firstBillingDate.date, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
 
         if (billingCycle == 2) {
             val insuranceBill = InsuranceBill(lastBill, billing, id, vehicleId)
@@ -118,7 +132,7 @@ class Insurance (var id : Int,
         insuranceBills.sortBy { x -> x.billingDate.time }
 
         if (billingCycle == EnumConstants.InsuranceBillingCycle.Annually.ordinal) {
-            return endDt
+            return insurancePolicyEndDate
         }
 
         for (insuranceBilling in insuranceBills) {
@@ -212,7 +226,7 @@ class Insurance (var id : Int,
     }
 
     fun convertToInsuranceEntity(): InsuranceEntity {
-        val insuranceEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+        val insuranceEntity = InsuranceEntity(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId, isCancelled, insurancePolicyEndDate)
         return insuranceEntity
     }
 

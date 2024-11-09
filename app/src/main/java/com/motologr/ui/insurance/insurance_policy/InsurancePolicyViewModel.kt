@@ -22,20 +22,23 @@ class InsurancePolicyViewModel : ViewModel() {
     var coverage = mutableStateOf("")
         private set
 
+    var isPolicyCancelled = mutableStateOf(false)
+        private set
+
     var insuranceId = -1
         private set
 
     fun initInsurancePolicyViewModel(arguments: Bundle?) {
         var argumentInsuranceId = -1
-        val policyIndex = arguments?.getInt("position")
+        val policyIndex = arguments?.getInt("position", -1) ?: -1
 
-        if (policyIndex == null)
-            argumentInsuranceId = arguments?.getInt("insuranceId") ?: -1
+        if (policyIndex == -1)
+            argumentInsuranceId = arguments?.getInt("insuranceId", -1) ?: -1
 
-        if (policyIndex == null && argumentInsuranceId == -1)
+        if (policyIndex == -1 && argumentInsuranceId == -1)
             return
 
-        val insurance = if (policyIndex != null) {
+        val insurance = if (policyIndex != -1) {
             DataManager.returnActiveVehicle()?.insuranceLog?.returnInsurance(policyIndex)
         } else {
             DataManager.returnActiveVehicle()?.insuranceLog?.returnInsuranceById(argumentInsuranceId)
@@ -47,9 +50,10 @@ class InsurancePolicyViewModel : ViewModel() {
         insuranceId = insurance.id
         insurerName.value = insurance.insurer
         startDate.value = "Start Date - ${DataHelper.formatNumericalDateFormat(insurance.insurancePolicyStartDate)}"
-        endDate.value = "End Date - ${DataHelper.formatNumericalDateFormat(insurance.endDt)}"
+        endDate.value = "End Date - ${DataHelper.formatNumericalDateFormat(insurance.insurancePolicyEndDate)}"
         pricing.value = "Pricing - $${DataHelper.roundToTwoDecimalPlaces(insurance.billing)} ${insurance.returnCycleType()}"
         coverage.value = "Coverage - ${insurance.returnCoverageType()}"
+        isPolicyCancelled.value = insurance.isCancelled
     }
 
     var displayToastMessage = { message : String ->
@@ -64,6 +68,10 @@ class InsurancePolicyViewModel : ViewModel() {
         private set
 
     var onManageBillsClick = { _ : Int ->
+
+    }
+
+    var onCancelPolicyClick = { _ : Int ->
 
     }
 

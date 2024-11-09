@@ -9,7 +9,6 @@ import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Update
-import com.motologr.data.objects.fuel.FuelEntity
 import com.motologr.data.objects.vehicle.VehicleEntity
 import java.math.BigDecimal
 import java.util.Date
@@ -29,14 +28,18 @@ data class InsuranceEntity(
     @ColumnInfo(name = "billingCycle") val billingCycle: Int,
     @ColumnInfo(name = "billing") val billing: BigDecimal,
     @ColumnInfo(name = "lastBill") val lastBill: Date,
-    @ColumnInfo(name = "vehicleId") val vehicleId: Int)
+    @ColumnInfo(name = "vehicleId") val vehicleId: Int,
+    @ColumnInfo(name = "isCancelled") val isCancelled: Boolean,
+    @ColumnInfo(name = "insurancePolicyEndDate") val insurancePolicyEndDate: Date)
 {
-    constructor(insurer: String, insurancePolicyStartDate: Date, coverage: Int, billingCycle: Int,
-                billing: BigDecimal, lastBill: Date, vehicleId: Int) : this(0, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
+    constructor(insurer: String, insurancePolicyStartDate: Date, coverage: Int, billingCycle: Int, billing: BigDecimal, lastBill: Date, vehicleId: Int, isCancelled : Boolean, insurancePolicyEndDate : Date)
+            : this(0, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId, isCancelled, insurancePolicyEndDate)
 
     fun convertToInsuranceObject() : Insurance {
         val insurance = Insurance(id, insurer, insurancePolicyStartDate, coverage, billingCycle, billing, lastBill, vehicleId)
         insurance.id = id
+        insurance.isCancelled = isCancelled
+        insurance.insurancePolicyEndDate = insurancePolicyEndDate
         return insurance
     }
 }
@@ -53,10 +56,13 @@ interface InsuranceDao {
     fun getMaxId(): Int
 
     @Insert
-    fun insert(vararg repair: InsuranceEntity)
+    fun insert(vararg insurance: InsuranceEntity)
+
+    @Update
+    fun updateInsurance(insurance: InsuranceEntity)
 
     @Delete
-    fun delete(repair: InsuranceEntity)
+    fun delete(insurance: InsuranceEntity)
 
     @Query("DELETE FROM Insurance WHERE id = :id")
     fun delete(id: Int)
@@ -94,6 +100,9 @@ data class InsuranceBillEntity(
 
 @Dao
 interface InsuranceBillDao {
+    @Query("SELECT id FROM InsuranceBill WHERE id = (SELECT MAX(id) FROM InsuranceBill)")
+    fun getMaxId(): Int
+
     @Query("SELECT * FROM InsuranceBill")
     fun getAll(): List<InsuranceBillEntity>
 

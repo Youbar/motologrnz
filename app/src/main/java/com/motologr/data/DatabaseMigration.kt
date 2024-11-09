@@ -288,4 +288,17 @@ object DatabaseMigration {
             db.execSQL("ALTER TABLE Reg ADD COLUMN isHistorical INTEGER NOT NULL DEFAULT 0")
         }
     }
+
+    val MIGRATION_19_20 = object : Migration(19, 20) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE Insurance ADD COLUMN isCancelled INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
+    val MIGRATION_20_21 = object : Migration(20, 21) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE Insurance ADD COLUMN insurancePolicyEndDate INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("UPDATE Insurance SET insurancePolicyEndDate = insurancePolicyStartDate + 31536000000")
+        }
+    }
 }
