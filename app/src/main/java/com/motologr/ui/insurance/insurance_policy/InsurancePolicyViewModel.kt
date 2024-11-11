@@ -49,10 +49,10 @@ class InsurancePolicyViewModel : ViewModel() {
 
         insuranceId = insurance.id
         insurerName.value = insurance.insurer
-        startDate.value = "Start Date - ${DataHelper.formatNumericalDateFormat(insurance.insurancePolicyStartDate)}"
-        endDate.value = "End Date - ${DataHelper.formatNumericalDateFormat(insurance.insurancePolicyEndDate)}"
-        pricing.value = "Pricing - $${DataHelper.roundToTwoDecimalPlaces(insurance.billing)} ${insurance.returnCycleType()}"
-        coverage.value = "Coverage - ${insurance.returnCoverageType()}"
+        startDate.value = DataHelper.formatNumericalDateFormat(insurance.insurancePolicyStartDate)
+        endDate.value = DataHelper.formatNumericalDateFormat(insurance.insurancePolicyEndDate)
+        pricing.value = "$${DataHelper.roundToTwoDecimalPlaces(insurance.billing)} ${insurance.returnCycleType()}"
+        coverage.value = insurance.returnCoverageType()
         isPolicyCancelled.value = insurance.isCancelled
     }
 

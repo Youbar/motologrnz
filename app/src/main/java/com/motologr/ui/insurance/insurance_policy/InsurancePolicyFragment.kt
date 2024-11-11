@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -119,16 +120,39 @@ fun InsurancePolicyInterface(viewModel : InsurancePolicyViewModel) {
     OutlinedCard(modifier = Modifier
         .padding(16.dp, 16.dp, 16.dp, 8.dp)
         .height(IntrinsicSize.Min)) {
-            Text(viewModel.insurerName.value,
+        Text(viewModel.insurerName.value,
+            fontSize = 24.sp,
+            modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
+        )
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(16.dp, 8.dp))
+
+        Row(modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp)) {
+            Text("Start Date", fontSize = 20.sp)
+            Text(viewModel.startDate.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+        }
+        Row(modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp)) {
+            Text("End Date", fontSize = 20.sp)
+            Text(viewModel.endDate.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+        }
+        Row(modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp)) {
+            Text("Pricing", fontSize = 20.sp)
+            Text(viewModel.pricing.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+        }
+        Row(modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp)) {
+            Text("Coverage", fontSize = 20.sp)
+            Text(viewModel.coverage.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+        }
+
+        if (viewModel.isPolicyCancelled.value) {
+            HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(16.dp, 8.dp))
+            Text("Policy Cancelled",
                 fontSize = 24.sp,
                 modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
-            HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(16.dp, 8.dp))
-            Text(viewModel.startDate.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp))
-            Text(viewModel.endDate.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp))
-            Text(viewModel.pricing.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp))
-            Text(viewModel.coverage.value, fontSize = 20.sp, modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp))
+        }
     }
 }
