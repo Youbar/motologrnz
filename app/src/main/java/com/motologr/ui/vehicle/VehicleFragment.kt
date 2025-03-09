@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +42,7 @@ import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.objects.vehicle.Vehicle
+import com.motologr.ui.compose.WarningDialog
 import com.motologr.ui.theme.AppTheme
 
 class VehicleFragment : Fragment() {
@@ -109,12 +111,21 @@ class VehicleFragment : Fragment() {
             findNavController().navigate(R.id.nav_insurance_policy, bundle)
         }
 
+        var isWarningDialogVisible = mutableStateOf(true);
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_vehicle)
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
                     OutlinedCards(viewModel, expensesNavigate, complianceLoggingNavigate, insurancePolicyNavigate)
+
+                    if (isWarningDialogVisible.value) {
+                        WarningDialog(
+                            { isWarningDialogVisible.value = false },
+                            { isWarningDialogVisible.value = false },
+                            "MotoLogr NZ \nDiscontinued",
+                            "Thank you for your support. MotoLogr NZ has been discontinued.")
+                    }
                 }
             }
         }
