@@ -71,7 +71,9 @@ class FuelViewModel : ViewModel() {
         }
     }
 
-    var displayToastMessage: (String) -> Unit = { message : String -> }
+    var displayToastMessage: (String) -> Unit = { message : String ->
+
+    }
 
     private fun setCheckedFuelType(fuelType : Int) {
         if (fuelType == EnumConstants.FuelType.Unleaded91.ordinal)
@@ -103,7 +105,7 @@ class FuelViewModel : ViewModel() {
     private val fuelTypeInputs : Array<Boolean>
         get() : Array<Boolean> = arrayOf(is91Checked.value, is95Checked.value, is98Checked.value, isDieselChecked.value)
 
-    private fun validateFuelInputs() : Boolean {
+    private fun isValidInputs() : Boolean {
         if (!DataHelper.isValidStringInput(fuelDate.value, "Purchase Date", displayToastMessage))
             return false
 
@@ -129,7 +131,7 @@ class FuelViewModel : ViewModel() {
     var navigateToVehicle = { }
 
     private fun getFuelObjectFromInputs() : Fuel? {
-        if (validateFuelInputs()) {
+        if (isValidInputs()) {
             val vehicleId: Int = DataManager.returnActiveVehicle()?.id!!
             val fuelType: Int = returnCheckedFuelType()
             val price: BigDecimal = fuelPrice.value

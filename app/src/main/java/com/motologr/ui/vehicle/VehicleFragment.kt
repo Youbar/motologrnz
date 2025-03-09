@@ -13,12 +13,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +42,7 @@ import com.motologr.databinding.FragmentVehicleBinding
 import com.motologr.data.DataManager
 import com.motologr.data.billing.BillingClientHelper
 import com.motologr.data.objects.vehicle.Vehicle
+import com.motologr.ui.compose.WarningDialog
 import com.motologr.ui.theme.AppTheme
 
 class VehicleFragment : Fragment() {
@@ -103,12 +104,28 @@ class VehicleFragment : Fragment() {
         val expensesNavigate = {
             findNavController().navigate(R.id.nav_expenses)
         }
+
+        val insurancePolicyNavigate = {
+            val bundle = Bundle()
+            bundle.putInt("insuranceId", viewModel.currentInsuranceId)
+            findNavController().navigate(R.id.nav_insurance_policy, bundle)
+        }
+
+        var isWarningDialogVisible = mutableStateOf(true);
         val composeView = root.findViewById<ComposeView>(R.id.compose_view_vehicle)
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 AppTheme {
-                    OutlinedCards(viewModel, expensesNavigate, complianceLoggingNavigate)
+                    OutlinedCards(viewModel, expensesNavigate, complianceLoggingNavigate, insurancePolicyNavigate)
+
+                    if (isWarningDialogVisible.value) {
+                        WarningDialog(
+                            { isWarningDialogVisible.value = false },
+                            { isWarningDialogVisible.value = false },
+                            "MotoLogr NZ \nDiscontinued",
+                            "Thank you for your support. MotoLogr NZ has been discontinued.")
+                    }
                 }
             }
         }
@@ -173,7 +190,8 @@ class VehicleFragment : Fragment() {
 }
 
 @Composable
-fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit, complianceLoggingNavigate : () -> Unit) {
+fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit, complianceLoggingNavigate : () -> Unit,
+                  insurancePolicyNavigate : () -> Unit) {
     Column {
         Row(modifier = Modifier
             .padding(8.dp)
@@ -200,7 +218,7 @@ fun OutlinedCards(viewModel : VehicleViewModel, expensesNavigate : () -> Unit, c
             val daysToNextCharge = viewModel.textInsurerDaysToNextCharge.observeAsState("")
             val hasActivePolicy = viewModel.hasCurrentInsurance.observeAsState(false)
             InsuranceCard(cardModifier, policyInsurer, policyCoverage,
-                policyCost, policyCycle, nextChargeText, daysToNextCharge, hasActivePolicy)
+                policyCost, policyCycle, nextChargeText, daysToNextCharge, hasActivePolicy, insurancePolicyNavigate)
         }
 
         Row(modifier = Modifier
@@ -274,10 +292,21 @@ fun InsuranceCard(
     cycle : State<String>,
     nextChargeText : State<String>,
     nextCharge : State<String>,
-    hasActivePolicy : State<Boolean>
+    hasActivePolicy : State<Boolean>,
+    insurancePolicyNavigate: () -> Unit
 ) {
+    var onClick = { }
+    if (hasActivePolicy.value)
+        onClick = insurancePolicyNavigate
+
+    var border = CardDefaults.outlinedCardBorder()
+    if (hasActivePolicy.value)
+        border = BorderStroke(1.dp, Color.Black)
+
     OutlinedCard(
-        modifier = cardModifier
+        modifier = cardModifier,
+        onClick = onClick,
+        border = border
     ) {
         Text(
             text = "Insurance",

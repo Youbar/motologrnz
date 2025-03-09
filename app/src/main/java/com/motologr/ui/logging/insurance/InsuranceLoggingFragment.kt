@@ -60,15 +60,14 @@ class InsuranceLoggingFragment : Fragment() {
                 var insurance: Insurance = insuranceLog[i]
 
                 val policyStartDt = insurance.insurancePolicyStartDate
-                calendar.set(policyStartDt.year + 1900 + 1, policyStartDt.month, policyStartDt.date, 0, 0, 0)
-                val policyEndDt = calendar.time
+                val policyEndDt = insurance.insurancePolicyEndDate
 
                 val df = DecimalFormat("0.00")
                 df.roundingMode = RoundingMode.HALF_UP
 
                 data.add(
                     InsuranceLoggingItemsViewModel(
-                        R.drawable.ic_log_insurance_16, format.format(insurance.insurancePolicyStartDate), "to " + format.format(policyEndDt),
+                        R.drawable.ic_log_insurance_16, format.format(policyStartDt), "to " + format.format(policyEndDt),
                         "$" + df.format(insurance.billing), insurance.returnCycleType())
                 )
             }

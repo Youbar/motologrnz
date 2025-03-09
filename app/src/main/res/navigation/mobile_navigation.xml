@@ -68,9 +68,22 @@
 
     <fragment
         android:id="@+id/nav_insurance_policy"
-        android:name="com.motologr.ui.view.insurance.InsurancePolicyFragment"
-        android:label="@string/menu_car"
-        tools:layout="@layout/fragment_insurance_policy" >
+        android:name="com.motologr.ui.insurance.insurance_policy.InsurancePolicyFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_insurance_policy_bills"
+        android:name="com.motologr.ui.insurance.insurance_bills.InsurancePolicyBillsFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_insurance_bill_manage"
+        android:name="com.motologr.ui.insurance.insurance_bill_manage.InsuranceBillManageFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_insurance_policy_cancel"
+        android:name="com.motologr.ui.insurance.insurance_policy_cancel.InsurancePolicyCancelFragment" >
     </fragment>
 
     <fragment

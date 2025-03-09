@@ -109,6 +109,8 @@ class VehicleViewModel : ViewModel() {
 
     val textProjectedCosts: LiveData<String> = _textProjectedCosts
 
+    var currentInsuranceId = -1
+
     private fun updateFieldsForVehicle(vehicle: Vehicle) {
         _textVehicle.value = vehicle.brandName + " " + vehicle.modelName + " | " + vehicle.modelYear.toString()
         _textWOFDue.value = vehicle.returnWofExpiry()
@@ -121,7 +123,8 @@ class VehicleViewModel : ViewModel() {
         if (vehicle.hasCurrentInsurance()) {
             _hasCurrentInsurance.value = true
 
-            val insurancePolicy = vehicle.returnLatestInsurancePolicy()
+            val insurancePolicy = vehicle.returnLatestInsurancePolicy()!!
+            currentInsuranceId = insurancePolicy.id
             _textInsurer.value = insurancePolicy.insurer
             _textInsurerCoverage.value = insurancePolicy.returnCoverageTypeShorthand()
             _textInsurerCost.value = insurancePolicy.returnFormattedBilling()

@@ -39,6 +39,12 @@ object DataHelper {
         return numericalDateFormat.format(currentDt.time)
     }
 
+    fun getCurrentDate() : Date {
+        val currentDt = Calendar.getInstance().time
+
+        return currentDt
+    }
+
     fun getMinDt(): Date {
         val minDt = numericalDateFormat.parse("01/01/1900")
 

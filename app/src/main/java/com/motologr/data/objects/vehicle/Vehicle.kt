@@ -2,6 +2,7 @@ package com.motologr.data.objects.vehicle
 
 import com.motologr.MainActivity
 import com.motologr.data.DataHelper
+import com.motologr.data.DataManager
 import com.motologr.data.logging.Loggable
 import com.motologr.data.objects.reg.Reg
 import com.motologr.data.logging.reg.RegLog
@@ -15,6 +16,8 @@ import com.motologr.data.logging.fuel.FuelLog
 import com.motologr.data.logging.insurance.InsuranceLog
 import com.motologr.data.objects.fuel.Fuel
 import com.motologr.data.objects.insurance.Insurance
+import com.motologr.data.objects.insurance.InsuranceBill
+import com.motologr.data.objects.insurance.InsuranceBillLog
 import com.motologr.data.objects.ruc.Ruc
 import com.motologr.data.objects.ruc.RucEntity
 import java.math.BigDecimal
@@ -237,6 +240,102 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
 
             insurance.generateInsuranceBills()
             insuranceLog.addInsuranceToInsuranceLog(insurance)
+        }.start()
+    }
+
+    fun cancelInsurance(insuranceId : Int, cancellationDate : Date) {
+        val insurancePolicy = insuranceLog.returnInsuranceLog().firstOrNull { x -> x.id == insuranceId }
+            ?: return
+
+        // Delete all payments after the cancellation date
+        val insuranceBills = insurancePolicy.insuranceBillLog.returnInsuranceBillLog()
+        val insuranceBillIdsToRemove = insuranceBills.filter { x -> x.billingDate > cancellationDate }.map { x -> x.id }
+
+        for (insuranceBillId in insuranceBillIdsToRemove) {
+            deleteInsuranceBill(insuranceId, insuranceBillId)
+        }
+
+        // Add a payment for the cancellation date for any arrears or refunds
+        val insuranceBill = InsuranceBill(cancellationDate, 0f.toBigDecimal(), insurancePolicy.id, insurancePolicy.vehicleId)
+        logInsuranceBill(insuranceBill)
+
+        // Finally, set cancellation date and update policy in db
+        insurancePolicy.insurancePolicyEndDate = cancellationDate
+        insurancePolicy.isCancelled = true
+        updateInsurance(insurancePolicy)
+    }
+
+    fun updateInsurance(insurance : Insurance) {
+        insuranceLog.returnInsuranceLog().removeIf { log -> log.id == insurance.id }
+        insuranceLog.addInsuranceToInsuranceLog(insurance)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceDao()
+                ?.updateInsurance(insurance.convertToInsuranceEntity())
+        }.start()
+    }
+
+    fun deleteInsurance(insuranceId : Int) {
+        insuranceLog.returnInsuranceLog().removeIf { log -> log.id == insuranceId }
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceDao()
+                ?.delete(insuranceId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(insuranceId)
+        }.start()
+    }
+
+    private fun returnInsuranceBillsForInsurance(insuranceId : Int) : InsuranceBillLog? {
+        return insuranceLog.returnInsuranceById(insuranceId)?.returnInsuranceBillingLogs()
+    }
+
+    fun logInsuranceBill(insuranceBill : InsuranceBill) {
+        val insuranceBills = returnInsuranceBillsForInsurance(insuranceBill.insuranceId)
+            ?: return
+
+        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill, false)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceBillDao()
+                ?.insert(insuranceBill.convertToInsuranceBillEntity())
+        }.start()
+    }
+
+    fun updateInsuranceBill(insuranceBill : InsuranceBill) {
+        val insuranceBills = returnInsuranceBillsForInsurance(insuranceBill.insuranceId)
+            ?: return
+
+        insuranceBills.returnInsuranceBillLog().removeIf {x -> x.id == insuranceBill.id}
+        insuranceBills.addInsuranceBillToInsuranceBillLog(insuranceBill, false)
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceBillDao()
+                ?.updateInsuranceBill(insuranceBill.convertToInsuranceBillEntity())
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.updateLoggable(insuranceBill.convertToLoggableEntity())
+        }.start()
+    }
+
+    fun deleteInsuranceBill(insuranceId : Int, insuranceBillId : Int) {
+        val insuranceBills = returnInsuranceBillsForInsurance(insuranceId)
+            ?: return
+
+        insuranceBills.returnInsuranceBillLog().removeIf {x -> x.id == insuranceBillId}
+
+        Thread {
+            MainActivity.getDatabase()
+                ?.insuranceBillDao()
+                ?.delete(insuranceBillId)
+            MainActivity.getDatabase()
+                ?.loggableDao()
+                ?.delete(insuranceBillId)
         }.start()
     }
 
@@ -492,15 +591,17 @@ class Vehicle (val id: Int, brandName: String, modelName: String, modelYear: Int
         if (insuranceLog.size < 1)
             return false
 
-        insuranceLog.sortByDescending {x -> x.endDt.time }
+        insuranceLog.sortByDescending {x -> x.insurancePolicyEndDate.time }
 
-        return calendar.time <= insuranceLog.first().endDt
+        if (returnLatestInsurancePolicy() != null)
+            return calendar.time <= insuranceLog.first().insurancePolicyEndDate
+
+        return false
     }
 
-    fun returnLatestInsurancePolicy() : Insurance {
-        insuranceLog.returnInsuranceLog()
-            .sortByDescending {x -> x.insurancePolicyStartDate.time }
-        return insuranceLog.returnInsuranceLog().first()
+    fun returnLatestInsurancePolicy() : Insurance? {
+        return insuranceLog.returnInsuranceLog().firstOrNull {x -> x.insurancePolicyStartDate <= DataHelper.getCurrentDate()
+                && x.insurancePolicyEndDate >= DataHelper.getCurrentDate()}
     }
 
     private val ddMMyyyy : SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
